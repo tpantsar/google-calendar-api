@@ -1,4 +1,6 @@
-## Add credentials.json file to the root of the project
+## Download and add credentials.json file to the root of the project
+
+https://console.cloud.google.com/apis/credentials?project=unique-acronym-406815
 
 ## Install miniconda
 
@@ -12,4 +14,7 @@ del miniconda.exe
 conda env create --file environment.yml
 conda env update --file environment.yml
 conda env update --file environment.yml --prune
+
+python app.py
+http://127.0.0.1:5000/year/2024
 ```
