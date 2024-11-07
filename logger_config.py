@@ -29,15 +29,16 @@ console_handler.setLevel(logging.INFO)
 file_handler.setLevel(logging.INFO)
 file_handler_archive.setLevel(logging.INFO)
 
-# Create a formatter and set the format for the handlers
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+# Create formatters and set the format for the handlers
+formatter_full = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+formatter_simple = logging.Formatter("%(message)s")
 
 if PRINT_TO_CONSOLE:
-    console_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter_simple)
     logger.addHandler(console_handler)
 
 if PRINT_TO_FILE:
-    file_handler.setFormatter(formatter)
-    file_handler_archive.setFormatter(formatter)
+    file_handler.setFormatter(formatter_simple)
+    file_handler_archive.setFormatter(formatter_full)
     logger.addHandler(file_handler)
     logger.addHandler(file_handler_archive)
