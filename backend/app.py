@@ -37,5 +37,15 @@ def calendars_view():
     return render_template("calendar_list.html", calendars=calendars)
 
 
+@app.route("/api/calendars")
+def get_calendars_list():
+    """Returns the list of calendars."""
+    creds = get_credentials()
+    calendars = get_calendar_list(creds)
+
+    # Return the list of calendars
+    return calendars
+
+
 if __name__ == "__main__":
     app.run(debug=True)

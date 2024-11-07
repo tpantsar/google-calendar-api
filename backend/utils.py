@@ -56,6 +56,7 @@ def get_calendar_list(creds):
 
     calendars = calendar_list.get("items", [])
     logger.info(f"Found {len(calendars)} calendars")
+    logger.debug(f"Calendars: {calendars}")
 
     for calendar in calendars:
         logger.info(f"Calendar: {calendar['summary']}")

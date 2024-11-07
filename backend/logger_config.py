@@ -31,7 +31,7 @@ file_handler_archive.setLevel(logging.INFO)
 
 # Create formatters and set the format for the handlers
 formatter_full = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-formatter_simple = logging.Formatter("%(message)s")
+formatter_simple = logging.Formatter("%(levelname)s - %(message)s")
 
 if PRINT_TO_CONSOLE:
     console_handler.setFormatter(formatter_simple)
