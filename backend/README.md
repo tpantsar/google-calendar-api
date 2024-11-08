@@ -19,3 +19,7 @@ cd src
 python app.py
 http://127.0.0.1:5000/
 ```
+
+## Google Calendar API:
+
+https://console.cloud.google.com/apis/api/calendar-json.googleapis.com/metrics?hl=fi&project=unique-acronym-406815
