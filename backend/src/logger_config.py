@@ -13,7 +13,6 @@ PRINT_TO_FILE = True
 
 # Configure the logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 # Create handlers with UTF-8 encoding
 console_handler = logging.StreamHandler(sys.stdout)
