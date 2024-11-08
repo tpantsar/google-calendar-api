@@ -1,10 +1,33 @@
+import csv
 import datetime
+import json
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 from auth import get_credentials
 from logger_config import logger
+
+
+def write_to_file(file_name, data):
+    """Writes the data to a file depending on the file format."""
+    if file_name.endswith(".json"):
+        with open(file_name, "w", encoding="utf-8") as file:
+            file.write(json.dumps(data, indent=2, ensure_ascii=False))
+        logger.info(f"Data written to {file_name}")
+    elif file_name.endswith(".csv"):
+        with open(file_name, "w", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            for row in data:
+                writer.writerow(row)
+        logger.info(f"Data written to {file_name}")
+    elif file_name.endswith(".txt"):
+        with open(file_name, "w", encoding="utf-8") as file:
+            for item in data:
+                file.write(f"{item}\n", encoding="utf-8")
+        logger.info(f"Data written to {file_name}")
+    else:
+        logger.error("Unsupported file format")
 
 
 def get_calendar_events(calendar_id, year):
@@ -35,6 +58,7 @@ def get_calendar_events(calendar_id, year):
     events = events_result.get("items", [])
     calendar = service.calendars().get(calendarId=calendar_id).execute().get("summary")
     logger.info(f"Found {len(events)} events from {calendar} for the year {year}")
+    logger.debug(f"Events: {events}")
 
     # Sort events by start time in descending order (newest first)
     events.reverse()
@@ -46,6 +70,7 @@ def get_calendar_events(calendar_id, year):
         event["formatted_start"] = format_event_time(start)
         event["formatted_end"] = format_event_time(end)
 
+    write_to_file("events.json", events)
     return events
 
 

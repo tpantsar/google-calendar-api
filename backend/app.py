@@ -1,8 +1,10 @@
+import datetime
+
 from flask import Flask, render_template
 
 from auth import get_credentials
 from logger_config import logger
-from utils import build_service, get_calendar_events, get_calendar_list
+from utils import build_service, get_calendar_events, get_calendar_list, write_to_file
 
 app = Flask(__name__)
 
@@ -45,6 +47,43 @@ def get_calendars_list():
 
     # Return the list of calendars
     return calendars
+
+
+@app.route("/api/calendars/id")
+def get_calendars_id_list():
+    """Returns the list of calendar IDs."""
+    creds = get_credentials()
+    service = build_service(creds)
+
+    calendar_list = service.calendarList().list().execute()
+    calendars = calendar_list.get("items", [])
+    write_to_file("data.json", calendars)
+
+    logger.info(f"Found {len(calendars)} calendars")
+    logger.debug(f"Calendars: {calendars}")
+
+    result = [
+        {"summary": calendar["summary"], "id": calendar["id"]} for calendar in calendars
+    ]
+    write_to_file("calendars.json", result)
+
+    # Return the list of calendar IDs
+    return result
+
+
+@app.route("/api/calendar/<calendar_id>")
+def get_calendar_events_api(calendar_id):
+    """Returns the calendar events for the current year."""
+    current_year = datetime.datetime.now().year
+    events = get_calendar_events(calendar_id, current_year)
+    return events
+
+
+@app.route("/api/events/<int:year>/<calendar_id>")
+def get_year_events(year, calendar_id):
+    """Returns the calendar events for the specified year."""
+    events = get_calendar_events(calendar_id, year)
+    return events
 
 
 if __name__ == "__main__":

@@ -26,8 +26,8 @@ with open("logger.log", "w", encoding="utf-8"):
 
 # Set level and format for handlers
 console_handler.setLevel(logging.INFO)
-file_handler.setLevel(logging.INFO)
-file_handler_archive.setLevel(logging.INFO)
+file_handler.setLevel(logging.DEBUG)
+file_handler_archive.setLevel(logging.DEBUG)
 
 # Create formatters and set the format for the handlers
 formatter_full = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
