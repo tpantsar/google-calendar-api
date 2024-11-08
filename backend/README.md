@@ -15,6 +15,7 @@ conda env create --file environment.yml
 conda env update --file environment.yml
 conda env update --file environment.yml --prune
 
+cd src
 python app.py
-http://127.0.0.1:5000/year/2024
+http://127.0.0.1:5000/
 ```
