@@ -3,6 +3,7 @@ interface Event {
   summary: string
   start: EventTime
   end: EventTime
+  duration: number // Duration in hours
   formatted_start: string
   formatted_end: string
   htmlLink: string
