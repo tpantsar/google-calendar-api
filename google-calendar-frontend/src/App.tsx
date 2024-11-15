@@ -13,13 +13,33 @@ const Filter = ({ filter, setFilter }: { filter: string, setFilter: React.Dispat
   )
 }
 
-const Events = ({ events, filter }: { events: Event[], filter: string }) => {
+type IEventsProps = {
+  calendarId: string,
+  events: Event[],
+  filter: string,
+  setEvents: React.Dispatch<React.SetStateAction<Event[]>>
+}
+
+const Events = ({ calendarId, events, filter, setEvents }: IEventsProps) => {
   const filteredEvents = events.filter((event) => event.summary.toLowerCase().includes(filter.toLowerCase()))
   const [sort, setSort] = useState<boolean>(false)
+  console.log('Calendar ID:', calendarId)
 
   // Sort events by start date
   if (sort) {
     filteredEvents.sort((a, b) => new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime())
+  }
+
+  const deleteEvent = (event: Event) => {
+    const result = window.confirm(`Delete event: ${event.summary}?`)
+    if (result) {
+      eventService.remove(calendarId, event.id).then(() => {
+        console.log('Event deleted:', event.id)
+        const updatedEvents = events.filter((eventItem) => eventItem.id !== event.id)
+        setEvents(updatedEvents)
+      })
+      .catch((error) => console.error('Error deleting event:', error))
+    }
   }
 
   return (
@@ -35,17 +55,20 @@ const Events = ({ events, filter }: { events: Event[], filter: string }) => {
               <button onClick={() => setSort(!sort)}>Sort</button>
             </th>
             <th>End</th>
+            <th>Duration</th>
           </tr>
         </thead>
         <tbody>
           {filteredEvents.map((event) => (
             <tr key={event.id}>
               <td>
+                <button onClick={() => deleteEvent(event)}>Delete</button>
                 <a href={event.htmlLink} target='_blank'>{event.summary}</a>
                 <span>{event.isFuture ? ' (Future event)' : ''}</span>
               </td>
               <td>{event.formatted_start}</td>
               <td>{event.formatted_end}</td>
+              <td>{event.duration}</td>
             </tr>
           ))}
         </tbody>
@@ -56,6 +79,7 @@ const Events = ({ events, filter }: { events: Event[], filter: string }) => {
 
 function App() {
   const [calendars, setCalendars] = useState<Calendar[]>([])
+  const [calendarId, setCalendarId] = useState<string>('')
   const [events, setEvents] = useState<Event[]>([])
   const [eventsFilter, setEventsFilter] = useState<string>('')
 
@@ -72,6 +96,7 @@ function App() {
         return event
       })
       setEvents(updatedEvents)
+      setCalendarId(calendarId)
     })
   }
 
@@ -87,7 +112,7 @@ function App() {
           ))}
         </ul>
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
-        <Events events={events} filter={eventsFilter} />
+        <Events calendarId={calendarId} events={events} filter={eventsFilter} setEvents={setEvents} />
       </header>
     </div>
   )

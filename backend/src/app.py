@@ -4,7 +4,13 @@ from flask import Flask, render_template
 
 from auth import get_credentials
 from logger_config import logger
-from utils import build_service, get_calendar_events, get_calendar_list, write_to_file
+from utils import (
+    build_service,
+    delete_calendar_event,
+    get_calendar_events,
+    get_calendar_list,
+    write_to_file,
+)
 
 app = Flask(__name__)
 
@@ -85,6 +91,11 @@ def get_year_events(year, calendar_id):
     """Returns the calendar events for the specified year."""
     events = get_calendar_events(calendar_id, year)
     return events
+
+
+@app.delete("/api/events/delete/<calendar_id>/<event_id>")
+def delete_events_file(calendar_id, event_id):
+    delete_calendar_event(calendar_id, event_id)
 
 
 if __name__ == "__main__":

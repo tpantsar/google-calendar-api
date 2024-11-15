@@ -10,4 +10,11 @@ const getAll = (year: number, calendar_id: string): Promise<Event[]> => {
   return request.then((response) => response.data)
 }
 
-export default { getAll }
+const remove = (calendar_id: string, event_id: string): Promise<void> => {
+  const url = `${baseUrl}/delete/${calendar_id}/${event_id}`
+  const request = axios.delete(url)
+  console.log('Deleting event:', url)
+  return request.then((response) => response.data)
+}
+
+export default { getAll, remove }

@@ -78,6 +78,25 @@ def get_calendar_events(calendar_id, year):
     return events
 
 
+def delete_calendar_event(calendar_id, event_id):
+    """
+    Deletes a single calendar event.
+    DELETE https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
+    """
+    if calendar_id is None or event_id is None:
+        logger.error("Calendar ID or event ID is missing")
+        return None
+
+    creds = get_credentials()
+    service = build_service(creds)
+
+    try:
+        service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
+        logger.info(f"Event with ID {event_id} deleted successfully")
+    except HttpError as error:
+        logger.error(f"An error occurred with deleting the event: {error}")
+
+
 def get_calendar_list(creds):
     """Fetches the list of calendars from the Google Calendar API."""
     service = build_service(creds)
@@ -99,10 +118,13 @@ def build_service(creds):
     """
     try:
         service = build("calendar", "v3", credentials=creds)
+        if service is None:
+            logger.error("Failed to build the Calendar API service")
+            return None
+        return service
     except HttpError as error:
         logger.error(f"An error occurred with building the service: {error}")
         return None
-    return service
 
 
 def format_event_time(event_time):
