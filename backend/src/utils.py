@@ -1,6 +1,6 @@
 import csv
-import datetime
 import json
+from datetime import datetime
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -40,8 +40,8 @@ def get_calendar_events(calendar_id, year):
         return []
 
     # Define the time range for the year
-    start_date = datetime.datetime(year, 1, 1).isoformat() + "Z"
-    end_date = datetime.datetime(year, 12, 31, 23, 59, 59).isoformat() + "Z"
+    start_date = datetime(year, 1, 1).isoformat() + "Z"
+    end_date = datetime(year, 12, 31, 23, 59, 59).isoformat() + "Z"
 
     events_result = (
         service.events()
@@ -63,12 +63,16 @@ def get_calendar_events(calendar_id, year):
     # Sort events by start time in descending order (newest first)
     events.reverse()
 
-    # Format the start and end times of each event
+    # Add formatted start and end times to the events
     for event in events:
         start = event["start"].get("dateTime", event["start"].get("date"))
         end = event["end"].get("dateTime", event["end"].get("date"))
         event["formatted_start"] = format_event_time(start)
         event["formatted_end"] = format_event_time(end)
+
+        # Convert the time difference to hours
+        time_difference = datetime.fromisoformat(end) - datetime.fromisoformat(start)
+        event["duration"] = time_difference.total_seconds() / 3600
 
     write_to_file("events.json", events)
     return events
@@ -103,5 +107,5 @@ def build_service(creds):
 
 def format_event_time(event_time):
     """Formats the event time to 'pe 4.10.2024 18:00'."""
-    date = datetime.datetime.fromisoformat(event_time)
+    date = datetime.fromisoformat(event_time)
     return date.strftime("%a %d.%m.%Y %H:%M")
