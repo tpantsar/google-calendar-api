@@ -58,7 +58,6 @@ def get_calendar_events(calendar_id, year):
     events = events_result.get("items", [])
     calendar = service.calendars().get(calendarId=calendar_id).execute().get("summary")
     logger.info(f"Found {len(events)} events from {calendar} for the year {year}")
-    logger.debug(f"Events: {events}")
 
     # Sort events by start time in descending order (newest first)
     events.reverse()
