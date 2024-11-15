@@ -15,6 +15,7 @@ conda env create --file environment.yml
 conda env update --file environment.yml
 conda env update --file environment.yml --prune
 
+C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-year
 cd src
 python app.py
 http://127.0.0.1:5000/
