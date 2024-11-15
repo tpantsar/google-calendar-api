@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import calendarService from './services/calendars'
+import calendarService from './services/Calendars'
 import eventService from './services/Events'
 import Calendar from './types/Calendar'
 import Event from './types/Event'

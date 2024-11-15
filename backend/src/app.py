@@ -60,7 +60,8 @@ def get_calendars_id_list():
     write_to_file("data.json", calendars)
 
     logger.info(f"Found {len(calendars)} calendars")
-    logger.debug(f"Calendars: {calendars}")
+    calendar_summaries = [calendar["summary"] for calendar in calendars]
+    logger.debug(f"Calendars: {calendar_summaries}")
 
     result = [
         {"summary": calendar["summary"], "id": calendar["id"]} for calendar in calendars

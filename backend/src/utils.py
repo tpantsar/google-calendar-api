@@ -80,11 +80,10 @@ def get_calendar_list(creds):
     calendar_list = service.calendarList().list().execute()
 
     calendars = calendar_list.get("items", [])
-    logger.info(f"Found {len(calendars)} calendars")
-    logger.debug(f"Calendars: {calendars}")
+    calendar_summaries = [calendar["summary"] for calendar in calendars]
 
-    for calendar in calendars:
-        logger.info(f"Calendar: {calendar['summary']}")
+    logger.info(f"Found {len(calendars)} calendars")
+    logger.debug(f"Calendars: {calendar_summaries}")
 
     return calendars
 
