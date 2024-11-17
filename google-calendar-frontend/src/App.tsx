@@ -17,13 +17,22 @@ type IEventsProps = {
   calendarId: string,
   events: Event[],
   filter: string,
+  setFilter: React.Dispatch<React.SetStateAction<string>>,
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>
 }
 
-const Events = ({ calendarId, events, filter, setEvents }: IEventsProps) => {
-  const filteredEvents = events.filter((event) => event.summary.toLowerCase().includes(filter.toLowerCase()))
+const Events = ({ calendarId, events, filter, setFilter, setEvents }: IEventsProps) => {
   const [sort, setSort] = useState<boolean>(false)
+  const [showFutureEvents, setShowFutureEvents] = useState<boolean>(false)
+  
   console.log('Calendar ID:', calendarId)
+  const toggleFutureEvents = () => setShowFutureEvents(!showFutureEvents)
+  
+  // Filter events based on the filter and showFutureEvents state
+  const filteredEvents = events.filter((event) => 
+    event.summary.toLowerCase().includes(filter.toLowerCase()) && 
+    (showFutureEvents || !event.isFuture)
+  )
 
   // Sort events by start date
   if (sort) {
@@ -42,10 +51,23 @@ const Events = ({ calendarId, events, filter, setEvents }: IEventsProps) => {
     }
   }
 
+  const handleSummaryClick = (summary: string) => {
+    setFilter(summary);
+  };
+
   return (
     <>
-      <h2>Events: {filteredEvents.length}</h2>
-      <h2>Hours: {filteredEvents.reduce((acc, event) => acc + event.duration, 0)}</h2>
+      <div className="flex-container">
+        <h2>Events: {filteredEvents.length}</h2>
+        <h2>Types: {new Set(filteredEvents.map(event => event.summary)).size}</h2>
+        <h2>Hours: {filteredEvents.reduce((acc, event) => acc + event.duration, 0).toFixed(2)}</h2>
+      </div>
+      <div className="flex-container">
+        <h3>Future events: {events.filter(event => event.isFuture).length}</h3>
+        <button onClick={toggleFutureEvents}>
+          {showFutureEvents ? 'Hide' : 'Show'}
+        </button>
+      </div>
       <table className="event-table">
         <thead>
           <tr>
@@ -62,8 +84,13 @@ const Events = ({ calendarId, events, filter, setEvents }: IEventsProps) => {
           {filteredEvents.map((event) => (
             <tr key={event.id}>
               <td>
-                <button onClick={() => deleteEvent(event)}>Delete</button>
-                <a href={event.htmlLink} target='_blank'>{event.summary}</a>
+                <i onClick={() => deleteEvent(event)} className="icon-trashcan fa-solid fa-trash-can"></i>
+                <a href={event.htmlLink} target='_blank'>
+                  <i className="icon-arrow fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+                <span onClick={() => handleSummaryClick(event.summary)} style={{ cursor: 'pointer', color: 'blue' }}>
+                  {event.summary}
+                </span>
                 <span>{event.isFuture ? ' (Future event)' : ''}</span>
               </td>
               <td>{event.formatted_start}</td>
@@ -112,7 +139,7 @@ function App() {
           ))}
         </ul>
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
-        <Events calendarId={calendarId} events={events} filter={eventsFilter} setEvents={setEvents} />
+        <Events calendarId={calendarId} events={events} filter={eventsFilter} setFilter={setEventsFilter} setEvents={setEvents} />
       </header>
     </div>
   )

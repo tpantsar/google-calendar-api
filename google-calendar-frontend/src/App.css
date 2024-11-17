@@ -5,6 +5,26 @@
   /*text-align: center;*/
 }
 
+.icon-trashcan {
+  color: red;
+  cursor: pointer;
+  padding-right: 10px;
+}
+
+.icon-arrow {
+  color: #61dafb;
+  cursor: pointer;
+  padding-right: 10px;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  max-width: 80%;
+}
+
 .calendar-list,
 .event-list,
 .event-table {
