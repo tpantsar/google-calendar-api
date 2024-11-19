@@ -19,3 +19,17 @@
 .calendar-list li a:hover {
   text-decoration: underline;
 }
+
+.calendar-dropdown {
+  width: 100%;
+  padding: 10px;
+  margin: 20px 0;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #4a4a4a;
+}
+
+.calendar-dropdown option {
+  padding: 10px;
+}

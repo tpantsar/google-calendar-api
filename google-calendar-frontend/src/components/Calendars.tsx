@@ -7,16 +7,21 @@ type ICalendarsProps = {
 }
 
 const Calendars = ({ calendars, fetchEvents }: ICalendarsProps) => {
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    fetchEvents(event.target.value)
+  }
+
   return (
     <>
       <h1>Calendars</h1>
-      <ul className="calendar-list">
+      <select className="calendar-dropdown" onChange={handleChange}>
+        <option value="">Select a calendar</option>
         {calendars.map((calendar) => (
-          <li key={calendar.id} onClick={() => fetchEvents(calendar.id)}>
-            <a href="#">{calendar.summary}</a>
-          </li>
+          <option key={calendar.id} value={calendar.id}>
+            {calendar.summary}
+          </option>
         ))}
-      </ul>
+      </select>
     </>
   )
 }
