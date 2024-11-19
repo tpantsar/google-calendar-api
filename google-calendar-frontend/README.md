@@ -13,6 +13,7 @@ npm install --save-dev eslint-config-prettier eslint-plugin-prettier eslint-plug
 <p>Install the Airbnb ESLint config and the required plugins:</p>
 
 ```
+npm init @eslint/config@latest
 npm install --save-dev eslint-config-airbnb-base eslint-plugin-import
 ```
 

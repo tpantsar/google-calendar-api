@@ -15,7 +15,9 @@ function App() {
 
   // Fetch google calendar events and set them to state
   useEffect(() => {
-    calendarService.getAll().then((calendars: Calendar[]) => setCalendars(calendars))
+    calendarService
+      .getAll()
+      .then((calendars: Calendar[]) => setCalendars(calendars))
   }, [])
 
   const fetchEvents = (calendarId: string) => {
@@ -42,7 +44,13 @@ function App() {
           ))}
         </ul>
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
-        <Events calendarId={calendarId} events={events} filter={eventsFilter} setFilter={setEventsFilter} setEvents={setEvents} />
+        <Events
+          calendarId={calendarId}
+          events={events}
+          filter={eventsFilter}
+          setFilter={setEventsFilter}
+          setEvents={setEvents}
+        />
       </header>
     </div>
   )
