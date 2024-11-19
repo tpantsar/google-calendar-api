@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+/* Components */
+import Calendars from './components/Calendars'
 import Events from './components/Events'
 import Filter from './components/Filter'
+/* Services */
 import calendarService from './services/Calendars'
 import eventService from './services/Events'
+/* Types */
 import Calendar from './types/Calendar'
 import Event from './types/Event'
 
@@ -35,14 +39,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Calendars</h1>
-        <ul className="calendar-list">
-          {calendars.map((calendar) => (
-            <li key={calendar.id} onClick={() => fetchEvents(calendar.id)}>
-              <a href="#">{calendar.summary}</a>
-            </li>
-          ))}
-        </ul>
+        <Calendars calendars={calendars} fetchEvents={fetchEvents} />
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
         <Events
           calendarId={calendarId}

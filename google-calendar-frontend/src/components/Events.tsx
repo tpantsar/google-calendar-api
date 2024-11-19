@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import eventService from '../services/Events'
+import '../styles/Events.css'
 import Event from '../types/Event'
 
 type IEventsProps = {
@@ -103,7 +104,7 @@ const Events = ({
                   onClick={() => deleteEvent(event)}
                   className="icon-trashcan fa-solid fa-trash-can"
                 ></i>
-                <a href={event.htmlLink} target="_blank">
+                <a href={event.htmlLink} target="_blank" rel="noreferrer">
                   <i className="icon-arrow fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
                 <span

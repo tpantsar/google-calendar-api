@@ -1,0 +1,21 @@
+.calendar-list,
+.event-list,
+.event-table {
+  list-style-type: none;
+  padding: 0;
+}
+
+.calendar-list li,
+.event-list li {
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.calendar-list li a {
+  text-decoration: none;
+  color: #61dafb;
+}
+
+.calendar-list li a:hover {
+  text-decoration: underline;
+}

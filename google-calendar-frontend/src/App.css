@@ -2,19 +2,6 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  /*text-align: center;*/
-}
-
-.icon-trashcan {
-  color: red;
-  cursor: pointer;
-  padding-right: 10px;
-}
-
-.icon-arrow {
-  color: #61dafb;
-  cursor: pointer;
-  padding-right: 10px;
 }
 
 .flex-container {
@@ -23,56 +10,4 @@
   gap: 10px;
   justify-content: space-between;
   max-width: 80%;
-}
-
-.calendar-list,
-.event-list,
-.event-table {
-  list-style-type: none;
-  padding: 0;
-}
-
-.calendar-list li,
-.event-list li {
-  margin: 10px 0;
-  cursor: pointer;
-}
-
-.calendar-list li a {
-  text-decoration: none;
-  color: #61dafb;
-}
-
-.calendar-list li a:hover {
-  text-decoration: underline;
-}
-
-.event-list li {
-  color: #ffffff;
-}
-
-.event-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.event-table th,
-.event-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.event-table th {
-  background-color: #539455;
-  color: white;
-  text-align: left;
-}
-
-.event-table tr:nth-child(even) {
-  background-color: #414141;
-}
-
-.event-table tr:hover {
-  background-color: #6d6d6d;
 }
