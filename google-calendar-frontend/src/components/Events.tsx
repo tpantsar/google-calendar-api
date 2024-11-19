@@ -117,7 +117,7 @@ const Events = ({
               </td>
               <td>{event.formatted_start}</td>
               <td>{event.formatted_end}</td>
-              <td>{event.duration}</td>
+              <td>{event.duration.toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
