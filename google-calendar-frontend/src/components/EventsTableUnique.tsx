@@ -6,6 +6,7 @@ type IEventsTableUnique = {
   events: Event[]
   filter: string
   setFilter: React.Dispatch<React.SetStateAction<string>>
+  setShowAllEvents: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /* A table of unique events on the calendar */
@@ -13,6 +14,7 @@ const EventsTableUnique = ({
   events,
   filter,
   setFilter,
+  setShowAllEvents,
 }: IEventsTableUnique) => {
   const [sortColumn, setSortColumn] = useState<string>('events') // Sort by events by default
   const [sortDirection, setSortDirection] = useState<boolean>(false) // true for ascending, false for descending
@@ -61,8 +63,10 @@ const EventsTableUnique = ({
 
   console.log('Unique events:', uniqueEvents.length)
 
+  // Show all events when a summary is clicked
   const handleSummaryClick = (summary: string) => {
     setFilter(summary)
+    setShowAllEvents(true)
   }
 
   const handleSort = (column: string) => {

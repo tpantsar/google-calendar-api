@@ -62,6 +62,7 @@ const Events = ({
           events={events}
           filter={filter}
           setFilter={setFilter}
+          setShowAllEvents={setShowAllEvents}
         />
       )}
     </>
