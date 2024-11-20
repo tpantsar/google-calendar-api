@@ -75,14 +75,14 @@ const Events = ({
             .reduce((acc, event) => acc + event.duration, 0)
             .toFixed(2)}
         </h2>
-      </div>
-      <div className="flex-container">
-        <h3>
-          Future events: {events.filter((event) => event.isFuture).length}
-        </h3>
-        <button onClick={toggleFutureEvents}>
-          {showFutureEvents ? 'Hide' : 'Show'}
-        </button>
+        <div className="flex-container">
+          <h3>
+            Future events: {events.filter((event) => event.isFuture).length}
+          </h3>
+          <button onClick={toggleFutureEvents}>
+            {showFutureEvents ? 'Hide' : 'Show'}
+          </button>
+        </div>
       </div>
       <table className="event-table">
         <thead>
