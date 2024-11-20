@@ -14,7 +14,7 @@ const EventsTableUnique = ({
   filter,
   setFilter,
 }: IEventsTableUnique) => {
-  const [sortColumn, setSortColumn] = useState<string>('summary')
+  const [sortColumn, setSortColumn] = useState<string>('events') // Sort by events by default
   const [sortDirection, setSortDirection] = useState<boolean>(false) // true for ascending, false for descending
 
   // Filter events based on the filter state
@@ -51,7 +51,7 @@ const EventsTableUnique = ({
       return sortDirection
         ? a.summary.localeCompare(b.summary)
         : b.summary.localeCompare(a.summary)
-    } else if (sortColumn === 'count') {
+    } else if (sortColumn === 'events') {
       return sortDirection ? a.count - b.count : b.count - a.count
     } else if (sortColumn === 'hours') {
       return sortDirection ? a.hours - b.hours : b.hours - a.hours
@@ -70,7 +70,7 @@ const EventsTableUnique = ({
       setSortDirection(!sortDirection)
     } else {
       setSortColumn(column)
-      setSortDirection(true)
+      setSortDirection(false) // Default to descending order
     }
   }
 
@@ -86,8 +86,8 @@ const EventsTableUnique = ({
           </th>
           <th>
             Events
-            <button onClick={() => handleSort('count')}>
-              {sortColumn === 'count' && (sortDirection ? '▼' : '▲')}
+            <button onClick={() => handleSort('events')}>
+              {sortColumn === 'events' && (sortDirection ? '▼' : '▲')}
             </button>
           </th>
           <th>
