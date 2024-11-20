@@ -3,7 +3,7 @@ import './App.css'
 /* Components */
 import Calendars from './components/Calendars'
 import Events from './components/Events'
-import EventTypes from './components/EventTypes'
+import EventTypesList from './components/EventTypesList'
 import Filter from './components/Filter'
 /* Services */
 import calendarService from './services/Calendars'
@@ -41,7 +41,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <Calendars calendars={calendars} fetchEvents={fetchEvents} />
-        <EventTypes events={events} setFilter={setEventsFilter} />
+        <EventTypesList events={events} setFilter={setEventsFilter} />
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
         <Events
           calendarId={calendarId}

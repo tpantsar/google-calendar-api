@@ -1,11 +1,12 @@
 import Event from '../types/Event'
 
-type ICalendarsProps = {
+type IEventTypesList = {
   events: Event[]
   setFilter: React.Dispatch<React.SetStateAction<string>>
 }
 
-const EventTypes = ({ events, setFilter }: ICalendarsProps) => {
+/* A dropdown list of unique events on the calendar */
+const EventTypesList = ({ events, setFilter }: IEventTypesList) => {
   // Find unique events on the calendar based on the event summary
   const uniqueEvents = events.reduce((acc: Event[], event: Event) => {
     const existingEvent = acc.find((e) => e.summary === event.summary)
@@ -55,5 +56,5 @@ const EventTypes = ({ events, setFilter }: ICalendarsProps) => {
   )
 }
 
-EventTypes.displayName = 'EventTypes'
-export default EventTypes
+EventTypesList.displayName = 'EventTypesList'
+export default EventTypesList

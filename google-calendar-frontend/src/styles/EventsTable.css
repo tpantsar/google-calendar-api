@@ -12,6 +12,7 @@
   overflow: hidden; /* Ensures text does not overflow */
   text-overflow: ellipsis; /* Adds ellipsis for overflowing text */
   white-space: nowrap; /* Prevents text from wrapping */
+  /*min-width: 150px;*/
 }
 
 .event-table th {
@@ -38,4 +39,13 @@
   color: #61dafb;
   cursor: pointer;
   padding-right: 10px;
+}
+
+.summary-text {
+  cursor: pointer;
+  color: white; /* Default color */
+}
+
+.summary-text:hover {
+  color: #61dafb; /* Hover color */
 }
