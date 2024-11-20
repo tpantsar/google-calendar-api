@@ -12,17 +12,14 @@ const Calendars = ({ calendars, fetchEvents }: ICalendarsProps) => {
   }
 
   return (
-    <>
-      <h1>Calendars</h1>
-      <select className="calendar-dropdown" onChange={handleChange}>
-        <option value="">Select a calendar</option>
-        {calendars.map((calendar) => (
-          <option key={calendar.id} value={calendar.id}>
-            {calendar.summary}
-          </option>
-        ))}
-      </select>
-    </>
+    <select className="calendar-dropdown" onChange={handleChange}>
+      <option value="">- Select a calendar -</option>
+      {calendars.map((calendar) => (
+        <option key={calendar.id} value={calendar.id}>
+          {calendar.summary}
+        </option>
+      ))}
+    </select>
   )
 }
 

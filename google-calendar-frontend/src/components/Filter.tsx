@@ -8,6 +8,7 @@ const Filter = ({ filter, setFilter }: IFilterProps) => {
     <div>
       Filter events:{' '}
       <input value={filter} onChange={(e) => setFilter(e.target.value)} />
+      <button onClick={() => setFilter('')}>Clear</button>
     </div>
   )
 }
