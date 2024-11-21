@@ -5,14 +5,14 @@ from flask import Response, request
 from flask_restful import Resource
 
 from constants import JSON, MASON
-from utils import (
+from services.event import (
     create_calendar_event,
-    create_error_response,
     delete_calendar_event,
     get_calendar_event,
     get_calendar_events,
     update_calendar_event,
 )
+from utils import create_error_response
 
 
 class EventList(Resource):
