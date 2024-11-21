@@ -135,15 +135,20 @@ def update_calendar_event(calendar_id, event_id, event_body):
 def get_calendar_list():
     """Fetches the list of calendars from the Google Calendar API."""
     service = build_service()
-    calendar_list = service.calendarList().list().execute()
 
-    calendars = calendar_list.get("items", [])
-    calendar_summaries = [calendar["summary"] for calendar in calendars]
+    try:
+        calendar_list = service.calendarList().list().execute()
 
-    logger.info(f"Found {len(calendars)} calendars")
-    logger.debug(f"Calendars: {calendar_summaries}")
+        calendars = calendar_list.get("items", [])
+        calendar_summaries = [calendar["summary"] for calendar in calendars]
 
-    return calendars
+        logger.info(f"Found {len(calendars)} calendars")
+        logger.debug(f"Calendars: {calendar_summaries}")
+
+        return calendars
+    except HttpError as error:
+        logger.error(f"An error occurred with fetching the calendar list: {error}")
+        return None
 
 
 def api_response(data=None, status_code=200, message="Success", error=None):

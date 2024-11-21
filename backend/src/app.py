@@ -2,53 +2,20 @@ import datetime
 
 from flask import Flask, Response, request
 
+from api import api_bp
 from constants import JSON, MASON
-from logger_config import logger
 from utils import (
-    build_service,
     create_error_response,
     delete_calendar_event,
     get_calendar_events,
-    get_calendar_list,
     update_calendar_event,
-    write_to_file,
 )
 
 app = Flask(__name__)
+app.register_blueprint(api_bp)
 
 # Set Google API scopes
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
-
-
-@app.get("/api/calendars")
-def get_calendars_list():
-    """Returns the list of calendars."""
-    calendars = get_calendar_list()
-
-    # Return the list of calendars
-    return calendars
-
-
-@app.get("/api/calendars/id")
-def get_calendars_id_list():
-    """Returns the list of calendar IDs."""
-    service = build_service()
-
-    calendar_list = service.calendarList().list().execute()
-    calendars = calendar_list.get("items", [])
-    write_to_file("data.json", calendars)
-
-    logger.info(f"Found {len(calendars)} calendars")
-    calendar_summaries = [calendar["summary"] for calendar in calendars]
-    logger.debug(f"Calendars: {calendar_summaries}")
-
-    result = [
-        {"summary": calendar["summary"], "id": calendar["id"]} for calendar in calendars
-    ]
-    write_to_file("calendars.json", result)
-
-    # Return the list of calendar IDs
-    return result
 
 
 @app.get("/api/events/<calendar_id>")
