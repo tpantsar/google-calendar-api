@@ -112,14 +112,16 @@ def update_calendar_event(calendar_id, event_id, event_body):
     service = build_service()
 
     try:
-        # First retrieve the event from the API.
+        # First retrieve the event from the API
         event = service.events().get(calendarId=calendar_id, eventId=event_id).execute()
-        logger.debug(f"Event: {event}")
+
+        # Update the event with the new body
+        event["summary"] = event_body["summary"]
 
         # Update the event with the new body
         updated_event = (
             service.events()
-            .update(calendarId=calendar_id, eventId=event["id"], body=event_body)
+            .update(calendarId=calendar_id, eventId=event["id"], body=event)
             .execute()
         )
         logger.info(f"Event with ID {event_id} updated successfully")
