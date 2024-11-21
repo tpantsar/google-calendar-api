@@ -24,4 +24,4 @@ const update = (calendar_id: string, event: Event): Promise<void> => {
   return request.then((response) => response.data)
 }
 
-export default { getAll, remove }
+export default { getAll, remove, update }
