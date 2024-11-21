@@ -26,3 +26,10 @@ npm run dev
 ## Google Calendar API:
 
 https://console.cloud.google.com/apis/api/calendar-json.googleapis.com/metrics?hl=fi&project=unique-acronym-406815
+
+"When calling APIs that do not access private user data, you can use simple API keys. These keys are used to authenticate your application for accounting purposes. The Google Developers Console documentation also describes API keys.
+Note: If you do need to access private user data, you must use OAuth 2.0. See Using OAuth 2.0 for Installed Applications, Using OAuth 2.0 for Server to Server Applications, and Using OAuth 2.0 for Web Server Applications for more information."
+
+https://github.com/googleapis/google-api-python-client/blob/main/docs/api-keys.md
+
+https://github.com/googleapis/google-api-python-client/blob/main/docs/start.md

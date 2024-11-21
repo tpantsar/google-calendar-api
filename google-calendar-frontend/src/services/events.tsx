@@ -17,4 +17,11 @@ const remove = (calendar_id: string, event_id: string): Promise<void> => {
   return request.then((response) => response.data)
 }
 
+const update = (calendar_id: string, event: Event): Promise<void> => {
+  const url = `${baseUrl}/update/${calendar_id}`
+  const request = axios.put(url, event)
+  console.log('Updating event:', url)
+  return request.then((response) => response.data)
+}
+
 export default { getAll, remove }
