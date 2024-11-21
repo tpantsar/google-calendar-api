@@ -113,6 +113,8 @@ def update_event(calendar_id, event_id):
 
     event_body = request.get_json()
     update_calendar_event(calendar_id, event_id, event_body)
+    response = {"message": "Event updated successfully"}
+    return Response(response=response, status=200, mimetype=MASON)
 
 
 if __name__ == "__main__":
