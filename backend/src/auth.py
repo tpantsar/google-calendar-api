@@ -13,7 +13,7 @@ from logger_config import logger
 
 def get_credentials() -> Credentials:
     """
-    Get the user credentials for the Google Calendar API.
+    Get the user credentials for the Google Calendar API (OAuth 2.0).
     The file token.json stores the user's access and refresh tokens, and is
     created automatically when the authorization flow completes for the first
     time.
