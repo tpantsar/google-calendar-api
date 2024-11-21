@@ -6,13 +6,19 @@ from flask import Blueprint
 from flask_restful import Api
 
 # Import collections
-from resources.calendar import CalendarCollection, CalendarIdCollection
-
-# from resources.event import EventCollection, EventItem
+from resources.calendar import CalendarList, CalendarListId
+from resources.event import EventList, EventItem
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 api = Api(api_bp)
 
 # Add resources
-api.add_resource(CalendarCollection, "/calendars/", methods=["GET"])
-api.add_resource(CalendarIdCollection, "/calendars/id/", methods=["GET"])
+api.add_resource(CalendarList, "/calendars/", methods=["GET"])
+api.add_resource(CalendarListId, "/calendars/id/", methods=["GET"])
+
+api.add_resource(EventList, "/events/<calendar_id>/", methods=["GET", "POST"])
+api.add_resource(
+    EventItem,
+    "/events/<calendar_id>/<event_id>/",
+    methods=["GET", "PUT", "DELETE"],
+)

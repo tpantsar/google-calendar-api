@@ -1,14 +1,14 @@
 import json
 
-from flask import Response, request
+from flask import Response
 from flask_restful import Resource
 
-from constants import JSON, MASON
+from constants import MASON
 from logger_config import logger
 from utils import create_error_response, get_calendar_list, write_to_file
 
 
-class CalendarCollection(Resource):
+class CalendarList(Resource):
     def get(self):
         """
         Returns the list of calendars: /api/calendars/
@@ -23,7 +23,7 @@ class CalendarCollection(Resource):
         return Response(json.dumps(calendars), status=200, mimetype=MASON)
 
 
-class CalendarIdCollection(Resource):
+class CalendarListId(Resource):
     def get(self):
         """
         Returns the list of calendar IDs: /api/calendars/id

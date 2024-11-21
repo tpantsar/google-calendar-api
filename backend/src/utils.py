@@ -33,13 +33,30 @@ def write_to_file(file_name, data):
         logger.error("Unsupported file format")
 
 
+def get_calendar_event(calendar_id, event_id):
+    """Fetches a single calendar event by ID."""
+    service = build_service()
+
+    if service is None:
+        logger.error("Failed to build the Calendar API service")
+        return None
+
+    try:
+        event = service.events().get(calendarId=calendar_id, eventId=event_id).execute()
+        logger.info(f"Found event with ID {event_id}")
+        return event
+    except HttpError as error:
+        logger.error(f"An error occurred with fetching the event: {error}")
+        return None
+
+
 def get_calendar_events(calendar_id, year):
     """Fetches Google Calendar events for the specified year."""
     service = build_service()
 
     if service is None:
         logger.error("Failed to build the Calendar API service")
-        return []
+        return None
 
     # Define the time range for the year
     start_date = datetime(year, 1, 1).isoformat() + "Z"
@@ -79,32 +96,77 @@ def get_calendar_events(calendar_id, year):
     return events
 
 
-def delete_calendar_event(calendar_id, event_id):
+def create_calendar_event(calendar_id, event_body) -> Response:
+    """
+    Creates a new calendar event.
+    POST https://www.googleapis.com/calendar/v3/calendars/calendarId/events
+    https://developers.google.com/calendar/api/v3/reference/events/insert
+
+    Required properties in the event body:
+    - end: The end time of the event.
+    - start: The start time of the event.
+    """
+    if calendar_id is None or event_body is None:
+        logger.error("Calendar ID or event body is missing")
+        return create_error_response(
+            400, "Bad Request", "Calendar ID or event body is missing"
+        )
+
+    logger.debug(f"Calendar ID: {calendar_id}")
+    logger.debug(f"Event body: {event_body}")
+    service = build_service()
+
+    try:
+        event = (
+            service.events().insert(calendarId=calendar_id, body=event_body).execute()
+        )
+        logger.info(f"Event created successfully: {event['id']}")
+
+        # Return a response with 201 (created) status code
+        return Response(json.dumps(event), status=201, mimetype=MASON)
+    except HttpError as error:
+        logger.error(f"An error occurred with creating the event: {error}")
+        return create_error_response(500, "Internal Server Error", str(error))
+
+
+def delete_calendar_event(calendar_id, event_id) -> Response:
     """
     Deletes a single calendar event.
     DELETE https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
     """
     if calendar_id is None or event_id is None:
         logger.error("Calendar ID or event ID is missing")
-        return None
+        return create_error_response(
+            400, "Bad Request", "Calendar ID or event ID is missing"
+        )
 
     service = build_service()
 
     try:
         service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
         logger.info(f"Event with ID {event_id} deleted successfully")
+
+        # Return a response with 200 (content) or 204 (no content) status code
+        return Response(
+            response="Event deleted successfully",
+            status=200,
+            mimetype=MASON,
+        )
     except HttpError as error:
         logger.error(f"An error occurred with deleting the event: {error}")
+        return create_error_response(500, "Internal Server Error", str(error))
 
 
-def update_calendar_event(calendar_id, event_id, event_body):
+def update_calendar_event(calendar_id, event_id, event_body) -> Response:
     """
     Updates a calendar event.
     PUT https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
     """
     if calendar_id is None or event_id is None or event_body is None:
         logger.error("Calendar ID or event ID or event body is missing")
-        return None
+        return create_error_response(
+            400, "Bad Request", "Calendar ID or event ID or event body is missing"
+        )
 
     logger.debug(f"Calendar ID: {calendar_id}")
     logger.debug(f"Event ID: {event_id}")
@@ -151,29 +213,7 @@ def get_calendar_list():
         return None
 
 
-def api_response(data=None, status_code=200, message="Success", error=None):
-    """
-    Returns a standardized API response.
-
-    Parameters:
-    - data: The data to be included in the response (default is None).
-    - status_code: The HTTP status code (default is 200).
-    - message: A message describing the response (default is "Success").
-    - error: An error message if applicable (default is None).
-
-    Returns:
-    - A dictionary containing the response data, status code, message, and error.
-    """
-    response = {
-        "status_code": status_code,
-        "message": message,
-        "data": data,
-        "error": error,
-    }
-    return response
-
-
-def create_error_response(status_code, title, message=None):
+def create_error_response(status_code, title, message=None) -> Response:
     """
     Create an error response with the given status code and title.
 
