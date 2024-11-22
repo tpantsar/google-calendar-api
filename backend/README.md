@@ -21,6 +21,15 @@ conda env update --file environment.yml --prune
 cd src
 python app.py
 http://127.0.0.1:5000/
+
+## This will run the autoflake and isort commands to remove unused imports and sort the remaining ones in all Python files in your project.
+make format
+
+# Remove unused imports
+autoflake --remove-all-unused-imports --in-place --recursive .
+
+# Sort imports
+isort .
 ```
 
 ## Google Calendar API:

@@ -7,7 +7,7 @@ from flask_restful import Api
 
 # Import collections
 from resources.calendar import CalendarList, CalendarListId
-from resources.event import EventList, EventItem
+from resources.event import EventItem, EventList
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 api = Api(api_bp)

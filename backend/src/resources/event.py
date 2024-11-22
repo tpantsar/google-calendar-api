@@ -5,12 +5,14 @@ from flask import Response, request
 from flask_restful import Resource
 
 from constants import JSON, MASON
+from error import APIError, ParameterError
+from logger_config import logger
 from services.event import (
-    create_calendar_event,
-    delete_calendar_event,
-    get_calendar_event,
-    get_calendar_events,
-    update_calendar_event,
+    create_event,
+    delete_event,
+    get_event,
+    get_events,
+    update_event,
 )
 from utils import create_error_response
 
@@ -22,16 +24,15 @@ class EventList(Resource):
             return create_error_response(400, "Bad Request", "Calendar ID is missing")
 
         current_year = datetime.now().year
-        events = get_calendar_events(calendar_id, current_year)
 
-        if events is None:
-            return create_error_response(
-                500,
-                "Internal Server Error",
-                f"Failed to fetch the calendar events for {current_year}",
-            )
-
-        return Response(json.dumps(events), status=200, mimetype=MASON)
+        try:
+            events = get_events(calendar_id, current_year)
+            return Response(json.dumps(events), status=200, mimetype=MASON)
+        except APIError as e:
+            return e.to_response()
+        except Exception as e:
+            logger.error(f"An unhandled error occurred: {e}")
+            return create_error_response(500, "Internal Server Error", str(e))
 
     def post(self, calendar_id):
         """
@@ -42,25 +43,30 @@ class EventList(Resource):
                 415, "Unsupported Media Type", "Request type must be JSON"
             )
 
-        return create_calendar_event(calendar_id, event_body=request.get_json())
+        try:
+            return create_event(calendar_id, event_body=request.get_json())
+        except APIError as e:
+            return e.to_response()
+        except ParameterError as e:
+            return e.to_response()
+        except Exception as e:
+            logger.error(f"An unhandled error occurred: {e}")
+            return create_error_response(500, "Internal Server Error", str(e))
 
 
 class EventItem(Resource):
     def get(self, calendar_id, event_id):
         """Returns a single calendar event by ID."""
-        if calendar_id is None or event_id is None:
-            return create_error_response(
-                400, "Bad Request", "Calendar ID or event ID is missing"
-            )
-
-        event = get_calendar_event(calendar_id, event_id)
-
-        if event is None:
-            return create_error_response(
-                500, "Internal Server Error", "Failed to fetch the calendar event"
-            )
-
-        return Response(json.dumps(event), status=200, mimetype=MASON)
+        try:
+            event = get_event(calendar_id, event_id)
+            return Response(json.dumps(event), status=200, mimetype=MASON)
+        except ParameterError as e:
+            return e.to_response()
+        except APIError as e:
+            return e.to_response()
+        except Exception as e:
+            logger.error(f"An unhandled error occurred: {e}")
+            return create_error_response(500, "Internal Server Error", str(e))
 
     def put(self, calendar_id, event_id):
         """
@@ -75,9 +81,13 @@ class EventItem(Resource):
                 415, "Unsupported Media Type", "Request type must be JSON"
             )
 
-        return update_calendar_event(
-            calendar_id, event_id, event_body=request.get_json()
-        )
+        try:
+            return update_event(calendar_id, event_id, event_body=request.get_json())
+        except APIError as e:
+            return e.to_response()
+        except Exception as e:
+            logger.error(f"An unhandled error occurred: {e}")
+            return create_error_response(500, "Internal Server Error", str(e))
 
     def delete(self, calendar_id, event_id):
         """
@@ -89,4 +99,10 @@ class EventItem(Resource):
                 400, "Bad Request", "Calendar ID or event ID is missing"
             )
 
-        return delete_calendar_event(calendar_id, event_id)
+        try:
+            delete_event(calendar_id, event_id)
+            return Response("Event deleted successfully", status=200)
+        except APIError as e:
+            return e.to_response()
+        except Exception as e:
+            return create_error_response(500, "Internal Server Error", str(e))

@@ -1,62 +1,68 @@
-import json
 from datetime import datetime
 
-from flask import Response
 from googleapiclient.errors import HttpError
 
-from constants import MASON
+from error import ParameterError, raise_api_error
 from logger_config import logger
-from utils import build_service, create_error_response, format_event_time, write_to_file
+from utils import (
+    build_service,
+    create_error_response,
+    format_event_time,
+    handle_service_build,
+    write_to_file,
+)
 
 
-def get_calendar_event(calendar_id, event_id) -> Response:
+def get_event(calendar_id, event_id):
     """Fetches a single calendar event by ID."""
-    service = build_service()
+    if calendar_id is None or event_id is None:
+        raise ParameterError("Calendar ID or event ID is missing")
 
-    if service is None:
-        logger.error("Failed to build the Calendar API service")
-        return create_error_response(
-            500, "Internal Server Error", "Failed to build the Calendar API service"
-        )
+    service = handle_service_build(build_service)
 
     try:
         event = service.events().get(calendarId=calendar_id, eventId=event_id).execute()
         logger.info(f"Found event with ID {event_id}")
-        return Response(json.dumps(event), status=200, mimetype=MASON)
+        return event
     except HttpError as error:
         logger.error(f"An error occurred with fetching the event: {error}")
-        return create_error_response(500, "Internal Server Error", str(error))
+        raise_api_error(500, "Google API Error", str(error))
 
 
-def get_calendar_events(calendar_id, year) -> Response:
+def get_events(calendar_id, year):
     """Fetches Google Calendar events for the specified year."""
-    service = build_service()
-
-    if service is None:
-        logger.error("Failed to build the Calendar API service")
-        return create_error_response(
-            500, "Internal Server Error", "Failed to build the Calendar API service"
-        )
+    service = handle_service_build(build_service)
 
     # Define the time range for the year
     start_date = datetime(year, 1, 1).isoformat() + "Z"
     end_date = datetime(year, 12, 31, 23, 59, 59).isoformat() + "Z"
 
-    events_result = (
-        service.events()
-        .list(
-            calendarId=calendar_id,  # Default is 'primary'
-            timeMin=start_date,
-            timeMax=end_date,
-            singleEvents=True,
-            orderBy="startTime",
+    try:
+        events_result = (
+            service.events()
+            .list(
+                calendarId=calendar_id,  # Default is 'primary'
+                timeMin=start_date,
+                timeMax=end_date,
+                singleEvents=True,
+                orderBy="startTime",
+            )
+            .execute()
         )
-        .execute()
-    )
-
-    events = events_result.get("items", [])
-    calendar = service.calendars().get(calendarId=calendar_id).execute().get("summary")
-    logger.info(f"Found {len(events)} events from {calendar} for the year {year}")
+        events = events_result.get("items", [])
+        calendar_summary = (
+            service.calendars().get(calendarId=calendar_id).execute().get("summary")
+        )
+        logger.info(
+            f"Found {len(events)} events from {calendar_summary} for the year {year}"
+        )
+    except HttpError as error:
+        logger.error(f"An error occurred with fetching the events: {error}")
+        raise_api_error(
+            500,
+            "Google Calendar Error",
+            f"Failed to fetch the calendar events. {error}",
+        )
 
     # Sort events by start time in descending order (newest first)
     events.reverse()
@@ -73,10 +79,10 @@ def get_calendar_events(calendar_id, year) -> Response:
         event["duration"] = time_difference.total_seconds() / 3600
 
     write_to_file("events.json", events)
-    return Response(json.dumps(events), status=200, mimetype=MASON)
+    return events
 
 
-def create_calendar_event(calendar_id, event_body) -> Response:
+def create_event(calendar_id, event_body):
     """
     Creates a new calendar event.
     POST https://www.googleapis.com/calendar/v3/calendars/calendarId/events
@@ -87,72 +93,58 @@ def create_calendar_event(calendar_id, event_body) -> Response:
     - start: The start time of the event.
     """
     if calendar_id is None or event_body is None:
-        logger.error("Calendar ID or event body is missing")
-        return create_error_response(
-            400, "Bad Request", "Calendar ID or event body is missing"
-        )
+        raise ParameterError("Calendar ID or event body is missing")
 
     logger.debug(f"Calendar ID: {calendar_id}")
     logger.debug(f"Event body: {event_body}")
 
-    service = build_service()
+    service = handle_service_build(build_service)
 
     try:
         event = (
             service.events().insert(calendarId=calendar_id, body=event_body).execute()
         )
         logger.info(f"Event created successfully: {event['id']}")
-
-        # Return a response with 201 (created) status code
-        return Response(json.dumps(event), status=201, mimetype=MASON)
+        return event
     except HttpError as error:
         logger.error(f"An error occurred with creating the event: {error}")
-        return create_error_response(500, "Internal Server Error", str(error))
+        raise_api_error(500, "Calendar API error", str(error))
 
 
-def delete_calendar_event(calendar_id, event_id) -> Response:
+def delete_event(calendar_id, event_id):
     """
     Deletes a single calendar event.
     DELETE https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
     """
     if calendar_id is None or event_id is None:
-        logger.error("Calendar ID or event ID is missing")
-        return create_error_response(
-            400, "Bad Request", "Calendar ID or event ID is missing"
-        )
+        raise ParameterError("Calendar ID or event ID is missing")
 
-    service = build_service()
+    service = handle_service_build(build_service)
 
     try:
         service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
         logger.info(f"Event with ID {event_id} deleted successfully")
-
-        # Return a response with 200 (content) or 204 (no content) status code
-        return Response(
-            response="Event deleted successfully",
-            status=200,
-            mimetype=MASON,
-        )
     except HttpError as error:
         logger.error(f"An error occurred with deleting the event: {error}")
-        return create_error_response(500, "Internal Server Error", str(error))
+        raise_api_error(500, "Google API Error", str(error))
 
 
-def update_calendar_event(calendar_id, event_id, event_body) -> Response:
+def update_event(calendar_id, event_id, event_body):
     """
     Updates a calendar event.
     PUT https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
     """
     if calendar_id is None or event_id is None or event_body is None:
         logger.error("Calendar ID or event ID or event body is missing")
-        return create_error_response(
+        raise create_error_response(
             400, "Bad Request", "Calendar ID or event ID or event body is missing"
         )
 
     logger.debug(f"Calendar ID: {calendar_id}")
     logger.debug(f"Event ID: {event_id}")
     logger.debug(f"Event body: {event_body}")
-    service = build_service()
+
+    service = handle_service_build(build_service)
 
     try:
         # First retrieve the event from the API
@@ -169,7 +161,7 @@ def update_calendar_event(calendar_id, event_id, event_body) -> Response:
         )
         logger.info(f"Event with ID {event_id} updated successfully")
         logger.info(f"Event body: {event_body}")
-        return Response(json.dumps(updated_event), status=200, mimetype=MASON)
+        return updated_event
     except HttpError as error:
         logger.error(f"An error occurred with updating the event: {error}")
-        return create_error_response(500, "Internal Server Error", str(error))
+        raise create_error_response(500, "Internal Server Error", str(error))
