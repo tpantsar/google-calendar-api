@@ -1,6 +1,7 @@
 from flask import Flask
-from utils import build_service
 from googleapiclient.errors import HttpError
+
+from utils import build_service
 
 app = Flask(__name__)
 

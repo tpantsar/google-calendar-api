@@ -5,7 +5,7 @@ from flask import Response, request
 from flask_restful import Resource
 
 from constants import JSON, MASON
-from error import APIError, ParameterError
+from error import APIError, ParameterError, create_error_response
 from logger_config import logger
 from services.event import (
     create_event,
@@ -14,11 +14,12 @@ from services.event import (
     get_events,
     update_event,
 )
-from utils import create_error_response
 
 
 class EventList(Resource):
-    def get(self, calendar_id):
+    """Resource for a list of calendar events."""
+
+    def get(self, calendar_id) -> Response:
         """Returns the calendar events for the current year."""
         if calendar_id is None:
             return create_error_response(400, "Bad Request", "Calendar ID is missing")
@@ -34,7 +35,7 @@ class EventList(Resource):
             logger.error(f"An unhandled error occurred: {e}")
             return create_error_response(500, "Internal Server Error", str(e))
 
-    def post(self, calendar_id):
+    def post(self, calendar_id) -> Response:
         """
         Creates a new calendar event.
         """
@@ -55,7 +56,9 @@ class EventList(Resource):
 
 
 class EventItem(Resource):
-    def get(self, calendar_id, event_id):
+    """Resource for a single calendar event."""
+
+    def get(self, calendar_id, event_id) -> Response:
         """Returns a single calendar event by ID."""
         try:
             event = get_event(calendar_id, event_id)
@@ -68,7 +71,7 @@ class EventItem(Resource):
             logger.error(f"An unhandled error occurred: {e}")
             return create_error_response(500, "Internal Server Error", str(e))
 
-    def put(self, calendar_id, event_id):
+    def put(self, calendar_id, event_id) -> Response:
         """
         Updates a calendar event.
         https://developers.google.com/calendar/api/v3/reference/events/update#python
@@ -89,7 +92,7 @@ class EventItem(Resource):
             logger.error(f"An unhandled error occurred: {e}")
             return create_error_response(500, "Internal Server Error", str(e))
 
-    def delete(self, calendar_id, event_id):
+    def delete(self, calendar_id, event_id) -> Response:
         """
         Deletes a single calendar event by ID.
         Returns: Response object

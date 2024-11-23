@@ -11,7 +11,7 @@ from utils import create_error_response
 
 
 class CalendarList(Resource):
-    def get(self):
+    def get(self) -> Response:
         """
         Returns the list of calendars.
         """
@@ -26,7 +26,7 @@ class CalendarList(Resource):
 
 
 class CalendarListId(Resource):
-    def get(self):
+    def get(self) -> Response:
         """
         Returns the list of calendar IDs: /api/calendars/id
         """
