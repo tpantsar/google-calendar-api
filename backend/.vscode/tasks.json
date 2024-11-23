@@ -16,7 +16,7 @@
     {
       "label": "merge custom",
       "type": "shell",
-      "command": "git checkout '${input:targetBranch}' && git pull && git rebase main && git merge '${input:sourceBranch}' && git push origin '${input:targetBranch}'"
+      "command": "git checkout '${input:targetBranch}' && git pull && git merge '${input:sourceBranch}' && git push origin '${input:targetBranch}'"
     },
     {
       "label": "commit",
