@@ -2,15 +2,9 @@ from datetime import datetime
 
 from googleapiclient.errors import HttpError
 
-from error import ParameterError, raise_api_error
+from error import APIError, ParameterError
 from logger_config import logger
-from utils import (
-    build_service,
-    create_error_response,
-    format_event_time,
-    handle_service_build,
-    write_to_file,
-)
+from utils import build_service, format_event_time, handle_service_build, write_to_file
 
 
 def get_event(calendar_id, event_id):
@@ -25,8 +19,11 @@ def get_event(calendar_id, event_id):
         logger.info(f"Found event with ID {event_id}")
         return event
     except HttpError as error:
-        logger.error(f"An error occurred with fetching the event: {error}")
-        raise_api_error(500, "Google API Error", str(error))
+        raise APIError(
+            500,
+            "Google Calendar API Error",
+            f"Failed to fetch the event. {error}",
+        )
 
 
 def get_events(calendar_id, year):
@@ -57,10 +54,9 @@ def get_events(calendar_id, year):
             f"Found {len(events)} events from {calendar_summary} for the year {year}"
         )
     except HttpError as error:
-        logger.error(f"An error occurred with fetching the events: {error}")
-        raise_api_error(
+        raise APIError(
             500,
-            "Google Calendar Error",
+            "Google Calendar API Error",
             f"Failed to fetch the calendar events. {error}",
         )
 
@@ -107,8 +103,11 @@ def create_event(calendar_id, event_body):
         logger.info(f"Event created successfully: {event['id']}")
         return event
     except HttpError as error:
-        logger.error(f"An error occurred with creating the event: {error}")
-        raise_api_error(500, "Calendar API error", str(error))
+        raise APIError(
+            500,
+            "Google Calendar API Error",
+            f"Failed to create the event. {error}",
+        )
 
 
 def delete_event(calendar_id, event_id):
@@ -125,8 +124,11 @@ def delete_event(calendar_id, event_id):
         service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
         logger.info(f"Event with ID {event_id} deleted successfully")
     except HttpError as error:
-        logger.error(f"An error occurred with deleting the event: {error}")
-        raise_api_error(500, "Google API Error", str(error))
+        raise APIError(
+            500,
+            "Google Calendar API Error",
+            f"Failed to delete the event. {error}",
+        )
 
 
 def update_event(calendar_id, event_id, event_body):
@@ -135,10 +137,7 @@ def update_event(calendar_id, event_id, event_body):
     PUT https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
     """
     if calendar_id is None or event_id is None or event_body is None:
-        logger.error("Calendar ID or event ID or event body is missing")
-        raise create_error_response(
-            400, "Bad Request", "Calendar ID or event ID or event body is missing"
-        )
+        raise ParameterError("Calendar ID or event ID or event body is missing")
 
     logger.debug(f"Calendar ID: {calendar_id}")
     logger.debug(f"Event ID: {event_id}")
@@ -163,5 +162,8 @@ def update_event(calendar_id, event_id, event_body):
         logger.info(f"Event body: {event_body}")
         return updated_event
     except HttpError as error:
-        logger.error(f"An error occurred with updating the event: {error}")
-        raise create_error_response(500, "Internal Server Error", str(error))
+        raise APIError(
+            500,
+            "Google Calendar API Error",
+            f"Failed to update the event. {error}",
+        )

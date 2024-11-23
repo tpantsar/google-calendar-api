@@ -1,7 +1,6 @@
-
 from googleapiclient.errors import HttpError
 
-from error import raise_api_error
+from error import APIError
 from logger_config import logger
 from utils import build_service, handle_service_build, write_to_file
 
@@ -21,14 +20,14 @@ def get_calendar_list():
 
         return calendars
     except HttpError as error:
-        logger.error(f"Google API Error: {error}")
-        raise_api_error(
-            500, "Google Calendar Error", f"Failed to fetch the calendar list. {error}"
+        raise APIError(
+            500,
+            "Google Calendar API Error",
+            f"Failed to fetch the calendar list. {error}",
         )
     except Exception as e:
-        logger.error(f"Unexpected Error in get_calendar_list: {e}")
-        raise_api_error(
+        raise APIError(
             500,
             "Internal Server Error",
-            f"An error occurred while fetching the calendar list. {error}",
+            f"Unexpected error occurred while fetching the calendar list. {e}",
         )

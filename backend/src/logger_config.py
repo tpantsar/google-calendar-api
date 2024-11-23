@@ -34,7 +34,7 @@ formatter_lvl_2 = logging.Formatter("%(levelname)s - %(message)s")
 formatter_lvl_3 = logging.Formatter("%(message)s")
 
 if PRINT_TO_CONSOLE:
-    console_handler.setFormatter(formatter_lvl_3)
+    console_handler.setFormatter(formatter_lvl_2)
     logger.addHandler(console_handler)
 
 if PRINT_TO_FILE:

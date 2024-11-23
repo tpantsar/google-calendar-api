@@ -86,6 +86,8 @@ class EventItem(Resource):
 
         try:
             return update_event(calendar_id, event_id, event_body=request.get_json())
+        except ParameterError as e:
+            return e.to_response()
         except APIError as e:
             return e.to_response()
         except Exception as e:
