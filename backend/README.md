@@ -15,6 +15,8 @@ conda env create --file environment.yml
 conda env update --file environment.yml
 conda env update --file environment.yml --prune
 
+pip install -r requirements.txt
+
 (bash) source C:/Users/tomi_/miniconda3/Scripts/activate google-calendar-year
 (powershell) C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-year
 
