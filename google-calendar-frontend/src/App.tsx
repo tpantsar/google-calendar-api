@@ -26,8 +26,7 @@ function App() {
   }, [])
 
   const fetchEvents = (calendarId: string) => {
-    const currentYear = new Date().getFullYear()
-    eventService.getAll(currentYear, calendarId).then((events: Event[]) => {
+    eventService.getAll(calendarId).then((events: Event[]) => {
       const updatedEvents = events.map((event) => {
         event.isFuture = new Date(event.start.dateTime) > new Date() // Check if the event is in the future
         return event

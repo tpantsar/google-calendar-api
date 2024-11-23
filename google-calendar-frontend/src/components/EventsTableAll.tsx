@@ -7,6 +7,7 @@ type IEventsTableAll = {
   filter: string
   setFilter: React.Dispatch<React.SetStateAction<string>>
   deleteEvent: (event: Event) => void
+  updateEvent: (event: Event, newSummary: string) => void
 }
 
 /* A table of unique events on the calendar */
@@ -15,9 +16,12 @@ const EventsTableAll = ({
   filter,
   setFilter,
   deleteEvent,
+  updateEvent,
 }: IEventsTableAll) => {
   const [sort, setSort] = useState<boolean>(false)
   const [showFutureEvents, setShowFutureEvents] = useState<boolean>(false)
+  const [editingEventId, setEditingEventId] = useState<string | null>(null)
+  const [newSummary, setNewSummary] = useState<string>('')
 
   const toggleFutureEvents = () => setShowFutureEvents(!showFutureEvents)
 
@@ -41,6 +45,21 @@ const EventsTableAll = ({
 
   const handleSummaryClick = (summary: string) => {
     setFilter(summary)
+  }
+
+  const handleSummaryChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    eventId: string
+  ) => {
+    setEditingEventId(eventId)
+    setNewSummary(event.target.value)
+  }
+
+  const handleSummaryBlur = (event: Event) => {
+    if (event.summary !== newSummary) {
+      setNewSummary(event.summary)
+    }
+    setEditingEventId(null)
   }
 
   return (
@@ -88,12 +107,19 @@ const EventsTableAll = ({
                 <a href={event.htmlLink} target="_blank" rel="noreferrer">
                   <i className="icon-arrow fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
-                <span
-                  onClick={() => handleSummaryClick(event.summary)}
-                  className="summary-text"
-                >
-                  {event.summary}
-                </span>
+                <input
+                  type="text"
+                  value={
+                    editingEventId === event.id ? newSummary : event.summary
+                  }
+                  onChange={(e) => handleSummaryChange(e, event.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && editingEventId === event.id) {
+                      updateEvent(event, newSummary)
+                    }
+                  }}
+                  onBlur={() => handleSummaryBlur(event)}
+                />
                 <span>{event.isFuture ? ' (Future event)' : ''}</span>
               </td>
               <td>{event.formatted_start}</td>

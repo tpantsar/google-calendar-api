@@ -43,6 +43,24 @@ const Events = ({
     }
   }
 
+  const updateEvent = (event: Event, newSummary: string) => {
+    const result = window.confirm(`Update event: ${event.summary}?`)
+    if (result) {
+      eventService
+        .update(calendarId, event.id, { ...event, summary: newSummary })
+        .then((updatedEvent: Event) => {
+          console.log('Event updated:', updatedEvent)
+          const updatedEvents = events.map((eventItem) =>
+            eventItem.id === updatedEvent.id ? updatedEvent : eventItem
+          )
+          setEvents(updatedEvents)
+        })
+        .catch((error: unknown) =>
+          console.error('Error updating event:', error)
+        )
+    }
+  }
+
   return (
     <>
       <button onClick={toggleAllEvents}>
@@ -55,6 +73,7 @@ const Events = ({
             filter={filter}
             setFilter={setFilter}
             deleteEvent={deleteEvent}
+            updateEvent={updateEvent}
           />
         </>
       ) : (

@@ -3,25 +3,36 @@ import Event from '../types/Event'
 
 const baseUrl = '/api/events'
 
-const getAll = (year: number, calendar_id: string): Promise<Event[]> => {
-  const url = `${baseUrl}/${year}/${calendar_id}`
+const getAll = (calendar_id: string): Promise<Event[]> => {
+  const url = `${baseUrl}/${calendar_id}`
   const request = axios.get(url)
   console.log('Fetching events from:', url)
   return request.then((response) => response.data)
 }
 
+const create = (calendar_id: string, newObject: Event): Promise<Event> => {
+  const url = `${baseUrl}/${calendar_id}`
+  const request = axios.post(url, newObject)
+  console.log('Creating new event:', url)
+  return request.then((response) => response.data)
+}
+
 const remove = (calendar_id: string, event_id: string): Promise<void> => {
-  const url = `${baseUrl}/delete/${calendar_id}/${event_id}`
+  const url = `${baseUrl}/${calendar_id}/${event_id}`
   const request = axios.delete(url)
   console.log('Deleting event:', url)
   return request.then((response) => response.data)
 }
 
-const update = (calendar_id: string, event: Event): Promise<void> => {
-  const url = `${baseUrl}/update/${calendar_id}`
+const update = (
+  calendar_id: string,
+  event_id: string,
+  event: Event
+): Promise<Event> => {
+  const url = `${baseUrl}/${calendar_id}/${event_id}`
   const request = axios.put(url, event)
   console.log('Updating event:', url)
   return request.then((response) => response.data)
 }
 
-export default { getAll, remove, update }
+export default { getAll, create, remove, update }
