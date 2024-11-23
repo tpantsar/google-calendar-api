@@ -1,0 +1,35 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "merge dev",
+      "type": "shell",
+      "command": "git checkout main && git pull && git merge dev && git push origin main && git checkout dev && git add ."
+    },
+    {
+      "label": "merge branch",
+      "type": "shell",
+      "command": "git checkout main && git pull && git merge '${input:branchName}' && git push origin main"
+    },
+    {
+      "label": "commit",
+      "type": "shell",
+      "command": "git add . && git commit -m '${input:commitMessage}' && git push",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "commitMessage",
+      "type": "promptString",
+      "description": "Enter commit message"
+    },
+    {
+      "id": "branchName",
+      "type": "promptString",
+      "description": "Enter branch name"
+    }
+  ]
+}
