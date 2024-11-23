@@ -11,7 +11,12 @@
     {
       "label": "merge branch",
       "type": "shell",
-      "command": "git checkout main && git pull && git merge '${input:branchName}' && git push origin main"
+      "command": "git checkout main && git pull && git merge '${input:sourceBranch}' && git push origin main"
+    },
+    {
+      "label": "merge custom",
+      "type": "shell",
+      "command": "git checkout '${input:targetBranch}' && git pull && git merge '${input:sourceBranch}' && git push origin '${input:targetBranch}'"
     },
     {
       "label": "commit",
@@ -27,9 +32,14 @@
       "description": "Enter commit message"
     },
     {
-      "id": "branchName",
+      "id": "sourceBranch",
       "type": "promptString",
-      "description": "Enter branch name"
+      "description": "Enter source branch"
+    },
+    {
+      "id": "targetBranch",
+      "type": "promptString",
+      "description": "Enter target branch"
     }
   ]
 }
