@@ -1,13 +1,18 @@
 from googleapiclient.errors import HttpError
 
-from error import APIError
+from error import APIError, ServiceBuildError
 from logger_config import logger
-from utils import build_service, handle_service_build, write_to_file
+from utils import build_service, write_to_file
 
 
 def get_calendar_list():
     """Fetches the list of calendars from the Google Calendar API."""
-    service = handle_service_build(build_service)
+    try:
+        service = build_service()
+    except ServiceBuildError as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
 
     try:
         calendar_list = service.calendarList().list().execute()

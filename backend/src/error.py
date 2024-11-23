@@ -11,9 +11,6 @@ class ServiceBuildError(Exception):
     """Custom exception for service build errors."""
 
 
-class CalendarServiceError(Exception):
-    """Custom exception for CalendarService errors."""
-
 
 class ParameterError(Exception):
     """Custom exception for parameter errors."""

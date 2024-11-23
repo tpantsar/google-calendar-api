@@ -2,9 +2,9 @@ from datetime import datetime
 
 from googleapiclient.errors import HttpError
 
-from error import APIError, ParameterError
+from error import APIError, ParameterError, ServiceBuildError
 from logger_config import logger
-from utils import build_service, format_event_time, handle_service_build, write_to_file
+from utils import build_service, format_event_time, write_to_file
 
 
 def get_event(calendar_id, event_id):
@@ -12,7 +12,12 @@ def get_event(calendar_id, event_id):
     if calendar_id is None or event_id is None:
         raise ParameterError("Calendar ID or event ID is missing")
 
-    service = handle_service_build(build_service)
+    try:
+        service = build_service()
+    except ServiceBuildError as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
 
     try:
         event = service.events().get(calendarId=calendar_id, eventId=event_id).execute()
@@ -28,7 +33,12 @@ def get_event(calendar_id, event_id):
 
 def get_events(calendar_id, year):
     """Fetches Google Calendar events for the specified year."""
-    service = handle_service_build(build_service)
+    try:
+        service = build_service()
+    except ServiceBuildError as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
 
     # Define the time range for the year
     start_date = datetime(year, 1, 1).isoformat() + "Z"
@@ -94,7 +104,12 @@ def create_event(calendar_id, event_body):
     logger.debug(f"Calendar ID: {calendar_id}")
     logger.debug(f"Event body: {event_body}")
 
-    service = handle_service_build(build_service)
+    try:
+        service = build_service()
+    except ServiceBuildError as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
 
     try:
         event = (
@@ -118,7 +133,12 @@ def delete_event(calendar_id, event_id):
     if calendar_id is None or event_id is None:
         raise ParameterError("Calendar ID or event ID is missing")
 
-    service = handle_service_build(build_service)
+    try:
+        service = build_service()
+    except ServiceBuildError as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
 
     try:
         service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
@@ -143,7 +163,12 @@ def update_event(calendar_id, event_id, event_body):
     logger.debug(f"Event ID: {event_id}")
     logger.debug(f"Event body: {event_body}")
 
-    service = handle_service_build(build_service)
+    try:
+        service = build_service()
+    except ServiceBuildError as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
 
     try:
         # First retrieve the event from the API

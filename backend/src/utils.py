@@ -31,41 +31,31 @@ def write_to_file(file_name, data):
         logger.error("Unsupported file format")
 
 
-def handle_service_build(build_function):
-    """Handles service building logic."""
-    try:
-        return build_function()
-    except ServiceBuildError as e:
-        logger.error(f"Service Build Error: {str(e)}")
-        raise ServiceBuildError("Failed to build the service")
-    except Exception as e:
-        logger.error(f"Unhandled Service Error: {str(e)}")
-        raise ServiceBuildError("An unexpected error occurred")
-
-
 def build_service() -> build:
     """
-    Build the Calendar API service and return it.
-    creds is the credentials object used for building the service.
+    Build and return the Google Calendar API service.
     Raises:
-        ServiceBuildError: If an error occurs while building the service.
+        ServiceBuildError: If credentials are missing or the service cannot be built.
     """
     try:
         creds = get_credentials()
-        if creds is None:
-            raise ServiceBuildError("Failed to get the credentials")
+        if not creds:
+            logger.error("Credentials not found for building the service.")
+            raise ServiceBuildError(
+                "Missing credentials for building the Calendar API service."
+            )
 
+        logger.info("Building the Google Calendar API service.")
         service = build("calendar", "v3", credentials=creds)
-        if service is None:
-            raise ServiceBuildError("Failed to build the Calendar API service.")
-
         return service
-    except HttpError as error:
+    except HttpError as e:
+        logger.error(f"HTTP Error while building the service: {e}")
+        raise ServiceBuildError(f"Failed to build service due to an HTTP error: {e}")
+    except Exception as e:
+        logger.error(f"Unexpected error during service build: {e}")
         raise ServiceBuildError(
-            f"An HTTP error occurred while building the service: {error}"
+            f"An unexpected error occurred while building the service: {e}"
         )
-    except Exception as error:
-        raise ServiceBuildError(f"An unexpected error occurred: {error}")
 
 
 def format_event_time(event_time):
