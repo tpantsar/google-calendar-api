@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import eventService from '../services/Events'
+import eventService from '../services/events'
 import Event from '../types/Event'
 import EventsTableAll from './EventsTableAll'
 import EventsTableUnique from './EventsTableUnique'

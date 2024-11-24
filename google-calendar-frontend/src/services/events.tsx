@@ -36,4 +36,12 @@ const update = (
   return request.then((response) => response.data)
 }
 
-export default { getAll, create, remove, update }
+const eventService = {
+  getAll,
+  create,
+  remove,
+  update,
+  displayName: 'EventService',
+}
+
+export default eventService
