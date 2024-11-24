@@ -43,6 +43,6 @@ https://github.com/googleapis/google-api-python-client/blob/main/docs/start.md
   - Display unique events in the calendar.
   - Option to filter out future events.
 
-<img src="public/img/v1/events_table_all.png" alt="Project v1.0" width="100%">
+<img src="public/img/v1/events_table_all.png" alt="Project v1.0" width="80%">
 <br><br>
-<img src="public/img/v1/events_table_unique.png" alt="Project v1.0" width="100%">
+<img src="public/img/v1/events_table_unique.png" alt="Project v1.0" width="80%">
