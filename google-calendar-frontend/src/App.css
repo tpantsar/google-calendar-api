@@ -10,3 +10,18 @@
   gap: 10px;
   justify-content: space-between;
 }
+
+input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px;
+  font-size: 14px;
+  width: 80%;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+input:focus {
+  border-color: #539455;
+  outline: none;
+}

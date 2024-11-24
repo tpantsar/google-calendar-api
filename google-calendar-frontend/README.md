@@ -33,3 +33,16 @@ Note: If you do need to access private user data, you must use OAuth 2.0. See Us
 https://github.com/googleapis/google-api-python-client/blob/main/docs/api-keys.md
 
 https://github.com/googleapis/google-api-python-client/blob/main/docs/start.md
+
+## Changelog:
+
+- v1.0 (24.11.2024): First version of the project.
+  - List all calendars in the Google account.
+  - Create, update, delete and list events in the table. 
+  - Display all events in the calendar.
+  - Display unique events in the calendar.
+  - Option to filter out future events.
+
+<img src="public/img/v1/events_table_all.png" alt="Project v1.0" width="100%">
+<br><br>
+<img src="public/img/v1/events_table_unique.png" alt="Project v1.0" width="100%">

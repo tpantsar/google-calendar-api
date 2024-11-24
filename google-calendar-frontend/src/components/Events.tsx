@@ -70,7 +70,7 @@ const Events = ({
   return (
     <>
       <button onClick={toggleAllEvents}>
-        {showAllEvents ? 'Show Unique Events' : 'Show All Events'}
+        {showAllEvents ? 'Unique Events' : 'All Events'}
       </button>
       {showAllEvents ? (
         <>
