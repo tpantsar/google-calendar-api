@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import '../styles/EventsTable.css'
 import Event from '../types/Event'
+import UpdateEventRequestBody from '../types/UpdateEventRequestBody'
 
 type IEventsTableAll = {
   events: Event[]
   filter: string
   setFilter: React.Dispatch<React.SetStateAction<string>>
   deleteEvent: (event: Event) => void
-  updateEvent: (event: Event, newSummary: string) => void
+  updateEvent: (event: Event, request_body: UpdateEventRequestBody) => void
 }
 
 /* A table of unique events on the calendar */
@@ -40,8 +41,6 @@ const EventsTableAll = ({
         new Date(b.start.dateTime).getTime()
     )
   }
-
-  console.log('Filtered events:', filteredEvents.length)
 
   const handleSummaryClick = (summary: string) => {
     setFilter(summary)
@@ -115,7 +114,9 @@ const EventsTableAll = ({
                   onChange={(e) => handleSummaryChange(e, event.id)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && editingEventId === event.id) {
-                      updateEvent(event, newSummary)
+                      updateEvent(event, { summary: newSummary })
+                      setEditingEventId(null)
+                      setNewSummary('')
                     }
                   }}
                   onBlur={() => handleSummaryBlur(event)}
@@ -124,7 +125,9 @@ const EventsTableAll = ({
               </td>
               <td>{event.formatted_start}</td>
               <td>{event.formatted_end}</td>
-              <td>{event.duration.toFixed(2)}</td>
+              <td>
+                {event.duration ? event.duration.toFixed(2) : 'Undefined'}
+              </td>
             </tr>
           ))}
         </tbody>

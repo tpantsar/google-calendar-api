@@ -3,6 +3,7 @@ import eventService from '../services/Events'
 import Event from '../types/Event'
 import EventsTableAll from './EventsTableAll'
 import EventsTableUnique from './EventsTableUnique'
+import UpdateEventRequestBody from '../types/UpdateEventRequestBody'
 
 type IEventsProps = {
   calendarId: string
@@ -43,15 +44,20 @@ const Events = ({
     }
   }
 
-  const updateEvent = (event: Event, newSummary: string) => {
+  const updateEvent = (event: Event, request_body: UpdateEventRequestBody) => {
+    console.log(
+      `updateEvent: event.id = ${event.id} calendarId = ${calendarId}, request_body = ${JSON.stringify(
+        request_body
+      )}`
+    )
     const result = window.confirm(`Update event: ${event.summary}?`)
     if (result) {
       eventService
-        .update(calendarId, event.id, { ...event, summary: newSummary })
+        .update(calendarId, event.id, request_body)
         .then((updatedEvent: Event) => {
           console.log('Event updated:', updatedEvent)
-          const updatedEvents = events.map((eventItem) =>
-            eventItem.id === updatedEvent.id ? updatedEvent : eventItem
+          const updatedEvents = events.map((e) =>
+            e.id === updatedEvent.id ? updatedEvent : e
           )
           setEvents(updatedEvents)
         })

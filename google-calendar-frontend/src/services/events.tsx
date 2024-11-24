@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Event from '../types/Event'
+import UpdateEventRequestBody from '../types/UpdateEventRequestBody'
 
 const baseUrl = '/api/events'
 
@@ -27,10 +28,10 @@ const remove = (calendar_id: string, event_id: string): Promise<void> => {
 const update = (
   calendar_id: string,
   event_id: string,
-  event: Event
+  request_body: UpdateEventRequestBody
 ): Promise<Event> => {
   const url = `${baseUrl}/${calendar_id}/${event_id}`
-  const request = axios.put(url, event)
+  const request = axios.put(url, request_body)
   console.log('Updating event:', url)
   return request.then((response) => response.data)
 }
