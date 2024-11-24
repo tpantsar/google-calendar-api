@@ -21,6 +21,10 @@ def get_event(calendar_id, event_id):
 
     try:
         event = service.events().get(calendarId=calendar_id, eventId=event_id).execute()
+
+        # Add computed properties to the event
+        event = update_event_properties(event)
+
         logger.info(f"Found event with ID {event_id}")
         return event
     except HttpError as error:
@@ -28,6 +32,12 @@ def get_event(calendar_id, event_id):
             500,
             "Google Calendar API Error",
             f"Failed to fetch the event. {error}",
+        )
+    except KeyError as e:
+        raise APIError(
+            500,
+            "Event Properties Error",
+            f"Failed to update computed event properties. {str(e)}",
         )
 
 
@@ -73,16 +83,16 @@ def get_events(calendar_id, year):
     # Sort events by start time in descending order (newest first)
     events.reverse()
 
-    # Add formatted start and end times to the events
-    for event in events:
-        start = event["start"].get("dateTime", event["start"].get("date"))
-        end = event["end"].get("dateTime", event["end"].get("date"))
-        event["formatted_start"] = format_event_time(start)
-        event["formatted_end"] = format_event_time(end)
-
-        # Convert the time difference to hours
-        time_difference = datetime.fromisoformat(end) - datetime.fromisoformat(start)
-        event["duration"] = time_difference.total_seconds() / 3600
+    try:
+        # Add computed properties to each event
+        for event in events:
+            event = update_event_properties(event)
+    except KeyError as e:
+        raise APIError(
+            500,
+            "Event Properties Error",
+            f"Failed to update computed event properties. {str(e)}",
+        )
 
     write_to_file("events.json", events)
     return events
@@ -115,6 +125,10 @@ def create_event(calendar_id, event_body):
         event = (
             service.events().insert(calendarId=calendar_id, body=event_body).execute()
         )
+
+        # Add computed properties to the event
+        event = update_event_properties(event)
+
         logger.info(f"Event created successfully: {event['id']}")
         return event
     except HttpError as error:
@@ -122,6 +136,12 @@ def create_event(calendar_id, event_body):
             500,
             "Google Calendar API Error",
             f"Failed to create the event. {error}",
+        )
+    except KeyError as e:
+        raise APIError(
+            500,
+            "Event Properties Error",
+            f"Failed to update computed event properties. {str(e)}",
         )
 
 
@@ -155,6 +175,7 @@ def update_event(calendar_id, event_id, event_body):
     """
     Updates a calendar event.
     PUT https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
+    https://developers.google.com/calendar/api/v3/reference/events/update
     """
     if calendar_id is None or event_id is None or event_body is None:
         raise ParameterError("Calendar ID or event ID or event body is missing")
@@ -183,6 +204,9 @@ def update_event(calendar_id, event_id, event_body):
             .update(calendarId=calendar_id, eventId=event["id"], body=event)
             .execute()
         )
+
+        updated_event = update_event_properties(updated_event)
+
         logger.info(f"Event with ID {event_id} updated successfully")
         logger.info(f"Event body: {event_body}")
         return updated_event
@@ -190,5 +214,25 @@ def update_event(calendar_id, event_id, event_body):
         raise APIError(
             500,
             "Google Calendar API Error",
-            f"Failed to update the event. {error}",
+            f"Failed to update computed event properties. {error}",
         )
+    except KeyError as e:
+        raise APIError(
+            500,
+            "Event Properties Error",
+            f"Failed to update computed event properties. {str(e)}",
+        )
+
+
+def update_event_properties(event: dict):
+    """Updates the properties of a single calendar event."""
+    start = event["start"].get("dateTime", event["start"].get("date"))
+    end = event["end"].get("dateTime", event["end"].get("date"))
+    event["formatted_start"] = format_event_time(start)
+    event["formatted_end"] = format_event_time(end)
+
+    # Calculate the duration of the event in hours
+    time_difference = datetime.fromisoformat(end) - datetime.fromisoformat(start)
+    event["duration"] = time_difference.total_seconds() / 3600
+
+    return event
