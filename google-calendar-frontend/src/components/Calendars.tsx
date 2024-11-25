@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import '../styles/Calendars.css'
 import Calendar from '../types/Calendar'
 
@@ -7,19 +8,33 @@ type ICalendarsProps = {
 }
 
 const Calendars = ({ calendars, fetchEvents }: ICalendarsProps) => {
+  const [selectedCalendarId, setSelectedCalendarId] = useState<string>('')
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    fetchEvents(event.target.value)
+    const calendarId = event.target.value
+    setSelectedCalendarId(calendarId)
+    fetchEvents(calendarId)
+  }
+
+  const handleRefresh = () => {
+    if (selectedCalendarId) {
+      console.log('Refreshing events for calendar:', selectedCalendarId)
+      fetchEvents(selectedCalendarId)
+    }
   }
 
   return (
-    <select className="calendar-dropdown" onChange={handleChange}>
-      <option value="">- Select a calendar -</option>
-      {calendars.map((calendar) => (
-        <option key={calendar.id} value={calendar.id}>
-          {calendar.summary}
-        </option>
-      ))}
-    </select>
+    <div className="flex-container">
+      <select className="calendar-dropdown" onChange={handleChange}>
+        <option value="">- Select a calendar -</option>
+        {calendars.map((calendar) => (
+          <option key={calendar.id} value={calendar.id}>
+            {calendar.summary}
+          </option>
+        ))}
+      </select>
+      <button onClick={handleRefresh}>Refresh</button>
+    </div>
   )
 }
 
