@@ -5,7 +5,7 @@ type IFilterProps = {
 
 const Filter = ({ filter, setFilter }: IFilterProps) => {
   return (
-    <div>
+    <div className="flex-container">
       Filter events:{' '}
       <input value={filter} onChange={(e) => setFilter(e.target.value)} />
       <button onClick={() => setFilter('')}>Clear</button>
