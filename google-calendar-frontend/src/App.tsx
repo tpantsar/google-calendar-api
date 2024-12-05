@@ -5,8 +5,8 @@ import Calendars from './components/Calendars'
 import Events from './components/Events'
 import Filter from './components/Filter'
 /* Services */
-import calendarService from './services/Calendars'
-import eventService from './services/Events'
+import calendarService from './services/calendars'
+import eventService from './services/events'
 /* Types */
 import Calendar from './types/Calendar'
 import Event from './types/Event'

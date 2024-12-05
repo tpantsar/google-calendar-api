@@ -8,4 +8,9 @@ const getAll = (): Promise<Calendar[]> => {
   return request.then((response) => response.data)
 }
 
-export default { getAll }
+const calendarService = {
+  getAll,
+  displayName: 'CalendarService',
+}
+
+export default calendarService
