@@ -13,3 +13,5 @@ dependencies:
   - invoke
   - autoflake
   - isort
+  - flake8
+  - pytest

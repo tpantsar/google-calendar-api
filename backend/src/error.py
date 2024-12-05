@@ -11,7 +11,6 @@ class ServiceBuildError(Exception):
     """Custom exception for service build errors."""
 
 
-
 class ParameterError(Exception):
     """Custom exception for parameter errors."""
 

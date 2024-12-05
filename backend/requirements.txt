@@ -7,3 +7,5 @@ google-auth-oauthlib
 invoke
 autoflake
 isort
+flake8
+pytest
