@@ -6,7 +6,6 @@ import UpdateEventRequestBody from '../types/UpdateEventRequestBody'
 type IEventsTableAll = {
   events: Event[]
   filter: string
-  setFilter: React.Dispatch<React.SetStateAction<string>>
   deleteEvent: (event: Event) => void
   updateEvent: (event: Event, request_body: UpdateEventRequestBody) => void
 }
@@ -15,7 +14,6 @@ type IEventsTableAll = {
 const EventsTableAll = ({
   events,
   filter,
-  setFilter,
   deleteEvent,
   updateEvent,
 }: IEventsTableAll) => {
@@ -40,10 +38,6 @@ const EventsTableAll = ({
         new Date(a.start.dateTime).getTime() -
         new Date(b.start.dateTime).getTime()
     )
-  }
-
-  const handleSummaryClick = (summary: string) => {
-    setFilter(summary)
   }
 
   const handleSummaryChange = (

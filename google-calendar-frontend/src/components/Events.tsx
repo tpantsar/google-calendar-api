@@ -77,7 +77,6 @@ const Events = ({
           <EventsTableAll
             events={events}
             filter={filter}
-            setFilter={setFilter}
             deleteEvent={deleteEvent}
             updateEvent={updateEvent}
           />
