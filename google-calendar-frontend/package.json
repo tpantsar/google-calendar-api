@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "concurrently \"npm run backend\" \"npm run dev\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "backend": "C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-year && cd ../backend/src && python app.py",
@@ -22,6 +23,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "concurrently": "^9.1.0",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
