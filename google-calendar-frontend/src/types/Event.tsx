@@ -2,6 +2,7 @@ interface Event {
   // Required API properties from Google Calendar
   id: string
   summary: string
+  description: string
   start: EventTime
   end: EventTime
   htmlLink: string

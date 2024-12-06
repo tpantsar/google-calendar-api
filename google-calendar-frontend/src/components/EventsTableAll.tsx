@@ -81,6 +81,7 @@ const EventsTableAll = ({
         <thead>
           <tr>
             <th>Summary</th>
+            <th>Description</th>
             <th>
               Start
               <button onClick={() => setSort(!sort)}>{sort ? '▼' : '▲'}</button>
@@ -101,6 +102,7 @@ const EventsTableAll = ({
                   <i className="icon-arrow fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
                 <input
+                  className="event-summary-input"
                   type="text"
                   value={
                     editingEventId === event.id ? newSummary : event.summary
@@ -117,6 +119,7 @@ const EventsTableAll = ({
                 />
                 <span>{event.isFuture ? ' (Future event)' : ''}</span>
               </td>
+              <td className="event-description">{event.description}</td>
               <td>{event.formatted_start}</td>
               <td>{event.formatted_end}</td>
               <td>

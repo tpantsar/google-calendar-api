@@ -10,8 +10,8 @@
   border: 1px solid #ddd;
   padding: 12px;
   overflow: hidden; /* Ensures text does not overflow */
-  text-overflow: ellipsis; /* Adds ellipsis for overflowing text */
   white-space: nowrap; /* Prevents text from wrapping */
+  /* text-overflow: ellipsis; */
   /*min-width: 150px;*/
 }
 
@@ -27,6 +27,17 @@
 
 .event-table tr:hover {
   background-color: #6d6d6d;
+}
+
+.event-summary-input {
+  max-width: 75%;
+}
+
+.event-description {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .icon-trashcan {
