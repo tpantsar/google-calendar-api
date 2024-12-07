@@ -1,3 +1,5 @@
+import EventTime from './EventTime'
+
 interface Event {
   // Required API properties from Google Calendar
   id: string
@@ -16,11 +18,6 @@ interface Event {
   isFuture: boolean | false // Whether the event is in the future
   count: number | 0 // Number of events with the same summary
   hours: number | 0 // Number of hours spent on all events of this type
-}
-
-interface EventTime {
-  dateTime: string
-  timeZone: string
 }
 
 export default Event
