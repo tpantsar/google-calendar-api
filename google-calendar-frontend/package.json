@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "backend": "C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-year && cd ../backend/src && python app.py",
-    "format": "prettier --write \"**/*.{js,jsx,tsx}\"",
+    "format": "prettier --write \"**/*.{js,ts,jsx,tsx}\"",
     "merge": "git checkout main && git pull && git merge dev && npm run format && git push origin main && git checkout dev && git add .",
     "preview": "vite preview"
   },
