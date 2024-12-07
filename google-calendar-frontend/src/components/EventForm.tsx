@@ -4,7 +4,7 @@ import '../styles/EventForm.css'
 import '../styles/Notification.css'
 import Event from '../types/Event'
 import NotificationProps from '../types/NotificationProps'
-import { dateWithRoundedMinutes, formatDateForInput } from '../utils'
+import { formatDateForInput, roundToNearestInterval } from '../utils'
 import Notification from './Notification'
 
 type IEventFormProps = {
@@ -15,8 +15,9 @@ type IEventFormProps = {
 const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
   const timeZone = 'Europe/Helsinki'
 
+  // Default to the current time minus 1 hour: 14:00 - 15:00
   const HOURS_TO_SUBTRACT = 1
-  const initialEndDate = dateWithRoundedMinutes(new Date(), 15)
+  const initialEndDate = roundToNearestInterval(new Date(), 15)
   const initialStartDate = new Date(
     initialEndDate.getTime() - HOURS_TO_SUBTRACT * 60 * 60 * 1000
   )
