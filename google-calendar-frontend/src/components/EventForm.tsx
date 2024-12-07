@@ -1,10 +1,9 @@
-import { format, toZonedTime } from 'date-fns-tz'
+import { format } from 'date-fns-tz'
 import React, { useState } from 'react'
 import eventService from '../services/events'
 import '../styles/EventForm.css'
 import '../styles/Notification.css'
 import Event from '../types/Event'
-import EventTime from '../types/EventTime'
 import NotificationProps from '../types/NotificationProps'
 import Notification from './Notification'
 
@@ -14,39 +13,39 @@ type IEventFormProps = {
 }
 
 const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
-  const formatDateTime = (
-    date: Date,
-    timeZone: string
-  ): EventTime['dateTime'] => {
-    const zonedDate = toZonedTime(date, timeZone)
-    const dateTime = format(zonedDate, "yyyy-MM-dd'T'HH:mm:ssXXX")
-    return dateTime
+  const formatForInput = (date: Date): string => {
+    return format(date, "yyyy-MM-dd'T'HH:mm")
+  }
+
+  const formatDateIncremented = (date: Date, increment: number): Date => {
+    const incrementedDate = new Date(date.getTime() + increment * 60 * 1000)
+    const minutes = incrementedDate.getMinutes()
+    const roundedMinutes = Math.ceil(minutes / 15) * 15
+    incrementedDate.setMinutes(roundedMinutes, 0, 0)
+    return incrementedDate
   }
 
   const timeZone = 'Europe/Helsinki'
 
   const HOURS_TO_SUBTRACT = 1
-  const initialStartDate = formatDateTime(
-    new Date(new Date().getTime() - HOURS_TO_SUBTRACT * 60 * 60 * 1000),
-    timeZone
+  const initialEndDate = formatDateIncremented(new Date(), 15)
+  const initialStartDate = new Date(
+    initialEndDate.getTime() - HOURS_TO_SUBTRACT * 60 * 60 * 1000
   )
-  const initialEndDate = formatDateTime(new Date(), timeZone)
 
   const [summary, setSummary] = useState('')
   const [description, setDescription] = useState('')
-  const [startDate, setStartDate] =
-    useState<EventTime['dateTime']>(initialStartDate)
-  const [endDate, setEndDate] = useState<EventTime['dateTime']>(initialEndDate)
+  const [startDate, setStartDate] = useState<string>(
+    formatForInput(initialStartDate)
+  )
+  const [endDate, setEndDate] = useState<string>(formatForInput(initialEndDate))
   const [notificationMessage, setNotificationMessage] =
     useState<NotificationProps['message']>(null)
   const [notificationType, setNotificationType] =
     useState<NotificationProps['type']>('default')
 
   let timeoutId: number
-  let timeoutLength = 5000
-
-  console.log('initialStartDate:', initialStartDate)
-  console.log('initialEndDate:', initialEndDate)
+  const timeoutLength = 5000
 
   const setNotification = (
     message: NotificationProps['message'],
@@ -56,7 +55,7 @@ const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
     setNotificationMessage(message)
     setNotificationType(type)
 
-    timeoutId = setTimeout(() => {
+    timeoutId = window.setTimeout(() => {
       setNotificationMessage(null)
       setNotificationType('default')
     }, timeoutLength)
@@ -64,11 +63,6 @@ const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    console.log('summary:', summary)
-    console.log('description:', description)
-    console.log('startDate:', startDate)
-    console.log('endDate:', endDate)
 
     if (calendarId === '') {
       setNotification('Select a calendar first', 'error')
@@ -82,24 +76,27 @@ const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
 
     const event = {
       start: {
-        dateTime: startDate,
+        dateTime: startDate + ':00', // Add seconds for full ISO format
         timeZone: timeZone,
       },
       end: {
-        dateTime: endDate,
+        dateTime: endDate + ':00', // Add seconds for full ISO format
         timeZone: timeZone,
       },
       summary: summary,
       description: description,
     } as Event
 
+    console.log('Creating event:', event)
+
     eventService
       .create(calendarId, event)
       .then((event: Event) => {
-        console.log('Event created:', event)
         setEvents((events) => [...events, event])
         setSummary('')
         setDescription('')
+        setStartDate(formatForInput(initialStartDate))
+        setEndDate(formatForInput(initialEndDate))
         setNotification('Event created successfully', 'success')
       })
       .catch((error: unknown) => {
@@ -162,7 +159,10 @@ const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
           className="form-button form-button-cancel"
           type="button"
           onClick={() => {
-            // Handle cancel logic here
+            setSummary('')
+            setDescription('')
+            setStartDate(formatForInput(initialStartDate))
+            setEndDate(formatForInput(initialEndDate))
           }}
         >
           Cancel
