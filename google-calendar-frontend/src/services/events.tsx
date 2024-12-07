@@ -11,9 +11,9 @@ const getAll = (calendar_id: string): Promise<Event[]> => {
   return request.then((response) => response.data)
 }
 
-const create = (calendar_id: string, newObject: Event): Promise<Event> => {
+const create = (calendar_id: string, newEvent: Event): Promise<Event> => {
   const url = `${baseUrl}/${calendar_id}`
-  const request = axios.post(url, newObject)
+  const request = axios.post(url, newEvent)
   console.log('Creating new event:', url)
   return request.then((response) => response.data)
 }

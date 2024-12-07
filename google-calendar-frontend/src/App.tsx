@@ -4,6 +4,7 @@ import './App.css'
 import Calendars from './components/Calendars'
 import Events from './components/Events'
 import Filter from './components/Filter'
+import EventForm from './components/EventForm'
 /* Services */
 import calendarService from './services/calendars'
 import eventService from './services/events'
@@ -38,6 +39,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <EventForm calendarId={calendarId} setEvents={setEvents} />
         <Calendars calendars={calendars} fetchEvents={fetchEvents} />
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
         <Events
