@@ -1,10 +1,10 @@
-import { format } from 'date-fns-tz'
 import React, { useState } from 'react'
 import eventService from '../services/events'
 import '../styles/EventForm.css'
 import '../styles/Notification.css'
 import Event from '../types/Event'
 import NotificationProps from '../types/NotificationProps'
+import { dateWithRoundedMinutes, formatDateForInput } from '../utils'
 import Notification from './Notification'
 
 type IEventFormProps = {
@@ -13,22 +13,10 @@ type IEventFormProps = {
 }
 
 const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
-  const formatForInput = (date: Date): string => {
-    return format(date, "yyyy-MM-dd'T'HH:mm")
-  }
-
-  const formatDateIncremented = (date: Date, increment: number): Date => {
-    const incrementedDate = new Date(date.getTime() + increment * 60 * 1000)
-    const minutes = incrementedDate.getMinutes()
-    const roundedMinutes = Math.ceil(minutes / 15) * 15
-    incrementedDate.setMinutes(roundedMinutes, 0, 0)
-    return incrementedDate
-  }
-
   const timeZone = 'Europe/Helsinki'
 
   const HOURS_TO_SUBTRACT = 1
-  const initialEndDate = formatDateIncremented(new Date(), 15)
+  const initialEndDate = dateWithRoundedMinutes(new Date(), 15)
   const initialStartDate = new Date(
     initialEndDate.getTime() - HOURS_TO_SUBTRACT * 60 * 60 * 1000
   )
@@ -36,9 +24,11 @@ const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
   const [summary, setSummary] = useState('')
   const [description, setDescription] = useState('')
   const [startDate, setStartDate] = useState<string>(
-    formatForInput(initialStartDate)
+    formatDateForInput(initialStartDate)
   )
-  const [endDate, setEndDate] = useState<string>(formatForInput(initialEndDate))
+  const [endDate, setEndDate] = useState<string>(
+    formatDateForInput(initialEndDate)
+  )
   const [notificationMessage, setNotificationMessage] =
     useState<NotificationProps['message']>(null)
   const [notificationType, setNotificationType] =
@@ -95,8 +85,8 @@ const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
         setEvents((events) => [...events, event])
         setSummary('')
         setDescription('')
-        setStartDate(formatForInput(initialStartDate))
-        setEndDate(formatForInput(initialEndDate))
+        setStartDate(formatDateForInput(initialStartDate))
+        setEndDate(formatDateForInput(initialEndDate))
         setNotification('Event created successfully', 'success')
       })
       .catch((error: unknown) => {
@@ -161,8 +151,8 @@ const EventForm = ({ calendarId, setEvents }: IEventFormProps) => {
           onClick={() => {
             setSummary('')
             setDescription('')
-            setStartDate(formatForInput(initialStartDate))
-            setEndDate(formatForInput(initialEndDate))
+            setStartDate(formatDateForInput(initialStartDate))
+            setEndDate(formatDateForInput(initialEndDate))
           }}
         >
           Cancel
