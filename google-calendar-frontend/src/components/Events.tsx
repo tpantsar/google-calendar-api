@@ -5,7 +5,7 @@ import EventsTableAll from './EventsTableAll'
 import EventsTableUnique from './EventsTableUnique'
 import UpdateEventRequestBody from '../types/UpdateEventRequestBody'
 
-type IEventsProps = {
+type EventsProps = {
   calendarId: string
   events: Event[]
   filter: string
@@ -19,12 +19,13 @@ const Events = ({
   filter,
   setFilter,
   setEvents,
-}: IEventsProps) => {
+}: EventsProps) => {
   const [showAllEvents, setShowAllEvents] = useState(false)
 
   const toggleAllEvents = () => setShowAllEvents(!showAllEvents)
 
   console.log('Calendar ID:', calendarId)
+  console.log('events:', events.length)
 
   const deleteEvent = (event: Event) => {
     const result = window.confirm(`Delete event: ${event.summary}?`)

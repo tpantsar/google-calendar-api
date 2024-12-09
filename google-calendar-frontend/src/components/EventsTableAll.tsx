@@ -3,7 +3,7 @@ import '../styles/EventsTable.css'
 import Event from '../types/Event'
 import UpdateEventRequestBody from '../types/UpdateEventRequestBody'
 
-type IEventsTableAll = {
+type EventsTableAll = {
   events: Event[]
   filter: string
   deleteEvent: (event: Event) => void
@@ -16,7 +16,7 @@ const EventsTableAll = ({
   filter,
   deleteEvent,
   updateEvent,
-}: IEventsTableAll) => {
+}: EventsTableAll) => {
   const [sort, setSort] = useState<boolean>(false)
   const [showFutureEvents, setShowFutureEvents] = useState<boolean>(false)
   const [editingEventId, setEditingEventId] = useState<string | null>(null)

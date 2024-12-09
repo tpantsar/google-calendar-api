@@ -2,12 +2,12 @@ import { useState } from 'react'
 import '../styles/Calendars.css'
 import Calendar from '../types/Calendar'
 
-type ICalendarsProps = {
+type CalendarsProps = {
   calendars: Calendar[]
   fetchEvents: (calendarId: string) => void
 }
 
-const Calendars = ({ calendars, fetchEvents }: ICalendarsProps) => {
+const Calendars = ({ calendars, fetchEvents }: CalendarsProps) => {
   const [selectedCalendarId, setSelectedCalendarId] = useState<string>('')
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

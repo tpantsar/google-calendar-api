@@ -1,9 +1,9 @@
-type IFilterProps = {
+type FilterProps = {
   filter: string
   setFilter: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Filter = ({ filter, setFilter }: IFilterProps) => {
+const Filter = ({ filter, setFilter }: FilterProps) => {
   return (
     <div className="flex-container">
       Filter events:{' '}

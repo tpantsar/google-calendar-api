@@ -1,12 +1,14 @@
 import EventTime from './EventTime'
 
 interface Event {
-  // Required API properties from Google Calendar
+  // Required API properties for request body
+  start: EventTime
+  end: EventTime
+
+  // Optional API properties for request body
   id: string
   summary: string
   description: string
-  start: EventTime
-  end: EventTime
   htmlLink: string
 
   // Computed properties on backend

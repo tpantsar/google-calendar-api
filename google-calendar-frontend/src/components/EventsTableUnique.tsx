@@ -2,7 +2,7 @@ import { useState } from 'react'
 import '../styles/EventsTable.css'
 import Event from '../types/Event'
 
-type IEventsTableUnique = {
+type EventsTableUnique = {
   events: Event[]
   filter: string
   setFilter: React.Dispatch<React.SetStateAction<string>>
@@ -15,7 +15,7 @@ const EventsTableUnique = ({
   filter,
   setFilter,
   setShowAllEvents,
-}: IEventsTableUnique) => {
+}: EventsTableUnique) => {
   const [sortColumn, setSortColumn] = useState<string>('events') // Sort by events by default
   const [sortDirection, setSortDirection] = useState<boolean>(false) // true for ascending, false for descending
 
