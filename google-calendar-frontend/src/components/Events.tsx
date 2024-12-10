@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import eventService from '../services/events'
 import Event from '../types/Event'
 import EventsTableAll from './EventsTableAll'
@@ -20,6 +20,14 @@ const Events = ({
   setFilter,
   setEvents,
 }: EventsProps) => {
+  // Set events from local storage if available
+  useEffect(() => {
+    const events = localStorage.getItem('events')
+    if (events) {
+      setEvents(JSON.parse(events))
+    }
+  }, [setEvents])
+
   const [showAllEvents, setShowAllEvents] = useState(false)
 
   const toggleAllEvents = () => setShowAllEvents(!showAllEvents)

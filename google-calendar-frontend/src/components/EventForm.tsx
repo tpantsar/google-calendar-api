@@ -8,11 +8,11 @@ import { formatDateForInput, roundToNearestInterval } from '../utils'
 import Notification from './Notification'
 
 type EventFormProps = {
-  calendarId: string
+  selectedCalendarId: string
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>
 }
 
-const EventForm = ({ calendarId, setEvents }: EventFormProps) => {
+const EventForm = ({ selectedCalendarId, setEvents }: EventFormProps) => {
   const timeZone = 'Europe/Helsinki'
 
   // Default to the current time minus 1 hour: 14:00 - 15:00
@@ -55,7 +55,7 @@ const EventForm = ({ calendarId, setEvents }: EventFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (calendarId === '') {
+    if (selectedCalendarId === '') {
       setNotification('Select a calendar first', 'error')
       return
     }
@@ -78,7 +78,7 @@ const EventForm = ({ calendarId, setEvents }: EventFormProps) => {
     } as Event
 
     eventService
-      .create(calendarId, event)
+      .create(selectedCalendarId, event)
       .then((newEvent: Event) => {
         console.log('Creating event:', newEvent)
         setEvents((events) => [...events, newEvent])

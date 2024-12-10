@@ -14,7 +14,7 @@ import Event from './types/Event'
 
 function App() {
   const [calendars, setCalendars] = useState<Calendar[]>([])
-  const [calendarId, setCalendarId] = useState<string>('')
+  const [selectedCalendarId, setSelectedCalendarId] = useState<string>('')
   const [events, setEvents] = useState<Event[]>([])
   const [eventsFilter, setEventsFilter] = useState<string>('')
 
@@ -25,25 +25,34 @@ function App() {
       .then((calendars: Calendar[]) => setCalendars(calendars))
   }, [])
 
-  const fetchEvents = (calendarId: string) => {
+  const getCalendarEvents = (calendarId: string) => {
     eventService.getAll(calendarId).then((events: Event[]) => {
       const updatedEvents = events.map((event) => {
         event.isFuture = new Date(event.start.dateTime) > new Date() // Check if the event is in the future
         return event
       })
+      localStorage.setItem('events', JSON.stringify(updatedEvents))
       setEvents(updatedEvents)
-      setCalendarId(calendarId)
+      setSelectedCalendarId(calendarId)
     })
   }
 
   return (
     <div className="App">
       <header className="App-header">
-        <EventForm calendarId={calendarId} setEvents={setEvents} />
-        <Calendars calendars={calendars} fetchEvents={fetchEvents} />
+        <EventForm
+          selectedCalendarId={selectedCalendarId}
+          setEvents={setEvents}
+        />
+        <Calendars
+          calendars={calendars}
+          selectedCalendarId={selectedCalendarId}
+          setSelectedCalendarId={setSelectedCalendarId}
+          getCalendarEvents={getCalendarEvents}
+        />
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
         <Events
-          calendarId={calendarId}
+          calendarId={selectedCalendarId}
           events={events}
           filter={eventsFilter}
           setFilter={setEventsFilter}

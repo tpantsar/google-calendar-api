@@ -1,31 +1,49 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import '../styles/Calendars.css'
 import Calendar from '../types/Calendar'
 
 type CalendarsProps = {
   calendars: Calendar[]
-  fetchEvents: (calendarId: string) => void
+  selectedCalendarId: string
+  setSelectedCalendarId: (calendarId: string) => void
+  getCalendarEvents: (calendarId: string) => void
 }
 
-const Calendars = ({ calendars, fetchEvents }: CalendarsProps) => {
-  const [selectedCalendarId, setSelectedCalendarId] = useState<string>('')
+const Calendars = ({
+  calendars,
+  selectedCalendarId,
+  setSelectedCalendarId,
+  getCalendarEvents,
+}: CalendarsProps) => {
+  // Set selected calendar id from local storage if available
+  useEffect(() => {
+    const selectedCalendarId = localStorage.getItem('selectedCalendarId')
+    if (selectedCalendarId) {
+      setSelectedCalendarId(selectedCalendarId)
+    }
+  }, [setSelectedCalendarId])
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const calendarId = event.target.value
     setSelectedCalendarId(calendarId)
-    fetchEvents(calendarId)
+    getCalendarEvents(calendarId)
+    localStorage.setItem('selectedCalendarId', calendarId)
   }
 
-  const handleRefresh = () => {
+  const refreshCalendarEvents = () => {
     if (selectedCalendarId) {
       console.log('Refreshing events for calendar:', selectedCalendarId)
-      fetchEvents(selectedCalendarId)
+      getCalendarEvents(selectedCalendarId)
     }
   }
 
   return (
     <div className="flex-container">
-      <select className="calendar-dropdown" onChange={handleChange}>
+      <select
+        className="calendar-dropdown"
+        value={selectedCalendarId}
+        onChange={handleChange}
+      >
         <option value="">- Select a calendar -</option>
         {calendars.map((calendar) => (
           <option key={calendar.id} value={calendar.id}>
@@ -33,7 +51,7 @@ const Calendars = ({ calendars, fetchEvents }: CalendarsProps) => {
           </option>
         ))}
       </select>
-      <button onClick={handleRefresh}>Refresh</button>
+      <button onClick={refreshCalendarEvents}>Refresh</button>
     </div>
   )
 }
