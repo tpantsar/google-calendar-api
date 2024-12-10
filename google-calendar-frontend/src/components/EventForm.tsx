@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import eventService from '../services/events'
 import '../styles/EventForm.css'
 import '../styles/Notification.css'
@@ -13,6 +13,18 @@ type EventFormProps = {
 }
 
 const EventForm = ({ selectedCalendarId, setEvents }: EventFormProps) => {
+  // Get summary and description from local storage if available
+  useEffect(() => {
+    const storedSummary = localStorage.getItem('form-summary')
+    const storedDescription = localStorage.getItem('form-description')
+    if (storedSummary) {
+      setSummary(storedSummary)
+    }
+    if (storedDescription) {
+      setDescription(storedDescription)
+    }
+  }, [])
+
   const timeZone = 'Europe/Helsinki'
 
   // Default to the current time minus 1 hour: 14:00 - 15:00
@@ -94,6 +106,20 @@ const EventForm = ({ selectedCalendarId, setEvents }: EventFormProps) => {
       })
   }
 
+  const handleSummaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault()
+    setSummary(event.target.value)
+    localStorage.setItem('form-summary', event.target.value)
+  }
+
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    event.preventDefault()
+    setDescription(event.target.value)
+    localStorage.setItem('form-description', event.target.value)
+  }
+
   return (
     <div className="form-container">
       <Notification message={notificationMessage} type={notificationType} />
@@ -106,7 +132,7 @@ const EventForm = ({ selectedCalendarId, setEvents }: EventFormProps) => {
           type="text"
           id="summary"
           value={summary}
-          onChange={(e) => setSummary(e.target.value)}
+          onChange={(e) => handleSummaryChange(e)}
         />
 
         <label className="form-label" htmlFor="description">
@@ -116,7 +142,7 @@ const EventForm = ({ selectedCalendarId, setEvents }: EventFormProps) => {
           className="form-textarea"
           id="description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => handleDescriptionChange(e)}
         ></textarea>
 
         <label className="form-label" htmlFor="startDate">
@@ -154,7 +180,7 @@ const EventForm = ({ selectedCalendarId, setEvents }: EventFormProps) => {
             setEndDate(formatDateForInput(initialEndDate))
           }}
         >
-          Cancel
+          Reset
         </button>
       </form>
     </div>

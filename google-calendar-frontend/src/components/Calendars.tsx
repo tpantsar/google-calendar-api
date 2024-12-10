@@ -15,7 +15,7 @@ const Calendars = ({
   setSelectedCalendarId,
   getCalendarEvents,
 }: CalendarsProps) => {
-  // Set selected calendar id from local storage if available
+  // Get selected calendar id from local storage if available
   useEffect(() => {
     const selectedCalendarId = localStorage.getItem('selectedCalendarId')
     if (selectedCalendarId) {
