@@ -1,4 +1,4 @@
-## Download and add credentials.json file to the root of the project
+## credentials.json and token.json file will be generated when authenticating with Google Calendar API
 
 https://console.cloud.google.com/apis/credentials?project=unique-acronym-406815
 
@@ -17,8 +17,8 @@ conda env update --file environment.yml --prune
 
 pip install -r requirements.txt
 
-(bash) source C:/Users/tomi_/miniconda3/Scripts/activate google-calendar-year
-(powershell) C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-year
+(bash) source C:/Users/tomi_/miniconda3/Scripts/activate google-calendar-api
+(powershell) C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-api
 
 cd src
 python app.py

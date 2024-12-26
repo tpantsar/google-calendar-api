@@ -1,4 +1,4 @@
-name: google-calendar-year
+name: google-calendar-api
 channels:
   - defaults
   - conda-forge
