@@ -11,6 +11,7 @@ del miniconda.exe
 ## Commands:
 
 ```
+conda install <package>
 conda env create --file environment.yml
 conda env update --file environment.yml
 conda env update --file environment.yml --prune

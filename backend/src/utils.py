@@ -1,3 +1,4 @@
+import calendar
 import csv
 import json
 from datetime import datetime
@@ -56,6 +57,54 @@ def build_service() -> build:
         raise ServiceBuildError(
             f"An unexpected error occurred while building the service: {e}"
         )
+
+
+def round_to_nearest_interval(
+    timestamp: datetime, interval_minutes: int = 15
+) -> datetime:
+    """
+    Round the timestamp to the nearest interval, default 15 minutes.
+    Handle cases where the hour or day needs to be increased due to rounding.
+    For example: 11:58 -> 12:00 or 11:49 -> 11:45 or 23:58 -> 00:00 next day.
+    """
+    # Extract components from the timestamp
+    year = timestamp.year
+    month = timestamp.month
+    day = timestamp.day
+    hour = timestamp.hour
+    minute = timestamp.minute
+
+    # Calculate the nearest interval based on the provided interval_minutes
+    nearest_interval_minute = round(minute / interval_minutes) * interval_minutes
+
+    # Increase the hour if the nearest interval exceeds 59
+    if nearest_interval_minute >= 60:
+        nearest_interval_minute = 0  # Reset to 0 if it exceeds 59
+        hour += 1  # Increase the hour by 1 if the minute exceeds 59
+        if hour >= 24:
+            hour = 0  # Reset to 0 if hour exceeds 23
+            day += 1  # Increase the day by 1 if the hour exceeds 23
+            # Check if day needs to be increased to the next month (e.g. 31st day of the month)
+            _, last_day = calendar.monthrange(year, month)
+            if day > last_day:
+                day = 1
+                month += 1
+                # Increase the year if the month exceeds 12
+                if month > 12:
+                    month = 1
+                    year += 1
+
+    # Construct a new timestamp with the rounded minute
+    rounded_timestamp = timestamp.replace(
+        year=year,
+        month=month,
+        day=day,
+        hour=hour,
+        minute=nearest_interval_minute,
+        second=0,
+        microsecond=0,
+    )
+    return rounded_timestamp
 
 
 def format_event_time(event_time):
