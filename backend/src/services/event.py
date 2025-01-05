@@ -1,4 +1,5 @@
-from datetime import datetime
+from collections import Counter
+from datetime import datetime, timedelta
 
 from googleapiclient.errors import HttpError
 
@@ -96,6 +97,65 @@ def get_events(calendar_id, year):
 
     write_to_file("events.json", events)
     return events
+
+
+def get_popular_events(calendar_id):
+    """
+    Fetches the summaries and counts of the maximum of 10 most frequently occurring events
+    from the past in selected calendar.
+    """
+    try:
+        service = build_service()
+    except Exception as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
+
+    try:
+        # Fetch all events from the calendar
+        now = datetime.now()
+        events_result = (
+            service.events()
+            .list(
+                calendarId=calendar_id,
+                timeMin=(now - timedelta(days=365)).isoformat() + "Z",
+                timeMax=now.isoformat() + "Z",
+                maxResults=1000,  # Fetch a larger dataset for frequency analysis
+                singleEvents=True,
+                orderBy="startTime",
+            )
+            .execute()
+        )
+        events = events_result.get("items", [])
+        logger.info(f"Found {len(events)} events in the calendar")
+    except HttpError as error:
+        raise APIError(
+            500,
+            "Google Calendar API Error",
+            f"Failed to fetch events from the calendar. {error}",
+        )
+
+    # Analyze and find the top 10 most frequent event summaries
+    try:
+        # Count the frequency of each event summary
+        summaries = [event.get("summary", "Untitled Event") for event in events]
+        summary_counts = Counter(summaries)
+
+        # Get the top 10 most common summaries and their frequencies
+        top_summary_counts = summary_counts.most_common(10)
+        logger.info(f"Top 10 popular events with counts: {top_summary_counts}")
+    except KeyError as e:
+        raise APIError(
+            500,
+            "Event Analysis Error",
+            f"Failed to analyze event frequencies. {str(e)}",
+        )
+
+    # Write detailed events to a file (optional for debugging)
+    write_to_file("popular_events.json", events)
+
+    # Return a dictionary of the top 10 summaries with their counts
+    return {summary: count for summary, count in top_summary_counts}
 
 
 def create_event(calendar_id, event_body):

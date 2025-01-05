@@ -6,7 +6,7 @@ from InquirerPy.validator import EmptyInputValidator
 
 from constants import TIMEZONE
 from services.calendar import get_calendar_list
-from services.event import create_event
+from services.event import create_event, get_popular_events
 from utils import round_to_nearest_interval
 
 
@@ -22,7 +22,11 @@ def main():
         message="Select calendar:",
         choices=choices,
         default=None,  # Optional: Set a default choice
+        validate=EmptyInputValidator(),
     ).execute()
+
+    # Print the selected calendar ID
+    print(f"Using calendar: {selected_calendar_id}")
 
     # Duration of the event in hours
     duration = inquirer.number(
@@ -35,9 +39,15 @@ def main():
         validate=EmptyInputValidator(),
     ).execute()
 
-    # Event summary
+    events = get_popular_events(selected_calendar_id)
+    print({event for event in events})
+    popular_events_summaries = {event: None for event in events}
+
+    # Event summary with auto-complete from popular events
+    # https://inquirerpy.readthedocs.io/en/latest/pages/prompts/input.html#auto-completion
     summary = inquirer.text(
         message="Summary",
+        completer=popular_events_summaries,
         validate=EmptyInputValidator(),
     ).execute()
 
@@ -64,9 +74,6 @@ def main():
         "summary": summary,
         "description": description,
     }
-
-    # Print the selected calendar ID
-    print(f"Using calendar: {selected_calendar_id}")
 
     event = create_event(selected_calendar_id, event_body)
 
