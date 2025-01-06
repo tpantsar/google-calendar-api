@@ -40,7 +40,8 @@ def main():
     ).execute()
 
     events = get_popular_events(selected_calendar_id)
-    print({event for event in events})
+    for event in events:
+        print(event)
     popular_events_summaries = {event: None for event in events}
 
     # Event summary with auto-complete from popular events
