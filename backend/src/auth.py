@@ -46,6 +46,7 @@ def auth_flow() -> Credentials:
     """
     Run the authorization flow for the user to access Google Calendar API.
     """
+    logger.debug("Running the authorization flow")
     flow = InstalledAppFlow.from_client_secrets_file("creds/credentials.json", SCOPES)
     creds = flow.run_local_server(port=0)
     if creds and creds.valid:

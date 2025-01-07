@@ -41,6 +41,7 @@ def build_service() -> build:
         ServiceBuildError: If credentials are missing or the service cannot be built.
     """
     try:
+        logger.debug("Building the Google Calendar API service.")
         creds = get_credentials()
         if not creds:
             logger.error("Credentials not found for building the service.")
