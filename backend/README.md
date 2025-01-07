@@ -1,4 +1,4 @@
-## credentials.json and token.json file will be generated when authenticating with Google Calendar API
+## Download OAuth 2.0 credentials from Google Cloud Platform and place in /src/output directory
 
 https://console.cloud.google.com/apis/credentials?project=unique-acronym-406815
 

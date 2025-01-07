@@ -5,7 +5,7 @@ from googleapiclient.errors import HttpError
 
 from error import APIError, ParameterError, ServiceBuildError
 from logger_config import logger
-from utils import build_service, format_event_time, write_to_file
+from utils import build_service, format_event_time, write_to_output_file
 
 
 def get_event(calendar_id, event_id):
@@ -95,7 +95,7 @@ def get_events(calendar_id, year):
             f"Failed to update computed event properties. {str(e)}",
         )
 
-    write_to_file("events.json", events)
+    write_to_output_file("events.json", events)
     return events
 
 
@@ -152,10 +152,77 @@ def get_popular_events(calendar_id):
         )
 
     # Write detailed events to a file (optional for debugging)
-    write_to_file("popular_events.json", events)
+    write_to_output_file("popular_events.json", events)
 
     # Return a dictionary of the top 10 summaries with their counts
     return {summary: count for summary, count in top_summary_counts}
+
+
+def get_recent_unique_events(calendar_id):
+    """
+    Fetches the summaries of the 10 most recent unique events (by summary)
+    from the selected calendar.
+    Prioritizes recency while filtering out duplicate summaries.
+    """
+    try:
+        service = build_service()
+    except Exception as e:
+        raise APIError(
+            500, "Service Build Error", f"Failed to build the service: {str(e)}"
+        )
+
+    try:
+        # Fetch events ordered by start time, descending
+        now = datetime.now()
+        events_result = (
+            service.events()
+            .list(
+                calendarId=calendar_id,
+                timeMin=(now - timedelta(days=365)).isoformat() + "Z",
+                timeMax=now.isoformat() + "Z",
+                maxResults=1000,  # Fetch a larger dataset to ensure uniqueness
+                singleEvents=True,
+                orderBy="startTime",
+            )
+            .execute()
+        )
+        events = events_result.get("items", [])
+        logger.info(f"Found {len(events)} events in the calendar")
+    except HttpError as error:
+        raise APIError(
+            500,
+            "Google Calendar API Error",
+            f"Failed to fetch events from the calendar. {error}",
+        )
+
+    # Extract and filter unique summaries by recency
+    try:
+        unique_events = {}
+        recent_events = []
+
+        # Reverse to prioritize more recent events (descending)
+        for event in reversed(events):
+            summary = event.get("summary", "Untitled Event")
+            if summary not in unique_events:
+                unique_events[summary] = event
+                recent_events.append(event)
+
+            if len(recent_events) == 10:  # Stop once we have 10 unique events
+                break
+
+        logger.info(f"Found {len(recent_events)} unique recent events")
+    except KeyError as e:
+        raise APIError(
+            500,
+            "Event Processing Error",
+            f"Failed to process unique events. {str(e)}",
+        )
+
+    # Write detailed events to a file (optional for debugging)
+    write_to_output_file("recent_unique_events.json", recent_events)
+
+    # Return the summaries of the 10 most recent unique events
+    return [event.get("summary", "Untitled Event") for event in recent_events]
 
 
 def create_event(calendar_id, event_body):

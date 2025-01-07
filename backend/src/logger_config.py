@@ -17,11 +17,13 @@ logger.setLevel(logging.DEBUG)
 
 # Create handlers with UTF-8 encoding
 console_handler = logging.StreamHandler(sys.stdout)
-file_handler = logging.FileHandler("logger.log", encoding="utf-8")
-file_handler_archive = logging.FileHandler("logger_archive.log", encoding="utf-8")
+file_handler = logging.FileHandler("output/logger.log", encoding="utf-8")
+file_handler_archive = logging.FileHandler(
+    "output/logger_archive.log", encoding="utf-8"
+)
 
 # Reset logger.log before running the script
-with open("logger.log", "w", encoding="utf-8"):
+with open("output/logger.log", "w", encoding="utf-8"):
     pass
 
 # Set level and format for handlers
