@@ -6,7 +6,7 @@ from InquirerPy.validator import EmptyInputValidator
 
 from constants import TIMEZONE
 from services.calendar import get_calendar_list
-from services.event import create_event, get_popular_events
+from services.event import create_event, get_recent_unique_events
 from utils import round_to_nearest_interval
 
 
@@ -39,7 +39,7 @@ def main():
         validate=EmptyInputValidator(),
     ).execute()
 
-    events = get_popular_events(selected_calendar_id)
+    events = get_recent_unique_events(selected_calendar_id)
     for event in events:
         print(event)
     popular_events_summaries = {event: None for event in events}

@@ -11,20 +11,22 @@ from error import ServiceBuildError
 from logger_config import logger
 
 
-def write_to_file(file_name, data):
-    """Writes the data to a file depending on the file format."""
+def write_to_output_file(file_name, data):
+    """Writes the data to /output directory, file extension determines the format."""
+    path = "output/" + file_name
+
     if file_name.endswith(".json"):
-        with open(file_name, "w", encoding="utf-8") as file:
+        with open(path, "w", encoding="utf-8") as file:
             file.write(json.dumps(data, indent=2, ensure_ascii=False))
         logger.info(f"Data written to {file_name}")
     elif file_name.endswith(".csv"):
-        with open(file_name, "w", encoding="utf-8") as file:
+        with open(path, "w", encoding="utf-8") as file:
             writer = csv.writer(file)
             for row in data:
                 writer.writerow(row)
         logger.info(f"Data written to {file_name}")
     elif file_name.endswith(".txt"):
-        with open(file_name, "w", encoding="utf-8") as file:
+        with open(path, "w", encoding="utf-8") as file:
             for item in data:
                 file.write(f"{item}\n", encoding="utf-8")
         logger.info(f"Data written to {file_name}")

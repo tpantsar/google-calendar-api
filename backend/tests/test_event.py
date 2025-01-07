@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
 from googleapiclient.errors import HttpError
 
-from ..src.error import APIError
 from services.event import get_popular_events
+
+from ..src.error import APIError
 
 
 @patch("services.event.build_service")

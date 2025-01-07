@@ -19,8 +19,8 @@ def get_credentials() -> Credentials:
     time.
     """
     creds = None
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    if os.path.exists("creds/token.json"):
+        creds = Credentials.from_authorized_user_file("creds/token.json", SCOPES)
         logger.debug("Credentials loaded from token.json")
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -34,7 +34,7 @@ def get_credentials() -> Credentials:
                 creds = auth_flow()
         else:
             creds = auth_flow()
-        with open("token.json", "w") as token:
+        with open("creds/token.json", "w") as token:
             token.write(creds.to_json())
             logger.debug("Credentials written to token.json")
 
@@ -46,7 +46,7 @@ def auth_flow() -> Credentials:
     """
     Run the authorization flow for the user to access Google Calendar API.
     """
-    flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+    flow = InstalledAppFlow.from_client_secrets_file("creds/credentials.json", SCOPES)
     creds = flow.run_local_server(port=0)
     if creds and creds.valid:
         logger.info("Authorization flow completed")

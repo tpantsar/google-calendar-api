@@ -2,7 +2,7 @@ from googleapiclient.errors import HttpError
 
 from error import APIError, ServiceBuildError
 from logger_config import logger
-from utils import build_service, write_to_file
+from utils import build_service, write_to_output_file
 
 
 def get_calendar_list():
@@ -19,7 +19,7 @@ def get_calendar_list():
         calendars = calendar_list.get("items", [])
         calendar_summaries = [calendar["summary"] for calendar in calendars]
 
-        write_to_file("data.json", calendars)
+        write_to_output_file("calendars.json", calendars)
         logger.info(f"Found {len(calendars)} calendars")
         logger.debug(f"Calendars: {calendar_summaries}")
 

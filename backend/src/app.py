@@ -14,7 +14,7 @@ CORS(app)  # Enable CORS for all domains on all routes
 
 app.register_blueprint(api_bp)
 
-if not os.path.exists("credentials.json"):
+if not os.path.exists("creds/credentials.json"):
     logger.error("credentials.json file not found.")
     logger.error("Please download the credentials.json file from Google Cloud Console.")
     logger.error("Place the file in the backend/src directory.")
