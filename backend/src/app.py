@@ -3,8 +3,8 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from src.api import api_bp
-from src.logger_config import logger
+from api import api_bp
+from logger_config import logger
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all domains on all routes
