@@ -7,3 +7,6 @@ MASON = "application/vnd.mason+json"
 JSON = "application/json"
 
 ERROR_PROFILE = "/profiles/error/"
+
+TIME_FORMAT_PROMPT = "%Y-%m-%d %H:%M"
+TIME_FORMAT_CONSOLE = "%d.%m.%Y %H.%M"

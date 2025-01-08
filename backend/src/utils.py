@@ -5,6 +5,7 @@ from datetime import datetime
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from typeguard import typechecked
 
 from auth import get_credentials
 from error import ServiceBuildError
@@ -108,6 +109,27 @@ def round_to_nearest_interval(
         microsecond=0,
     )
     return rounded_timestamp
+
+
+@typechecked
+def print_event_details(event: dict, duration: float, start: datetime, end: datetime):
+    """Prints the created event details to the console."""
+    if not all(key in event for key in ("summary", "description")):
+        raise ValueError("Event details are missing required fields.")
+
+    if duration < 0:
+        raise ValueError("Duration cannot be negative.")
+
+    try:
+        print("\nEvent created successfully:")
+        print("{:<12}{:<}".format("Summary:", event["summary"]))
+        print("{:<12}{:<}".format("Desc:", event["description"]))
+        print("{:<12}{:<}".format("Duration:", str(duration) + " hours"))
+        print("{:<12}{:<}".format("Start:", start.strftime("%Y-%m-%d %H:%M:%S")))
+        print("{:<12}{:<}".format("End:", end.strftime("%Y-%m-%d %H:%M:%S")))
+        print(event.get("htmlLink"))
+    except Exception as e:
+        print("Failed to print event details.", str(e))
 
 
 def format_event_time(event_time):

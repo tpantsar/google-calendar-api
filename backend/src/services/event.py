@@ -158,7 +158,7 @@ def get_popular_events(calendar_id):
     return {summary: count for summary, count in top_summary_counts}
 
 
-def get_recent_unique_events(calendar_id):
+def get_recent_unique_events(calendar_id) -> list[str]:
     """
     Fetches the summaries of the 10 most recent unique events (by summary)
     from the selected calendar.
