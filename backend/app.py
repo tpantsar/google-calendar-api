@@ -3,8 +3,8 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from api import api_bp
-from logger_config import logger
+from src.api import api_bp
+from src.logger_config import logger
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all domains on all routes
@@ -22,4 +22,4 @@ if not os.path.exists("creds/credentials.json"):
     exit(1)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
