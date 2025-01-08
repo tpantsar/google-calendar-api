@@ -10,7 +10,7 @@ from resources.calendar import CalendarList, CalendarListId
 from resources.event import EventItem, EventList
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
-api = Api(api_bp, catch_all_404s=True)
+api = Api(api_bp)
 
 # Add resources
 api.add_resource(CalendarList, "/calendars/", methods=["GET"])
