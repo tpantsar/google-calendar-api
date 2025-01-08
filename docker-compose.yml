@@ -2,6 +2,8 @@ services:
   backend:
     build:
       context: ./backend
+      secrets:
+        - credentials
     networks:
       - default
     ports:
@@ -10,3 +12,7 @@ services:
       - FLASK_ENV=development
       - FLASK_APP=app.py
     container_name: backend
+
+secrets:
+  credentials:
+    file: ./backend/src/creds/credentials.json

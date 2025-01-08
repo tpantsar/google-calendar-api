@@ -1,4 +1,15 @@
-/node_modules
+.vscode
+.dockerignore
+.flake8
+.gitignore
+.isort.cfg
+pytest.ini
+README.md
+docs/
+output/
+src/output/
+tests/
 data.json
 calendars.json
 events.json
+tasks.py
