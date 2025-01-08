@@ -115,7 +115,7 @@ def fast(selected_calendar_id: str):
     }
 
     event = create_event(selected_calendar_id, event_body)
-    print_event_details(event, duration, start, end)
+    print_event_details(event, float(duration), start, end)
 
 
 def custom(selected_calendar_id: str):
