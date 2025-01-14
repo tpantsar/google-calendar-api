@@ -1,0 +1,14 @@
+# Use the official Python image from the Docker Hub
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the application code into the container
+COPY terminal.py requirements-cli.txt src/ ./
+
+# Upgrade pip and install Python dependencies
+RUN pip3 install --upgrade pip && pip install --no-cache-dir -r requirements-cli.txt
+
+# Command to run the application using Gunicorn
+CMD ["python", "terminal.py"]
