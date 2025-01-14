@@ -168,3 +168,7 @@ calendars.json
 events.json
 popular_events.json
 recent_unique_events.json
+output/
+src/output/
+logger.log
+logger_archive.log

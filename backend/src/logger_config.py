@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 # Logging levels
@@ -14,6 +15,9 @@ LOG_TO_FILE = True
 # Configure the logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+# Create output directory for logs
+os.makedirs("src/output", exist_ok=True)
 
 filepath_logger = "src/output/logger.log"
 filepath_logger_archive = "src/output/logger_archive.log"
