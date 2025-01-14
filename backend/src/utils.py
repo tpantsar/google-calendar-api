@@ -7,14 +7,14 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from typeguard import typechecked
 
-from auth import get_credentials
-from error import ServiceBuildError
-from logger_config import logger
+from src.auth import get_credentials
+from src.error import ServiceBuildError
+from src.logger_config import logger
 
 
 def write_to_output_file(file_name, data):
     """Writes the data to /output directory, file extension determines the format."""
-    path = "output/" + file_name
+    path = "src/output/" + file_name
 
     if file_name.endswith(".json"):
         with open(path, "w", encoding="utf-8") as file:

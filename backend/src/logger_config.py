@@ -15,15 +15,16 @@ LOG_TO_FILE = True
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+filepath_logger = "src/output/logger.log"
+filepath_logger_archive = "src/output/logger_archive.log"
+
 # Create handlers with UTF-8 encoding
 console_handler = logging.StreamHandler(sys.stdout)
-file_handler = logging.FileHandler("output/logger.log", encoding="utf-8")
-file_handler_archive = logging.FileHandler(
-    "output/logger_archive.log", encoding="utf-8"
-)
+file_handler = logging.FileHandler(filepath_logger, encoding="utf-8")
+file_handler_archive = logging.FileHandler(filepath_logger_archive, encoding="utf-8")
 
 # Reset logger.log before running the script
-with open("output/logger.log", "w", encoding="utf-8"):
+with open(filepath_logger, "w", encoding="utf-8"):
     pass
 
 # Set level and format for handlers

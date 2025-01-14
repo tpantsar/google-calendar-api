@@ -4,10 +4,10 @@ from datetime import datetime
 from flask import Response, request
 from flask_restful import Resource
 
-from constants import JSON, MASON
-from error import APIError, ParameterError, create_error_response
-from logger_config import logger
-from services.event import (
+from src.constants import JSON, MASON
+from src.error import APIError, ParameterError, create_error_response
+from src.logger_config import logger
+from src.services.event import (
     create_event,
     delete_event,
     get_event,
