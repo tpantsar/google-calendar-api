@@ -20,8 +20,8 @@ def get_calendar_list():
         calendar_summaries = [calendar["summary"] for calendar in calendars]
 
         write_to_output_file("calendars.json", calendars)
-        logger.info(f"Found {len(calendars)} calendars")
-        logger.debug(f"Calendars: {calendar_summaries}")
+        logger.info("Found %d calendars", len(calendars))
+        logger.debug("Calendars: %s", ", ".join(calendar_summaries))
 
         return calendars
     except HttpError as error:

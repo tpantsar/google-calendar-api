@@ -1,4 +1,5 @@
 import os
+import sys
 
 from flask import Flask
 from flask_cors import CORS
@@ -16,7 +17,7 @@ if not os.path.exists("creds/credentials.json"):
     logger.error("Please download the credentials.json file from Google Cloud Console.")
     logger.error("Place the file in the backend/src directory.")
     logger.error("Refer to the README.md file for more information.")
-    exit(1)
+    sys.exit(1)
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

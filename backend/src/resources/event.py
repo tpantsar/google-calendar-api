@@ -32,7 +32,7 @@ class EventList(Resource):
         except APIError as e:
             return e.to_response()
         except Exception as e:
-            logger.error(f"An unhandled error occurred: {e}")
+            logger.error("An unhandled error occurred: %s", e)
             return create_error_response(500, "Internal Server Error", str(e))
 
     def post(self, calendar_id) -> Response:
@@ -51,7 +51,7 @@ class EventList(Resource):
         except ParameterError as e:
             return e.to_response()
         except Exception as e:
-            logger.error(f"An unhandled error occurred: {e}")
+            logger.error("An unhandled error occurred: %s", e)
             return create_error_response(500, "Internal Server Error", str(e))
 
 
@@ -68,7 +68,7 @@ class EventItem(Resource):
         except APIError as e:
             return e.to_response()
         except Exception as e:
-            logger.error(f"An unhandled error occurred: {e}")
+            logger.error("An unhandled error occurred: %s", e)
             return create_error_response(500, "Internal Server Error", str(e))
 
     def put(self, calendar_id, event_id) -> Response:
@@ -91,7 +91,7 @@ class EventItem(Resource):
         except APIError as e:
             return e.to_response()
         except Exception as e:
-            logger.error(f"An unhandled error occurred: {e}")
+            logger.error("An unhandled error occurred: %s", e)
             return create_error_response(500, "Internal Server Error", str(e))
 
     def delete(self, calendar_id, event_id) -> Response:

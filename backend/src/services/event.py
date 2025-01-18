@@ -26,7 +26,7 @@ def get_event(calendar_id, event_id):
         # Add computed properties to the event
         event = update_event_properties(event)
 
-        logger.info(f"Found event with ID {event_id}")
+        logger.info("Found event with ID %s", event_id)
         return event
     except HttpError as error:
         raise APIError(
@@ -72,7 +72,10 @@ def get_events(calendar_id, year):
             service.calendars().get(calendarId=calendar_id).execute().get("summary")
         )
         logger.info(
-            f"Found {len(events)} events from {calendar_summary} for the year {year}"
+            "Found %d events from %s for the year %d",
+            len(events),
+            calendar_summary,
+            year,
         )
     except HttpError as error:
         raise APIError(
@@ -127,7 +130,7 @@ def get_popular_events(calendar_id):
             .execute()
         )
         events = events_result.get("items", [])
-        logger.info(f"Found {len(events)} events in the calendar")
+        logger.info("Found %d events in the calendar", len(events))
     except HttpError as error:
         raise APIError(
             500,
@@ -143,7 +146,7 @@ def get_popular_events(calendar_id):
 
         # Get the top 10 most common summaries and their frequencies
         top_summary_counts = summary_counts.most_common(10)
-        logger.info(f"Top 10 popular events with counts: {top_summary_counts}")
+        logger.info("Top 10 popular events with counts: %s", top_summary_counts)
     except KeyError as e:
         raise APIError(
             500,
@@ -187,7 +190,7 @@ def get_recent_unique_events(calendar_id) -> list[str]:
             .execute()
         )
         events = events_result.get("items", [])
-        logger.info(f"Found {len(events)} events in the calendar")
+        logger.info("Found %d events in the calendar", len(events))
     except HttpError as error:
         raise APIError(
             500,
@@ -210,7 +213,7 @@ def get_recent_unique_events(calendar_id) -> list[str]:
             if len(recent_events) == 10:  # Stop once we have 10 unique events
                 break
 
-        logger.info(f"Found {len(recent_events)} unique recent events")
+        logger.info("Found %d unique recent events", len(recent_events))
     except KeyError as e:
         raise APIError(
             500,
@@ -238,8 +241,8 @@ def create_event(calendar_id, event_body):
     if calendar_id is None or event_body is None:
         raise ParameterError("Calendar ID or event body is missing")
 
-    logger.debug(f"Calendar ID: {calendar_id}")
-    logger.debug(f"Event body: {event_body}")
+    logger.debug("Calendar ID: %s", calendar_id)
+    logger.debug("Event body: %s", event_body)
 
     try:
         service = build_service()
@@ -256,7 +259,7 @@ def create_event(calendar_id, event_body):
         # Add computed properties to the event
         event = update_event_properties(event)
 
-        logger.info(f"Event created successfully: {event['id']}")
+        logger.info("Event created successfully: %s", event.get("id"))
         return event
     except HttpError as error:
         raise APIError(
@@ -289,7 +292,7 @@ def delete_event(calendar_id, event_id):
 
     try:
         service.events().delete(calendarId=calendar_id, eventId=event_id).execute()
-        logger.info(f"Event with ID {event_id} deleted successfully")
+        logger.info("Event with ID %s deleted successfully", event_id)
     except HttpError as error:
         raise APIError(
             500,
@@ -307,9 +310,9 @@ def update_event(calendar_id, event_id, event_body):
     if calendar_id is None or event_id is None or event_body is None:
         raise ParameterError("Calendar ID or event ID or event body is missing")
 
-    logger.debug(f"Calendar ID: {calendar_id}")
-    logger.debug(f"Event ID: {event_id}")
-    logger.debug(f"Event body: {event_body}")
+    logger.debug("Calendar ID: %s", calendar_id)
+    logger.debug("Event ID: %s", event_id)
+    logger.debug("Event body: %s", event_body)
 
     try:
         service = build_service()
@@ -334,8 +337,8 @@ def update_event(calendar_id, event_id, event_body):
 
         updated_event = update_event_properties(updated_event)
 
-        logger.info(f"Event with ID {event_id} updated successfully")
-        logger.info(f"Event body: {event_body}")
+        logger.info("Event with ID %s updated successfully", event_id)
+        logger.info("Event body: %s", event_body)
         return updated_event
     except HttpError as error:
         raise APIError(

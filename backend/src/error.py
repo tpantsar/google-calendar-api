@@ -31,14 +31,14 @@ class APIError(Exception):
     """Custom exception for API errors."""
 
     def __init__(self, status_code, title, message=None):
-        logger.error(f"{title}: {message}")
+        logger.error("%s, %s", title, message)
         self.status_code = status_code
         self.title = title
         self.message = message
         super().__init__(self.message)
 
     def to_response(self):
-        logger.error(f"{self.title}: {self.message}")
+        logger.error("%s, %s", self.title, self.message)
         resource_url = request.path
         body = MasonBuilder(resource_url=resource_url)
         body.add_error(self.title, self.message)

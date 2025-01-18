@@ -25,11 +25,11 @@ def get_credentials() -> Credentials:
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             logger.error("Credentials expired, refreshing")
-            logger.debug(f"Credentials: {creds}")
+            logger.debug("Credentials: %s", creds)
             try:
                 creds.refresh(Request())
             except RefreshError as e:
-                logger.error(f"Token has been expired or revoked. {e}")
+                logger.error("Token has been expired or revoked. %s", e)
                 logger.info("Guiding user to authenticate again.")
                 creds = auth_flow()
         else:

@@ -19,18 +19,18 @@ def write_to_output_file(file_name, data):
     if file_name.endswith(".json"):
         with open(path, "w", encoding="utf-8") as file:
             file.write(json.dumps(data, indent=2, ensure_ascii=False))
-        logger.info(f"Data written to {file_name}")
+        logger.info("Data written to %s", file_name)
     elif file_name.endswith(".csv"):
         with open(path, "w", encoding="utf-8") as file:
             writer = csv.writer(file)
             for row in data:
                 writer.writerow(row)
-        logger.info(f"Data written to {file_name}")
+        logger.info("Data written to %s", file_name)
     elif file_name.endswith(".txt"):
         with open(path, "w", encoding="utf-8") as file:
             for item in data:
                 file.write(f"{item}\n", encoding="utf-8")
-        logger.info(f"Data written to {file_name}")
+        logger.info("Data written to %s", file_name)
     else:
         logger.error("Unsupported file format")
 
@@ -54,13 +54,11 @@ def build_service() -> build:
         service = build("calendar", "v3", credentials=creds)
         return service
     except HttpError as e:
-        logger.error(f"HTTP Error while building the service: {e}")
+        logger.error("HTTP Error while building the service: %s", e)
         raise ServiceBuildError(f"Failed to build service due to an HTTP error: {e}")
     except Exception as e:
-        logger.error(f"Unexpected error during service build: {e}")
-        raise ServiceBuildError(
-            f"An unexpected error occurred while building the service: {e}"
-        )
+        logger.error("Unexpected error during service build: %s", e)
+        raise ServiceBuildError("Unexpected error during service build: %s", e)
 
 
 def round_to_nearest_interval(

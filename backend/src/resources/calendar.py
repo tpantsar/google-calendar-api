@@ -20,7 +20,7 @@ class CalendarList(Resource):
         except APIError as e:
             return e.to_response()
         except Exception as e:
-            logger.error(f"Unhandled Error in get_calendars: {e}")
+            logger.error("Unhandled Error in get_calendars: %s", e)
             return create_error_response(500, "Internal Server Error", str(e))
 
 
@@ -39,5 +39,5 @@ class CalendarListId(Resource):
         except APIError as e:
             return e.to_response()
         except Exception as e:
-            logger.error(f"Unhandled Error in get_calendars: {e}")
+            logger.error("Unhandled Error in get_calendars: %s", e)
             return create_error_response(500, "Internal Server Error", str(e))

@@ -102,7 +102,7 @@ def fast(selected_calendar_id: str):
 
     end = round_to_nearest_interval(current_local_time, 15)
     start = end - timedelta(hours=float(duration))
-    logger.debug(f"Start: {start}, End: {end}")
+    logger.debug("Start: %s, End: %s", str(start), str(end))
 
     start_formatted = start.isoformat()
     end_formatted = end.isoformat()
