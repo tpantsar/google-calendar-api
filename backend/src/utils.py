@@ -58,7 +58,7 @@ def build_service() -> build:
         raise ServiceBuildError(f"Failed to build service due to an HTTP error: {e}")
     except Exception as e:
         logger.error("Unexpected error during service build: %s", e)
-        raise ServiceBuildError("Unexpected error during service build: %s", e)
+        raise ServiceBuildError(f"Unexpected error during service build: {e}")
 
 
 def round_to_nearest_interval(
