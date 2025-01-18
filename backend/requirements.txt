@@ -10,4 +10,4 @@ isort
 flake8
 pytest
 InquirerPy
-typequard
+typeguard
