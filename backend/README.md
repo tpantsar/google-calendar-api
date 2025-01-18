@@ -46,3 +46,19 @@ invoke format
 ## Google Calendar API:
 
 https://console.cloud.google.com/apis/api/calendar-json.googleapis.com/metrics?hl=fi&project=unique-acronym-406815
+
+## Docker deployment:
+
+### API
+
+```bash
+docker build -t google-calendar-api .
+docker run --rm -it -p 5000:5000 google-calendar-api
+```
+
+### Terminal CLI
+
+```bash
+docker build -f Dockerfile.cli -t google-calendar-cli .
+docker run --rm -it google-calendar-cli
+```

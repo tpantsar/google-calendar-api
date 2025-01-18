@@ -1,8 +1,8 @@
 from googleapiclient.errors import HttpError
 
-from error import APIError, ServiceBuildError
-from logger_config import logger
-from utils import build_service, write_to_output_file
+from src.error import APIError, ServiceBuildError
+from src.logger_config import logger
+from src.utils import build_service, write_to_output_file
 
 
 def get_calendar_list():

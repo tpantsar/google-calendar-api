@@ -12,4 +12,7 @@ tests/
 data.json
 calendars.json
 events.json
+recent_unique_events.json
+logger.log
+logger_archive.log
 tasks.py

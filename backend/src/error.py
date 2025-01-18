@@ -2,9 +2,9 @@ import json
 
 from flask import Response, request
 
-from constants import ERROR_PROFILE, MASON
-from logger_config import logger
-from mason import MasonBuilder
+from src.constants import ERROR_PROFILE, MASON
+from src.logger_config import logger
+from src.mason import MasonBuilder
 
 
 class ServiceBuildError(Exception):

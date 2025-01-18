@@ -5,13 +5,10 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copy the application code into the container
-COPY . .
+COPY terminal.py requirements-cli.txt src/ ./
 
 # Upgrade pip and install Python dependencies
-RUN pip3 install --upgrade pip && pip install --no-cache-dir -r requirements.txt
-
-# Expose port 5000 for the Flask application
-EXPOSE 5000
+RUN pip3 install --upgrade pip && pip install --no-cache-dir -r requirements-cli.txt
 
 # Command to run the application using Gunicorn
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000", "-w", "4"]
+CMD ["python", "terminal.py"]

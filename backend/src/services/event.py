@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 
 from googleapiclient.errors import HttpError
 
-from error import APIError, ParameterError, ServiceBuildError
-from logger_config import logger
-from utils import build_service, format_event_time, write_to_output_file
+from src.error import APIError, ParameterError, ServiceBuildError
+from src.logger_config import logger
+from src.utils import build_service, format_event_time, write_to_output_file
 
 
 def get_event(calendar_id, event_id):
