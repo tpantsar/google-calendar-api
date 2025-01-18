@@ -3,22 +3,22 @@ from unittest.mock import MagicMock, patch
 import pytest
 from InquirerPy.validator import ValidationError
 
-from src.terminal import DateTimeValidator, custom, fast, format_datetime
+from terminal import DateTimeValidator, custom, fast, format_datetime
 
 
 # Mock constants and services
 @pytest.fixture
 def mock_constants():
-    with patch("src.terminal.TIMEZONE", "UTC"):
+    with patch("terminal.TIMEZONE", "UTC"):
         yield
 
 
 @pytest.fixture
 def mock_services():
-    with patch("src.terminal.get_calendar_list") as mock_get_calendar_list, patch(
-        "src.terminal.get_recent_unique_events"
+    with patch("terminal.get_calendar_list") as mock_get_calendar_list, patch(
+        "terminal.get_recent_unique_events"
     ) as mock_get_recent_unique_events, patch(
-        "src.terminal.create_event"
+        "terminal.create_event"
     ) as mock_create_event:
         yield mock_get_calendar_list, mock_get_recent_unique_events, mock_create_event
 
@@ -91,9 +91,7 @@ def test_fast(mock_constants, mock_services):
     # Mock inquirer prompt values
     with patch("InquirerPy.inquirer.number") as mock_number, patch(
         "InquirerPy.inquirer.text"
-    ) as mock_text, patch(
-        "src.terminal.print_event_details"
-    ) as mock_print_event_details:
+    ) as mock_text, patch("terminal.print_event_details") as mock_print_event_details:
         mock_number.return_value.execute.return_value = 1
         mock_text.return_value.execute.side_effect = [
             "Test Summary",
@@ -126,7 +124,7 @@ def test_custom(mock_constants, mock_services):
     }
 
     with patch("InquirerPy.inquirer.text") as mock_text, patch(
-        "src.terminal.print_event_details"
+        "terminal.print_event_details"
     ) as mock_print_event_details:
         mock_text.return_value.execute.side_effect = [
             "Test Summary",
