@@ -1,6 +1,6 @@
-## Download OAuth 2.0 credentials from Google Cloud Platform and place in /src/output directory
+## Download OAuth 2.0 credentials from Google Cloud Platform and place credentials.json in /creds directory
 
-https://console.cloud.google.com/apis/credentials?project=unique-acronym-406815
+https://console.cloud.google.com/apis/credentials
 
 ## Install miniconda
 
@@ -18,17 +18,17 @@ pytest
 ## Commands:
 
 ```
-conda install <package>
 conda env create --file environment.yml
 conda env update --file environment.yml
 conda env update --file environment.yml --prune
+conda activate google-calendar-api
+conda install <package>
 
+python -m venv .venv
+source .venv/bin/activate
+source .venv/Scripts/activate
 pip install -r requirements.txt
 
-(bash) source C:/Users/tomi_/miniconda3/Scripts/activate google-calendar-api
-(powershell) C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-api
-
-cd src
 python app.py
 http://127.0.0.1:5000/
 ```
@@ -45,7 +45,7 @@ invoke format
 
 ## Google Calendar API:
 
-https://console.cloud.google.com/apis/api/calendar-json.googleapis.com/metrics?hl=fi&project=unique-acronym-406815
+https://console.cloud.google.com/apis/api/calendar-json.googleapis.com
 
 ## Docker deployment:
 
