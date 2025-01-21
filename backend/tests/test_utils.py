@@ -54,7 +54,7 @@ def test_print_event_details_valid_datetime():
     try:
         start = datetime(2025, 1, 8, 11, 15, 0)
         end = datetime(2025, 1, 8, 12, 15, 0)
-        print_event_details(test_event, 1.5, start, end)
+        print_event_details(event=test_event, duration=90, start=start, end=end)
     except Exception:
         pytest.fail("print_event_details raised an exception unexpectedly!")
 

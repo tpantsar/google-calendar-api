@@ -92,7 +92,7 @@ def test_fast(mock_constants, mock_services):
     with patch("InquirerPy.inquirer.number") as mock_number, patch(
         "InquirerPy.inquirer.text"
     ) as mock_text, patch("terminal.print_event_details") as mock_print_event_details:
-        mock_number.return_value.execute.return_value = 1
+        mock_number.return_value.execute.return_value = 60
         mock_text.return_value.execute.side_effect = [
             "Test Summary",
             "Test Description",
@@ -141,3 +141,14 @@ def test_custom(mock_constants, mock_services):
             mock_print_event_details.assert_called_once()
         except Exception as e:
             pytest.fail(f"print_event_details raised an exception: {e}")
+
+
+# def test_end_time_after_start_time_inquirer(mock_constants, mock_services):
+#    start = inquirer.text(
+#        message="Start time",
+#        default=start_default.strftime(TIME_FORMAT_PROMPT),
+#        validate=DateTimeValidator(),
+#    ).execute()
+#
+#    end = start + timedelta(hours=int(duration))
+#
