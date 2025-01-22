@@ -6,6 +6,7 @@ import time
 from datetime import datetime, timedelta
 
 import babel
+import pytz
 from dateutil.parser import parse as dateutil_parse
 from dateutil.tz import tzlocal
 from googleapiclient.discovery import build
@@ -14,6 +15,7 @@ from parsedatetime.parsedatetime import Calendar
 from typeguard import typechecked
 
 from src.auth import get_credentials
+from src.constants import TIME_FORMAT_PROMPT
 from src.error import ServiceBuildError
 from src.logger_config import logger
 
@@ -152,6 +154,14 @@ def format_event_time(event_time):
     """Formats the event time to 'pe 4.10.2024 18:00'."""
     date = datetime.fromisoformat(event_time)
     return date.strftime("%a %d.%m.%Y %H:%M")
+
+
+def format_str_datetime_to_iso(dt_str: str, timezone_str: str):
+    """Formats the datetime string to ISO format."""
+    local_timezone = pytz.timezone(timezone_str)
+    dt = datetime.strptime(dt_str, TIME_FORMAT_PROMPT)
+    dt = local_timezone.localize(dt)
+    return dt.isoformat()
 
 
 def _is_dayfirst_locale():
