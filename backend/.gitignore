@@ -166,3 +166,6 @@ token.json
 data.json
 calendars.json
 events.json
+
+backend/output/
+backend/src/output/
