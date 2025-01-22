@@ -11,3 +11,6 @@ flake8
 pytest
 InquirerPy
 typeguard
+parsedatetime
+babel
+python-dateutil

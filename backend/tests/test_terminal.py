@@ -3,7 +3,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from InquirerPy.validator import ValidationError
 
-from terminal import DateTimeValidator, custom, fast, format_datetime
+from src.utils import format_str_datetime_to_iso
+from terminal import DateTimeValidator, custom, fast
 
 
 # Mock constants and services
@@ -69,7 +70,7 @@ def test_format_datetime():
     datetime_str = "2023-10-10 10:10"
     timezone_str = "UTC"
     expected = "2023-10-10T10:10:00+00:00"
-    assert format_datetime(datetime_str, timezone_str) == expected
+    assert format_str_datetime_to_iso(datetime_str, timezone_str) == expected
 
 
 # Test fast function with print_event_details
@@ -92,7 +93,7 @@ def test_fast(mock_constants, mock_services):
     with patch("InquirerPy.inquirer.number") as mock_number, patch(
         "InquirerPy.inquirer.text"
     ) as mock_text, patch("terminal.print_event_details") as mock_print_event_details:
-        mock_number.return_value.execute.return_value = 1
+        mock_number.return_value.execute.return_value = 60
         mock_text.return_value.execute.side_effect = [
             "Test Summary",
             "Test Description",

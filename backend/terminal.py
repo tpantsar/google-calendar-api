@@ -6,9 +6,18 @@ from InquirerPy.validator import EmptyInputValidator, ValidationError, Validator
 
 from src.constants import TIME_FORMAT_PROMPT, TIMEZONE
 from src.logger_config import logger
+from src.printer import Printer
 from src.services.calendar import get_calendar_list
 from src.services.event import create_event, get_recent_unique_events
-from src.utils import print_event_details, round_to_nearest_interval
+from src.utils import (
+    get_time_from_str,
+    get_timedelta_from_str,
+    print_event_details,
+    round_to_nearest_interval,
+)
+from src.validators import PARSABLE_DATE, get_input
+
+PRINTER = Printer()
 
 
 class DateTimeValidator(Validator):
@@ -24,13 +33,6 @@ class DateTimeValidator(Validator):
             raise ValidationError(
                 message=self._message, cursor_position=document.cursor_position
             )
-
-
-def format_datetime(datetime_str, timezone_str):
-    local_timezone = pytz.timezone(timezone_str)
-    dt = datetime.strptime(datetime_str, TIME_FORMAT_PROMPT)
-    dt = local_timezone.localize(dt)
-    return dt.isoformat()
 
 
 def main():
@@ -64,17 +66,20 @@ def main():
         custom(selected_calendar_id)
 
 
-def fast(selected_calendar_id: str):
-    # Duration of the event in hours
-    duration = inquirer.number(
-        message="Duration in hours",
+def get_duration() -> int:
+    return inquirer.number(
+        message="Duration in minutes",
         min_allowed=0,
-        max_allowed=24,
-        float_allowed=True,
+        max_allowed=1440,
+        float_allowed=False,
         default=None,
         replace_mode=True,
         validate=EmptyInputValidator(),
     ).execute()
+
+
+def fast(selected_calendar_id: str):
+    duration = get_duration()
 
     events = get_recent_unique_events(selected_calendar_id)
     for event in events:
@@ -101,7 +106,7 @@ def fast(selected_calendar_id: str):
     current_local_time = current_utc_time.astimezone(local_timezone)
 
     end = round_to_nearest_interval(current_local_time, 15)
-    start = end - timedelta(hours=float(duration))
+    start = end - timedelta(minutes=int(duration))
     logger.debug("Start: %s, End: %s", str(start), str(end))
 
     start_formatted = start.isoformat()
@@ -115,7 +120,7 @@ def fast(selected_calendar_id: str):
     }
 
     event = create_event(selected_calendar_id, event_body)
-    print_event_details(event, float(duration), start, end)
+    print_event_details(event, int(duration), start, end)
 
 
 def custom(selected_calendar_id: str):
@@ -123,7 +128,6 @@ def custom(selected_calendar_id: str):
     for event in events:
         print(event)
     popular_events_summaries = {event: None for event in events}
-    duration = 1
 
     # Event summary with auto-complete from popular events
     # https://inquirerpy.readthedocs.io/en/latest/pages/prompts/input.html#auto-completion
@@ -139,30 +143,16 @@ def custom(selected_calendar_id: str):
         validate=EmptyInputValidator(),
     ).execute()
 
-    # Convert UTC datetime to local datetime
-    local_timezone = pytz.timezone(TIMEZONE)
-    current_utc_time = datetime.now(timezone.utc)
-    current_local_time = current_utc_time.astimezone(local_timezone)
+    start_input = get_input(PRINTER, "Start: ", PARSABLE_DATE).strip()
+    duration = get_duration()
 
-    end = round_to_nearest_interval(current_local_time, 15)
-    start = end - timedelta(hours=float(duration))
+    start_time = get_time_from_str(start_input)
+    end_time = start_time + get_timedelta_from_str(duration)
 
-    start = inquirer.text(
-        message="Start time",
-        default=start.strftime(TIME_FORMAT_PROMPT),
-        validate=DateTimeValidator(),
-    ).execute()
+    start_formatted = start_time.isoformat()
+    end_formatted = end_time.isoformat()
 
-    end = inquirer.text(
-        message="End time",
-        default=end.strftime(TIME_FORMAT_PROMPT),
-        validate=DateTimeValidator(),
-    ).execute()
-
-    start_formatted = format_datetime(start, TIMEZONE)
     print(start_formatted)
-
-    end_formatted = format_datetime(end, TIMEZONE)
     print(end_formatted)
 
     event_body = {
@@ -173,12 +163,7 @@ def custom(selected_calendar_id: str):
     }
 
     event = create_event(selected_calendar_id, event_body)
-    print_event_details(
-        event,
-        duration,
-        datetime.strptime(start, TIME_FORMAT_PROMPT),
-        datetime.strptime(end, TIME_FORMAT_PROMPT),
-    )
+    print_event_details(event, int(duration), start_time, end_time)
 
 
 if __name__ == "__main__":

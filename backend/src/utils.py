@@ -1,15 +1,35 @@
 import calendar
 import csv
 import json
-from datetime import datetime
+import re
+import time
+from datetime import datetime, timedelta
 
+import babel
+import pytz
+from dateutil.parser import parse as dateutil_parse
+from dateutil.tz import tzlocal
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from parsedatetime.parsedatetime import Calendar
 from typeguard import typechecked
 
 from src.auth import get_credentials
+from src.constants import TIME_FORMAT_PROMPT
 from src.error import ServiceBuildError
 from src.logger_config import logger
+
+fuzzy_date_parse = Calendar().parse
+fuzzy_datetime_parse = Calendar().parseDT
+
+# Regular expression to parse duration strings like "1d 2h 3m" or "1.5h"
+# Based on https://stackoverflow.com/a/51916936/12880
+DURATION_REGEX = re.compile(
+    r"^((?P<days>[\.\d]+?)(?:d|day|days))?[ :]*"
+    r"((?P<hours>[\.\d]+?)(?:h|hour|hours))?[ :]*"
+    r"((?P<minutes>[\.\d]+?)(?:m|min|mins|minute|minutes))?[ :]*"
+    r"((?P<seconds>[\.\d]+?)(?:s|sec|secs|second|seconds))?$"
+)
 
 
 def write_to_output_file(file_name, data):
@@ -110,7 +130,7 @@ def round_to_nearest_interval(
 
 
 @typechecked
-def print_event_details(event: dict, duration: float, start: datetime, end: datetime):
+def print_event_details(event: dict, duration: int, start: datetime, end: datetime):
     """Prints the created event details to the console."""
     if not all(key in event for key in ("summary", "description")):
         raise ValueError("Event details are missing required fields.")
@@ -122,7 +142,7 @@ def print_event_details(event: dict, duration: float, start: datetime, end: date
         print("\nEvent created successfully:")
         print("{:<12}{:<}".format("Summary:", event["summary"]))
         print("{:<12}{:<}".format("Desc:", event["description"]))
-        print("{:<12}{:<}".format("Duration:", str(duration) + " hours"))
+        print("{:<12}{:<}".format("Duration:", str(duration) + " minutes"))
         print("{:<12}{:<}".format("Start:", start.strftime("%Y-%m-%d %H:%M:%S")))
         print("{:<12}{:<}".format("End:", end.strftime("%Y-%m-%d %H:%M:%S")))
         print(event.get("htmlLink"))
@@ -134,3 +154,88 @@ def format_event_time(event_time):
     """Formats the event time to 'pe 4.10.2024 18:00'."""
     date = datetime.fromisoformat(event_time)
     return date.strftime("%a %d.%m.%Y %H:%M")
+
+
+def format_str_datetime_to_iso(dt_str: str, timezone_str: str):
+    """Formats the datetime string to ISO format."""
+    local_timezone = pytz.timezone(timezone_str)
+    dt = datetime.strptime(dt_str, TIME_FORMAT_PROMPT)
+    dt = local_timezone.localize(dt)
+    return dt.isoformat()
+
+
+def _is_dayfirst_locale():
+    """Detect whether system locale date format has day first.
+
+    Examples:
+     - M/d/yy -> False
+     - dd/MM/yy -> True
+     - (UnknownLocaleError) -> False
+
+    Pattern syntax is documented at
+    https://babel.pocoo.org/en/latest/dates.html#pattern-syntax.
+    """
+    try:
+        locale = babel.Locale(babel.default_locale("LC_TIME"))
+    except babel.UnknownLocaleError:
+        # Couldn't detect locale, assume non-dayfirst.
+        return False
+    m = re.search(r"M|d|$", locale.date_formats["short"].pattern)
+    return m and m.group(0) == "d"
+
+
+def get_time_from_str(when):
+    """Convert a string to a time: first uses the dateutil parser, falls back
+    on fuzzy matching with parsedatetime
+    """
+    zero_oclock_today = datetime.now(tzlocal()).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+
+    # Only apply dayfirst=True if date actually starts with "XX-XX-".
+    # Other forms like YYYY-MM-DD shouldn't rely on locale by default (#792).
+    dayfirst = _is_dayfirst_locale() if re.match(r"^\d{1,2}-\d{1,2}-", when) else None
+    try:
+        event_time = dateutil_parse(when, default=zero_oclock_today, dayfirst=dayfirst)
+    except ValueError:
+        struct, result = fuzzy_date_parse(when)
+        if not result:
+            raise ValueError("Date and time is invalid: %s" % (when))
+        event_time = datetime.fromtimestamp(time.mktime(struct), tzlocal())
+
+    return event_time
+
+
+def get_timedelta_from_str(delta):
+    """
+    Parse a time string into a timedelta object.
+    Formats:
+      - number -> duration in minutes
+      - "1:10" -> hour and minutes
+      - "1d 1h 1m" -> days, hours, minutes
+    Based on https://stackoverflow.com/a/51916936/12880
+    """
+    parsed_delta = None
+    try:
+        parsed_delta = timedelta(minutes=float(delta))
+    except ValueError:
+        pass
+    if parsed_delta is None:
+        parts = DURATION_REGEX.match(delta)
+        if parts is not None:
+            try:
+                time_params = {
+                    name: float(param)
+                    for name, param in parts.groupdict().items()
+                    if param
+                }
+                parsed_delta = timedelta(**time_params)
+            except ValueError:
+                pass
+    if parsed_delta is None:
+        dt, result = fuzzy_datetime_parse(delta, sourceTime=datetime.min)
+        if result:
+            parsed_delta = dt - datetime.min
+    if parsed_delta is None:
+        raise ValueError("Duration is invalid: %s" % (delta))
+    return parsed_delta
