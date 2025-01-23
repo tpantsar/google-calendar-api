@@ -14,10 +14,14 @@ from googleapiclient.errors import HttpError
 from parsedatetime.parsedatetime import Calendar
 from typeguard import typechecked
 
-from src.auth import get_credentials
+from src.config import CLIENT_ID, CLIENT_SECRET
+from src.auth import authenticate
 from src.constants import TIME_FORMAT_PROMPT
 from src.error import ServiceBuildError
 from src.logger_config import logger
+from src.printer import Printer
+
+PRINTER = Printer()
 
 fuzzy_date_parse = Calendar().parse
 fuzzy_datetime_parse = Calendar().parseDT
@@ -63,7 +67,14 @@ def build_service() -> build:
     """
     try:
         logger.debug("Building the Google Calendar API service.")
-        creds = get_credentials()
+
+        # creds = get_credentials()
+        creds = authenticate(
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+            printer=PRINTER,
+            local=True,
+        )
         if not creds:
             logger.error("Credentials not found for building the service.")
             raise ServiceBuildError(

@@ -8,6 +8,13 @@ curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -o
 Start-Process -FilePath ".\miniconda.exe" -ArgumentList "/S" -Wait
 del miniconda.exe
 
+## Environment variables (.env)
+
+```bash
+CLIENT_ID=your_client_id
+CLIENT_SECRET=your_client_secret
+```
+
 ## Run tests:
 
 ```bash
