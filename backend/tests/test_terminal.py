@@ -73,8 +73,8 @@ def test_format_datetime():
     assert format_str_datetime_to_iso(datetime_str, timezone_str) == expected
 
 
-# Test fast function with print_event_details
-def test_fast(mock_constants, mock_services):
+def test_fast(mock_services):
+    """Test fast function with print_event_details"""
     mock_get_calendar_list, mock_get_recent_unique_events, mock_create_event = (
         mock_services
     )
@@ -108,8 +108,9 @@ def test_fast(mock_constants, mock_services):
             pytest.fail(f"print_event_details raised an exception: {e}")
 
 
-# Test custom function with print_event_details
-def test_custom(mock_constants, mock_services):
+@patch("builtins.input", lambda: "10:15")  # Mock start time input
+def test_custom(mock_services):
+    """Test custom function with print_event_details."""
     mock_get_calendar_list, mock_get_recent_unique_events, mock_create_event = (
         mock_services
     )
@@ -124,20 +125,20 @@ def test_custom(mock_constants, mock_services):
         "htmlLink": "http://example.com",
     }
 
-    with patch("InquirerPy.inquirer.text") as mock_text, patch(
-        "terminal.print_event_details"
-    ) as mock_print_event_details:
+    # Mock inquirer prompt values
+    with patch("InquirerPy.inquirer.number") as mock_number, patch(
+        "InquirerPy.inquirer.text"
+    ) as mock_text, patch("terminal.print_event_details") as mock_print_event_details:
+        mock_number.return_value.execute.return_value = 60  # Mock duration input
         mock_text.return_value.execute.side_effect = [
             "Test Summary",
             "Test Description",
-            "2023-10-10 10:15",
-            "2023-10-10 11:15",
+            "2023-10-10 10:15",  # Start time
         ]
 
         custom("test_calendar_id")
 
         mock_create_event.assert_called_once()
-        mock_print_event_details.assert_called_once()
         try:
             mock_print_event_details.assert_called_once()
         except Exception as e:
