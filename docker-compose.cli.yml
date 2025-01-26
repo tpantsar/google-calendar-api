@@ -9,6 +9,8 @@ services:
         - credentials
     networks:
       - default
+    volumes:
+      - ./backend/creds:/app/creds # Mount the credentials directory
 
 secrets:
   credentials:

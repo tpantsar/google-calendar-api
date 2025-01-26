@@ -48,7 +48,7 @@ def auth_flow() -> Credentials:
     """
     logger.debug("Running the authorization flow")
     flow = InstalledAppFlow.from_client_secrets_file("creds/credentials.json", SCOPES)
-    creds = flow.run_local_server(port=0)
+    creds = flow.run_local_server(open_browser=False, port=0)
     if creds and creds.valid:
         logger.info("Authorization flow completed")
         return creds
