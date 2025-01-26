@@ -49,16 +49,18 @@ https://console.cloud.google.com/apis/api/calendar-json.googleapis.com
 
 ## Docker deployment:
 
-### API
+### Flask API
 
 ```bash
 docker build -t google-calendar-api .
 docker run --rm -it -p 5000:5000 google-calendar-api
 ```
 
-### Terminal CLI
+### CLI application
 
 ```bash
+docker compose -f docker-compose.cli.yml up --build
+docker run --rm -it google-calendar-cli bash -c "python terminal.py"
+
 docker build -f Dockerfile.cli -t google-calendar-cli .
-docker run --rm -it google-calendar-cli
 ```
