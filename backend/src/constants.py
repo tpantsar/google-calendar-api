@@ -1,7 +1,10 @@
+import os
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
-TIMEZONE = "Europe/Helsinki"
+# Timezone of the calendar, default is Europe/Helsinki (+2 GMT)
+TIMEZONE = os.getenv("TZ", "Europe/Helsinki")
 
 MASON = "application/vnd.mason+json"
 JSON = "application/json"

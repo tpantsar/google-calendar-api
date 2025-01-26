@@ -15,7 +15,7 @@ from parsedatetime.parsedatetime import Calendar
 from typeguard import typechecked
 
 from src.auth import get_credentials
-from src.constants import TIME_FORMAT_PROMPT
+from src.constants import TIME_FORMAT_PROMPT, TIMEZONE
 from src.error import ServiceBuildError
 from src.logger_config import logger
 
@@ -194,7 +194,10 @@ def get_time_from_str(when):
 
     # Only apply dayfirst=True if date actually starts with "XX-XX-".
     # Other forms like YYYY-MM-DD shouldn't rely on locale by default (#792).
-    dayfirst = _is_dayfirst_locale() if re.match(r"^\d{1,2}-\d{1,2}-", when) else None
+    # dayfirst = _is_dayfirst_locale() if re.match(r"^\d{1,2}-\d{1,2}-", when) else None
+    dayfirst = (
+        True if re.match(r"^\d{1,2}[-.]\d{1,2}[-.]", when) else _is_dayfirst_locale()
+    )
     try:
         event_time = dateutil_parse(when, default=zero_oclock_today, dayfirst=dayfirst)
     except ValueError:

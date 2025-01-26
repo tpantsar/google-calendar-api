@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+import pytz
 from typeguard import TypeCheckError
 
 from src.utils import get_time_from_str, get_timedelta_from_str, print_event_details
@@ -97,3 +98,95 @@ def test_print_event_details_invalid_datetime2():
 
     with pytest.raises(TypeCheckError):
         print_event_details(test_event, 1.5, "2023-10-10 10:15", "2023-10-10 11:15")
+
+
+def test_get_time_from_str_non_dayfirst_locale():
+    TIMEZONE = "Europe/Helsinki"
+    when = "2025-01-26 11:00"
+
+    # Convert UTC datetime to local datetime
+    local_timezone = pytz.timezone(TIMEZONE)
+
+    # Localize the expected datetime to the specified timezone
+    expected = local_timezone.localize(datetime(2025, 1, 26, 11, 0))
+    result = get_time_from_str(when).astimezone(local_timezone)
+
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_time_from_str_valid_fuzzy_parse1():
+    when = "next Friday at 6pm"
+    current_year = datetime.now().year
+
+    result = get_time_from_str(when)
+    assert (
+        result.year == current_year
+    ), f"Expected {current_year}, but got {result.year}"
+    assert result.weekday() == 4, f"Expected Friday, but got {result.strftime('%A')}"
+    assert result.hour == 18, f"Expected 18:00, but got {result.strftime('%H:%M')}"
+
+
+def test_get_time_from_str_valid_fuzzy_parse2():
+    when = "Today at 3pm"
+
+    current_year = datetime.now().year
+
+    result = get_time_from_str(when)
+    assert (
+        result.year == current_year
+    ), f"Expected {current_year}, but got {result.year}"
+    assert (
+        result.weekday() == datetime.now().weekday()
+    ), f"Expected today, but got {result.strftime('%A')}"
+    assert result.hour == 15, f"Expected 15:00, but got {result.strftime('%H:%M')}"
+
+
+def test_get_time_from_str_invalid_date():
+    when = "invalid date string"
+    with pytest.raises(ValueError, match="Date and time is invalid"):
+        get_time_from_str(when)
+
+
+def test_get_time_from_str_invalid_date2():
+    when = ""
+    with pytest.raises(ValueError, match="Date and time is invalid"):
+        get_time_from_str(when)
+
+
+def test_get_time_from_str_dayfirst_locale1():
+    TIMEZONE = "Europe/Helsinki"
+    when = "04-10-2024 18:00"
+
+    # Convert UTC datetime to local datetime
+    local_timezone = pytz.timezone(TIMEZONE)
+
+    expected = local_timezone.localize(datetime(2024, 10, 4, 18, 0))
+    result = get_time_from_str(when).astimezone(local_timezone)
+
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_time_from_str_dayfirst_locale2():
+    TIMEZONE = "Europe/Helsinki"
+    when = "04.10.2024 18:00"
+
+    # Convert UTC datetime to local datetime
+    local_timezone = pytz.timezone(TIMEZONE)
+
+    expected = local_timezone.localize(datetime(2024, 10, 4, 18, 0))
+    result = get_time_from_str(when).astimezone(local_timezone)
+
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_time_from_str_dayfirst_locale2():
+    TIMEZONE = "Europe/Helsinki"
+    when = "4.5.2024 9:00"
+
+    # Convert UTC datetime to local datetime
+    local_timezone = pytz.timezone(TIMEZONE)
+
+    expected = local_timezone.localize(datetime(2024, 5, 4, 9, 0))
+    result = get_time_from_str(when).astimezone(local_timezone)
+
+    assert result == expected, f"Expected {expected}, but got {result}"

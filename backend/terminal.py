@@ -146,7 +146,10 @@ def custom(selected_calendar_id: str):
     start_input = get_input(PRINTER, "Start: ", PARSABLE_DATE).strip()
     duration = get_duration()
 
-    start_time = get_time_from_str(start_input)
+    # Convert UTC datetime to local datetime
+    local_timezone = pytz.timezone(TIMEZONE)
+
+    start_time = get_time_from_str(start_input).astimezone(local_timezone)
     end_time = start_time + get_timedelta_from_str(duration)
 
     start_formatted = start_time.isoformat()
