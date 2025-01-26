@@ -3,7 +3,6 @@
 .flake8
 .gitignore
 .isort.cfg
-pytest.ini
 README.md
 docs/
 output/

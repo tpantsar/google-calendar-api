@@ -1,0 +1,15 @@
+services:
+  cli:
+    image: google-calendar-cli
+    container_name: cli
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.cli
+      secrets:
+        - credentials
+    networks:
+      - default
+
+secrets:
+  credentials:
+    file: ./backend/creds/credentials.json
