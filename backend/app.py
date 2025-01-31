@@ -4,13 +4,18 @@ import sys
 from flask import Flask
 from flask_cors import CORS
 
-from src.api import api_bp
+from src.api import api_blueprint
 from src.logger_config import logger
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all domains on all routes
 
-app.register_blueprint(api_bp)
+# Allow all origins, methods, and headers
+CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+
+# OR (If you want to allow only specific frontend URL)
+# CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+
+app.register_blueprint(api_blueprint)
 
 if not os.path.exists("creds/credentials.json"):
     logger.error("credentials.json file not found.")

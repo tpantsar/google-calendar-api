@@ -4,7 +4,7 @@ COPY . .
 RUN npm ci
 RUN npm run build
 
-ENV BACKEND_API_URL=http://localhost:8080/api
+ENV VITE_BACKEND_URL=http://localhost:8080/api
 
 # Build the final image from nginx
 FROM nginx:alpine

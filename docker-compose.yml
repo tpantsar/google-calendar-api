@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile
       secrets:
         - credentials
-    networks:
-      - default
     ports:
       - "5000:5000"
     environment:
@@ -23,21 +21,17 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    networks:
-      - default
     ports:
       - "5173:5173"
     environment:
       - NODE_ENV=production
-      - BACKEND_API_URL=http://localhost:8080/api
+      - VITE_BACKEND_URL=http://localhost:8080/api
     depends_on:
       - backend
 
   nginx:
     image: nginx:alpine
     container_name: nginx
-    networks:
-      - default
     ports:
       - 8080:80
     volumes:
