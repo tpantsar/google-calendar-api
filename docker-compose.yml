@@ -1,7 +1,10 @@
 services:
   backend:
+    image: google-calendar-backend
+    container_name: backend
     build:
       context: ./backend
+      dockerfile: Dockerfile
       secrets:
         - credentials
     networks:
@@ -11,8 +14,10 @@ services:
     environment:
       - FLASK_ENV=production
       - FLASK_APP=app.py
-    container_name: backend
 
 secrets:
   credentials:
     file: ./backend/creds/credentials.json
+
+volumes:
+  creds:

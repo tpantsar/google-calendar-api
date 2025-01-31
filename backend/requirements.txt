@@ -11,6 +11,8 @@ flake8
 pytest
 InquirerPy
 typeguard
+gunicorn
+waitress
 parsedatetime
 babel
 python-dateutil

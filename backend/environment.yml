@@ -18,6 +18,7 @@ dependencies:
   - InquirerPy
   - typeguard
   - gunicorn
+  - waitress
   - parsedatetime
   - babel
   - python-dateutil

@@ -15,7 +15,7 @@ from parsedatetime.parsedatetime import Calendar
 from typeguard import typechecked
 
 from src.auth import get_credentials
-from src.constants import TIME_FORMAT_PROMPT, TIMEZONE
+from src.constants import TIME_FORMAT_PROMPT
 from src.error import ServiceBuildError
 from src.logger_config import logger
 
