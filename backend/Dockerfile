@@ -18,4 +18,4 @@ RUN pip3 install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Run the Flask application using waitress (Works in Windows and Linux)
-CMD ["waitress-serve", "--listen=127.0.0.1:5000", "app:app"]
+CMD ["waitress-serve", "--listen=0.0.0.0:5000", "app:app"]
