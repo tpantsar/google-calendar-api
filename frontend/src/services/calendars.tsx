@@ -1,10 +1,10 @@
-import axios from 'axios'
 import Calendar from '../types/Calendar'
+import apiClient from './apiClient'
 
-const baseUrl = '/api/calendars'
+const serviceUrl = '/calendars'
 
 const getAll = (): Promise<Calendar[]> => {
-  const request = axios.get(baseUrl)
+  const request = apiClient.get(serviceUrl)
   return request.then((response) => response.data)
 }
 
