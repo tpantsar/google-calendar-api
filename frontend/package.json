@@ -5,15 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "concurrently \"npm run backend\" \"npm run dev\"",
     "test": "vitest run",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "docker-build": "docker build -t google-calendar-frontend .",
+    "concurrently": "concurrently \"npm run backend\" \"npm run dev\"",
     "lint": "eslint .",
     "backend": "C:/Users/tomi_/miniconda3/Scripts/activate.bat google-calendar-api && cd ../backend/src && python app.py",
-    "format": "prettier --write \"**/*.{js,ts,jsx,tsx}\"",
-    "merge": "git checkout main && git pull && git merge dev && npm run format && git push origin main && git checkout dev && git add .",
-    "preview": "vite preview"
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
+    "merge": "git checkout main && git pull && git merge dev && npm run format && git push origin main && git checkout dev && git add ."
   },
   "dependencies": {
     "axios": "^1.7.9",

@@ -1,0 +1,13 @@
+.vscode
+.dockerignore
+.gitignore
+.prettierignore
+.prettierrc
+Dockerfile
+eslint.config.js
+node_modules
+README.md
+public/img/
+docs/
+tests/
+testSetup.js
