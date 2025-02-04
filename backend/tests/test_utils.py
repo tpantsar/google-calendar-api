@@ -23,12 +23,11 @@ def test_print_event_details_success():
         "description": "This is a test event",
         "htmlLink": "http://example.com",
     }
-    duration = 60
     start = datetime(2024, 10, 4, 18, 0)
     end = datetime(2024, 10, 4, 19, 0)
 
     try:
-        print_event_details(event, duration, start, end)
+        print_event_details(event, end - start, start, end)
     except Exception:
         pytest.fail("print_event_details raised an exception unexpectedly!")
 
@@ -39,36 +38,37 @@ def test_print_event_details_get_time_from_str_success():
         "description": "This is a test event",
         "htmlLink": "http://example.com",
     }
-    duration = 60
-    start_time = get_time_from_str("2024-10-04 18:00")  # "2024-10-04 18:00"
-    end_time = start_time + get_timedelta_from_str(duration)  # "2024-10-04 19:00"
+    start = get_time_from_str("2024-10-04 18:00")  # "2024-10-04 18:00"
+    end = start + get_timedelta_from_str(60)  # "2024-10-04 19:00"
+    assert end > start, "End time must be after start time."
+
+    duration = end - start
+    assert duration == timedelta(minutes=60), "Duration must be 60 minutes."
 
     try:
-        print_event_details(event, duration, start_time, end_time)
+        print_event_details(event, duration, start, end)
     except Exception:
         pytest.fail("print_event_details raised an exception unexpectedly!")
 
 
 def test_print_event_details_partial_data_success():
     event = {"summary": "Test Event", "description": "This is a test event"}
-    duration = 60
     start = datetime(2024, 10, 4, 18, 0)
     end = datetime(2024, 10, 4, 19, 0)
 
     try:
-        print_event_details(event, duration, start, end)
+        print_event_details(event, end - start, start, end)
     except Exception:
         pytest.fail("print_event_details raised an exception unexpectedly!")
 
 
 def test_print_event_details_missing_event_data():
     event = {"summary": "Test Event"}
-    duration = 60
     start = datetime(2024, 10, 4, 18, 0)
     end = datetime(2024, 10, 4, 19, 0)
 
     with pytest.raises(ValueError):
-        print_event_details(event, duration, start, end)
+        print_event_details(event, end - start, start, end)
 
 
 def test_print_event_details_valid_datetime():
@@ -81,7 +81,8 @@ def test_print_event_details_valid_datetime():
     try:
         start = datetime(2025, 1, 8, 11, 15, 0)
         end = datetime(2025, 1, 8, 12, 15, 0)
-        print_event_details(event=test_event, duration=90, start=start, end=end)
+        duration = end - start
+        print_event_details(event=test_event, duration=duration, start=start, end=end)
     except Exception:
         pytest.fail("print_event_details raised an exception unexpectedly!")
 

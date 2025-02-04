@@ -135,9 +135,6 @@ def print_event_details(event: dict, duration: any, start: datetime, end: dateti
     if not all(key in event for key in ("summary", "description")):
         raise ValueError("Event details are missing required fields.")
 
-    if duration < 0:
-        raise ValueError("Duration cannot be negative.")
-
     try:
         print("\nEvent created successfully:")
         print("{:<12}{:<}".format("Summary:", event["summary"]))
@@ -156,7 +153,7 @@ def get_duration_str(duration):
         return "0 min"
 
     duration = get_timedelta_from_str(duration)
-    if duration.total_seconds() < 0:
+    if duration.total_seconds() <= 0:
         return "0 min"
 
     total_hours = duration.days * 24 + duration.seconds // 3600
