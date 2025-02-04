@@ -9,7 +9,7 @@ import sys
 # ERROR: Due to a more serious problem, the software has not been able to perform some function.
 # CRITICAL: A serious error, indicating that the program itself may be unable to continue running.
 
-LOG_TO_CONSOLE = False
+LOG_TO_CONSOLE = True
 LOG_TO_FILE = True
 
 # Configure the logger

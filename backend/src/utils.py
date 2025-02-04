@@ -150,15 +150,15 @@ def print_event_details(event: dict, duration: int, start: datetime, end: dateti
         print("Failed to print event details.", str(e))
 
 
-def format_event_time(event_time):
-    """Formats the event time to 'pe 4.10.2024 18:00'."""
+def format_event_time_from_iso(event_time):
+    """Formats the event time from ISO format to 'pe 4.10.2024 18:00'."""
     date = datetime.fromisoformat(event_time)
     return date.strftime("%a %d.%m.%Y %H:%M")
 
 
-def format_str_datetime_to_iso(dt_str: str, timezone_str: str):
+def format_str_datetime_to_iso(dt_str: str, timezone: str):
     """Formats the datetime string to ISO format."""
-    local_timezone = pytz.timezone(timezone_str)
+    local_timezone = pytz.timezone(timezone)
     dt = datetime.strptime(dt_str, TIME_FORMAT_PROMPT)
     dt = local_timezone.localize(dt)
     return dt.isoformat()

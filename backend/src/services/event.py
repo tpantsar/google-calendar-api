@@ -5,7 +5,7 @@ from googleapiclient.errors import HttpError
 
 from src.error import APIError, ParameterError, ServiceBuildError
 from src.logger_config import logger
-from src.utils import build_service, format_event_time, write_to_output_file
+from src.utils import build_service, format_event_time_from_iso, write_to_output_file
 
 
 def get_event(calendar_id, event_id):
@@ -42,8 +42,21 @@ def get_event(calendar_id, event_id):
         )
 
 
-def get_events(calendar_id, year):
-    """Fetches Google Calendar events for the specified year."""
+def get_events(calendar_id, start_date: datetime, end_date: datetime):
+    """
+    Fetches Google Calendar events for the specified time range.
+    Reference: https://developers.google.com/calendar/api/v3/reference/events/list
+
+    start_date: The start date of the time range.
+    end_date: The end date of the time range.
+    Must be an RFC3339 timestamp with mandatory time zone offset, for example:
+    2011-06-03T10:00:00-07:00, 2011-06-03T10:00:00Z.
+    """
+    if calendar_id is None:
+        raise ParameterError("Calendar ID is missing")
+    if start_date is None or end_date is None:
+        raise ParameterError("Start date or end date is missing")
+
     try:
         service = build_service()
     except ServiceBuildError as e:
@@ -51,17 +64,13 @@ def get_events(calendar_id, year):
             500, "Service Build Error", f"Failed to build the service: {str(e)}"
         )
 
-    # Define the time range for the year
-    start_date = datetime(year, 1, 1).isoformat() + "Z"
-    end_date = datetime(year, 12, 31, 23, 59, 59).isoformat() + "Z"
-
     try:
         events_result = (
             service.events()
             .list(
                 calendarId=calendar_id,  # Default is 'primary'
-                timeMin=start_date,
-                timeMax=end_date,
+                timeMin=start_date,  # RFC3339 timestamp, 2011-06-03T10:00:00Z
+                timeMax=end_date,  # RFC3339 timestamp, 2011-06-03T10:00:00Z
                 singleEvents=True,
                 orderBy="startTime",
             )
@@ -72,10 +81,11 @@ def get_events(calendar_id, year):
             service.calendars().get(calendarId=calendar_id).execute().get("summary")
         )
         logger.info(
-            "Found %d events from %s for the year %d",
+            "Found %d events from %s between %s and %s",
             len(events),
             calendar_summary,
-            year,
+            format_event_time_from_iso(start_date),
+            format_event_time_from_iso(end_date),
         )
     except HttpError as error:
         raise APIError(
@@ -91,7 +101,7 @@ def get_events(calendar_id, year):
         # Add computed properties to each event
         for event in events:
             event = update_event_properties(event)
-    except KeyError as e:
+    except (KeyError, AttributeError) as e:
         raise APIError(
             500,
             "Event Properties Error",
@@ -358,8 +368,8 @@ def update_event_properties(event: dict):
     """Updates the properties of a single calendar event."""
     start = event["start"].get("dateTime", event["start"].get("date"))
     end = event["end"].get("dateTime", event["end"].get("date"))
-    event["formatted_start"] = format_event_time(start)
-    event["formatted_end"] = format_event_time(end)
+    event["formatted_start"] = format_event_time_from_iso(start)
+    event["formatted_end"] = format_event_time_from_iso(end)
 
     # Calculate the duration of the event in hours
     time_difference = datetime.fromisoformat(end) - datetime.fromisoformat(start)

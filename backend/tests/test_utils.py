@@ -1,10 +1,18 @@
+import logging
 from datetime import datetime
 
 import pytest
 import pytz
 from typeguard import TypeCheckError
 
-from src.utils import get_time_from_str, get_timedelta_from_str, print_event_details
+from src.utils import (
+    format_event_time_from_iso,
+    get_time_from_str,
+    get_timedelta_from_str,
+    print_event_details,
+)
+
+logger = logging.getLogger(__name__)
 
 
 def test_print_event_details_success():
@@ -110,6 +118,7 @@ def test_get_time_from_str_non_dayfirst_locale():
     # Localize the expected datetime to the specified timezone
     expected = local_timezone.localize(datetime(2025, 1, 26, 11, 0))
     result = get_time_from_str(when).astimezone(local_timezone)
+    logger.info(result)
 
     assert result == expected, f"Expected {expected}, but got {result}"
 
@@ -119,6 +128,7 @@ def test_get_time_from_str_valid_fuzzy_parse1():
     current_year = datetime.now().year
 
     result = get_time_from_str(when)
+    logger.info(result)
     assert (
         result.year == current_year
     ), f"Expected {current_year}, but got {result.year}"
@@ -132,6 +142,7 @@ def test_get_time_from_str_valid_fuzzy_parse2():
     current_year = datetime.now().year
 
     result = get_time_from_str(when)
+    logger.info(result)
     assert (
         result.year == current_year
     ), f"Expected {current_year}, but got {result.year}"
@@ -189,4 +200,31 @@ def test_get_time_from_str_dayfirst_locale2():
     expected = local_timezone.localize(datetime(2024, 5, 4, 9, 0))
     result = get_time_from_str(when).astimezone(local_timezone)
 
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_format_event_time_from_iso_valid_date():
+    event_time = "2024-10-04T18:00:00Z"
+    expected = "Fri 04.10.2024 18:00"
+    result = format_event_time_from_iso(event_time)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_format_event_time_from_iso_invalid_date():
+    event_time = "invalid-date"
+    with pytest.raises(ValueError):
+        format_event_time_from_iso(event_time)
+
+
+def test_format_event_time_from_iso_edge_case():
+    event_time = "2024-02-29T23:59:59"  # Leap year date
+    expected = "Thu 29.02.2024 23:59"
+    result = format_event_time_from_iso(event_time)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_format_event_time_from_iso_different_time():
+    event_time = "2024-10-04T09:30:00"
+    expected = "Fri 04.10.2024 09:30"
+    result = format_event_time_from_iso(event_time)
     assert result == expected, f"Expected {expected}, but got {result}"

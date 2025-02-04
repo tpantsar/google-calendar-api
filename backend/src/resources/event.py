@@ -1,8 +1,6 @@
 import json
-from datetime import datetime
 
 from flask import Response, jsonify, make_response, request
-from flask_cors import cross_origin
 from flask_restful import Resource
 
 from src.constants import JSON, MASON
@@ -15,6 +13,7 @@ from src.services.event import (
     get_events,
     update_event,
 )
+from src.utils import get_time_from_str
 
 
 def _build_cors_preflight_response() -> Response:
@@ -34,16 +33,35 @@ class EventList(Resource):
     """Resource for a list of calendar events."""
 
     def get(self, calendar_id) -> Response:
-        """Returns the calendar events for the current year."""
+        """Returns the calendar events for the specified time range."""
+        # Retrieve query parameters from the URL
+        start_date = request.args.get("start_date")
+        end_date = request.args.get("end_date")
+
         if calendar_id is None:
             return create_error_response(400, "Bad Request", "Calendar ID is missing")
 
-        current_year = datetime.now().year
+        if start_date is None:
+            return create_error_response(
+                400, "Bad Request", "Start date is required for event retrieval"
+            )
+
+        if end_date is None:
+            return create_error_response(
+                400, "Bad Request", "End date is required for event retrieval"
+            )
+
+        start_date = (
+            get_time_from_str(start_date).replace(tzinfo=None).isoformat() + "Z"
+        )
+        end_date = get_time_from_str(end_date).replace(tzinfo=None).isoformat() + "Z"
 
         try:
-            events = get_events(calendar_id, current_year)
+            events = get_events(calendar_id, start_date=start_date, end_date=end_date)
             return Response(json.dumps(events), status=200, mimetype=MASON)
         except APIError as e:
+            return e.to_response()
+        except ParameterError as e:
             return e.to_response()
         except Exception as e:
             logger.error("An unhandled error occurred: %s", e)
