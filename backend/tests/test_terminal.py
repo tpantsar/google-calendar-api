@@ -1,10 +1,9 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
-from InquirerPy.validator import ValidationError
 
 from src.utils import format_str_datetime_to_iso
-from terminal import DateTimeValidator, custom, fast
+from terminal import custom, fast
 
 
 # Mock constants and services
@@ -22,47 +21,6 @@ def mock_services():
         "terminal.create_event"
     ) as mock_create_event:
         yield mock_get_calendar_list, mock_get_recent_unique_events, mock_create_event
-
-
-# Parametrized test for DateTimeValidator
-@pytest.mark.parametrize(
-    "datetime_str",
-    [
-        ("2023-10-10 10:10"),
-        ("2023-12-31 23:59"),
-        ("2023-01-01 00:00"),
-        ("2023-1-1 9:00"),
-        ("2023-01-1 9:00"),
-        ("2023-1-01 9:00"),
-        ("2023-1-1 9:0"),
-    ],
-)
-def test_datetime_validator_valid(datetime_str):
-    validator = DateTimeValidator()
-    document = MagicMock()
-    document.text = datetime_str
-    try:
-        validator.validate(document)
-    except ValidationError:
-        pytest.fail("ValidationError raised unexpectedly!")
-
-
-@pytest.mark.parametrize(
-    "datetime_str",
-    [
-        ("invalid-date"),
-        ("2023-13-01 10:10"),
-        ("2023-10-32 10:10"),
-        ("2023-10-10 25:00"),
-        ("2023-10-10 10:61"),
-    ],
-)
-def test_datetime_validator_invalid(datetime_str):
-    validator = DateTimeValidator()
-    document = MagicMock()
-    document.text = datetime_str
-    with pytest.raises(ValidationError):
-        validator.validate(document)
 
 
 # Test format_datetime
@@ -90,11 +48,13 @@ def test_fast(mock_services):
     }
 
     # Mock inquirer prompt values
-    with patch("InquirerPy.inquirer.number") as mock_number, patch(
+    with patch("terminal.get_duration") as mock_duration, patch(
         "InquirerPy.inquirer.text"
-    ) as mock_text, patch("terminal.print_event_details") as mock_print_event_details:
-        mock_number.return_value.execute.return_value = 60
-        mock_text.return_value.execute.side_effect = [
+    ) as mock_title_desc, patch(
+        "terminal.print_event_details"
+    ) as mock_print_event_details:
+        mock_duration.return_value = "60 minutes"
+        mock_title_desc.return_value.execute.side_effect = [
             "Test Summary",
             "Test Description",
         ]
@@ -126,10 +86,10 @@ def test_custom(mock_services):
     }
 
     # Mock inquirer prompt values
-    with patch("InquirerPy.inquirer.number") as mock_number, patch(
+    with patch("terminal.get_duration") as mock_duration, patch(
         "InquirerPy.inquirer.text"
     ) as mock_text, patch("terminal.print_event_details") as mock_print_event_details:
-        mock_number.return_value.execute.return_value = 60  # Mock duration input
+        mock_duration.return_value = "60 minutes"
         mock_text.return_value.execute.side_effect = [
             "Test Summary",
             "Test Description",

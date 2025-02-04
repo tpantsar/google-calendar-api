@@ -130,7 +130,7 @@ def round_to_nearest_interval(
 
 
 @typechecked
-def print_event_details(event: dict, duration: int, start: datetime, end: datetime):
+def print_event_details(event: dict, duration: any, start: datetime, end: datetime):
     """Prints the created event details to the console."""
     if not all(key in event for key in ("summary", "description")):
         raise ValueError("Event details are missing required fields.")
@@ -142,12 +142,32 @@ def print_event_details(event: dict, duration: int, start: datetime, end: dateti
         print("\nEvent created successfully:")
         print("{:<12}{:<}".format("Summary:", event["summary"]))
         print("{:<12}{:<}".format("Desc:", event["description"]))
-        print("{:<12}{:<}".format("Duration:", str(duration) + " minutes"))
+        print("{:<12}{:<}".format("Duration:", get_duration_str(duration)))
         print("{:<12}{:<}".format("Start:", start.strftime("%Y-%m-%d %H:%M:%S")))
         print("{:<12}{:<}".format("End:", end.strftime("%Y-%m-%d %H:%M:%S")))
         print(event.get("htmlLink"))
     except Exception as e:
         print("Failed to print event details.", str(e))
+
+
+def get_duration_str(duration):
+    """Gets the duration in human-readable format."""
+    if duration is None:
+        return "0 min"
+
+    duration = get_timedelta_from_str(duration)
+    if duration.total_seconds() < 0:
+        return "0 min"
+
+    total_hours = duration.days * 24 + duration.seconds // 3600
+    minutes = (duration.seconds % 3600) // 60
+
+    if total_hours == 0:
+        return f"{minutes} min"
+    elif minutes == 0:
+        return f"{total_hours} h"
+    else:
+        return f"{total_hours} h {minutes} min"
 
 
 def format_event_time_from_iso(event_time):

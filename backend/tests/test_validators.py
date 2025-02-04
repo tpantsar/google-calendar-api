@@ -1,10 +1,13 @@
 import re
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
+import pytest
+
+from exceptions import ValidationError
 from src.printer import Printer
 from src.utils import get_time_from_str, get_timedelta_from_str
-from src.validators import PARSABLE_DATE, get_input
+from src.validators import PARSABLE_DATE, DateTimeValidator, get_input
 
 PRINTER = Printer()
 
@@ -37,3 +40,26 @@ def test_get_input():
     assert re.match(
         iso8601_pattern, end_formatted
     ), "end_formatted does not follow ISO 8601 format."
+
+
+# Parametrized test for DateTimeValidator
+@pytest.mark.parametrize(
+    "datetime_str",
+    [
+        ("2023-10-10 10:10"),
+        ("2023-12-31 23:59"),
+        ("2023-01-01 00:00"),
+        ("2023-1-1 9:00"),
+        ("2023-01-1 9:00"),
+        ("2023-1-01 9:00"),
+        ("2023-1-1 9:0"),
+    ],
+)
+def test_datetime_validator_valid(datetime_str):
+    validator = DateTimeValidator()
+    document = MagicMock()
+    document.text = datetime_str
+    try:
+        validator.validate(document)
+    except ValidationError:
+        pytest.fail("ValidationError raised unexpectedly!")

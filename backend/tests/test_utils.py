@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 import pytz
@@ -7,6 +7,8 @@ from typeguard import TypeCheckError
 
 from src.utils import (
     format_event_time_from_iso,
+    fuzzy_datetime_parse,
+    get_duration_str,
     get_time_from_str,
     get_timedelta_from_str,
     print_event_details,
@@ -42,7 +44,7 @@ def test_print_event_details_get_time_from_str_success():
     end_time = start_time + get_timedelta_from_str(duration)  # "2024-10-04 19:00"
 
     try:
-        print_event_details(event, int(duration), start_time, end_time)
+        print_event_details(event, duration, start_time, end_time)
     except Exception:
         pytest.fail("print_event_details raised an exception unexpectedly!")
 
@@ -227,4 +229,127 @@ def test_format_event_time_from_iso_different_time():
     event_time = "2024-10-04T09:30:00"
     expected = "Fri 04.10.2024 09:30"
     result = format_event_time_from_iso(event_time)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_timedelta_from_str_minutes():
+    delta = "90"
+    expected = timedelta(minutes=90)
+    result = get_timedelta_from_str(delta)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_timedelta_from_str_hours_minutes():
+    delta = "1:30"
+    expected = timedelta(hours=1, minutes=30)
+    result = get_timedelta_from_str(delta)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_timedelta_from_str_days_hours_minutes():
+    delta = "1d 2h 30m"
+    expected = timedelta(days=1, hours=2, minutes=30)
+    result = get_timedelta_from_str(delta)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_timedelta_from_str_hours():
+    delta = "2h"
+    expected = timedelta(hours=2)
+    result = get_timedelta_from_str(delta)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_timedelta_from_str_days():
+    delta = "3d"
+    expected = timedelta(days=3)
+    result = get_timedelta_from_str(delta)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_timedelta_from_str_invalid_format():
+    delta = "invalid"
+    with pytest.raises(ValueError, match="Duration is invalid"):
+        get_timedelta_from_str(delta)
+
+
+def test_get_timedelta_from_str_fuzzy_parse():
+    delta = "next Friday at 6pm"
+    result = get_timedelta_from_str(delta)
+    logger.info(result)
+    expected = fuzzy_datetime_parse(delta, sourceTime=datetime.min)[0] - datetime.min
+    assert result == expected, f"Expected {expected}, but got {result}"
+    assert result.days >= 0, "Expected a positive timedelta"
+
+
+def test_get_timedelta_from_str_edge_case():
+    delta = "0.5h"
+    expected = timedelta(minutes=30)
+    result = get_timedelta_from_str(delta)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_duration_str_minutes():
+    duration = "90"
+    expected = "1 h 30 min"
+    result = get_duration_str(duration)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_duration_str_hours():
+    duration = "120"
+    expected = "2 h"
+    result = get_duration_str(duration)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_duration_str_hours_minutes():
+    duration = "150"
+    expected = "2 h 30 min"
+    result = get_duration_str(duration)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_duration_str_days_hours_minutes():
+    duration = "1d 2h 30m"
+    expected = "26 h 30 min"  # 1 day = 24 hours + 2 hours = 26 hours
+    result = get_duration_str(duration)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_duration_str_invalid_format():
+    duration = "invalid"
+    with pytest.raises(ValueError, match="Duration is invalid"):
+        get_duration_str(duration)
+
+
+def test_get_duration_str_edge_case():
+    duration = "0.5h"
+    expected = "30 min"
+    result = get_duration_str(duration)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+
+def test_get_duration_str_none_zero():
+    duration = None
+    expected = "0 min"
+    result = get_duration_str(duration)
+    logger.info(result)
+    assert result == expected, f"Expected {expected}, but got {result}"
+
+    duration = 0
+    expected = "0 min"
+    result = get_duration_str(duration)
+    logger.info(result)
     assert result == expected, f"Expected {expected}, but got {result}"

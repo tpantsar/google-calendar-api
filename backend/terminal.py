@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 import pytz
 from InquirerPy import inquirer
-from InquirerPy.validator import EmptyInputValidator, ValidationError, Validator
+from InquirerPy.validator import EmptyInputValidator
 
-from src.constants import TIME_FORMAT_PROMPT, TIMEZONE
+from src.constants import TIMEZONE
 from src.logger_config import logger
 from src.printer import Printer
 from src.services.calendar import get_calendar_list
@@ -15,24 +15,9 @@ from src.utils import (
     print_event_details,
     round_to_nearest_interval,
 )
-from src.validators import PARSABLE_DATE, get_input
+from src.validators import PARSABLE_DATE, PARSABLE_DURATION, get_input
 
 PRINTER = Printer()
-
-
-class DateTimeValidator(Validator):
-    def __init__(
-        self, message: str = "Invalid date format. Use YYYY-MM-DD HH:MM"
-    ) -> None:
-        self._message = message
-
-    def validate(self, document) -> None:
-        try:
-            datetime.strptime(document.text, TIME_FORMAT_PROMPT)
-        except ValueError:
-            raise ValidationError(
-                message=self._message, cursor_position=document.cursor_position
-            )
 
 
 def main():
@@ -66,7 +51,7 @@ def main():
         custom(selected_calendar_id)
 
 
-def get_duration() -> int:
+def get_duration_legacy() -> int:
     return inquirer.number(
         message="Duration in minutes",
         min_allowed=0,
@@ -76,6 +61,10 @@ def get_duration() -> int:
         replace_mode=True,
         validate=EmptyInputValidator(),
     ).execute()
+
+
+def get_duration():
+    return get_input(PRINTER, "Duration (human readable): ", PARSABLE_DURATION)
 
 
 def fast(selected_calendar_id: str):
@@ -106,7 +95,7 @@ def fast(selected_calendar_id: str):
     current_local_time = current_utc_time.astimezone(local_timezone)
 
     end = round_to_nearest_interval(current_local_time, 15)
-    start = end - timedelta(minutes=int(duration))
+    start = end - get_timedelta_from_str(duration)
     logger.debug("Start: %s, End: %s", str(start), str(end))
 
     start_formatted = start.isoformat()
@@ -120,7 +109,7 @@ def fast(selected_calendar_id: str):
     }
 
     event = create_event(selected_calendar_id, event_body)
-    print_event_details(event, int(duration), start, end)
+    print_event_details(event, duration, start, end)
 
 
 def custom(selected_calendar_id: str):
@@ -143,7 +132,7 @@ def custom(selected_calendar_id: str):
         validate=EmptyInputValidator(),
     ).execute()
 
-    start_input = get_input(PRINTER, "Start: ", PARSABLE_DATE).strip()
+    start_input = get_input(PRINTER, "When: ", PARSABLE_DATE).strip()
     duration = get_duration()
 
     # Convert UTC datetime to local datetime
@@ -165,7 +154,7 @@ def custom(selected_calendar_id: str):
     }
 
     event = create_event(selected_calendar_id, event_body)
-    print_event_details(event, int(duration), start_time, end_time)
+    print_event_details(event, duration, start_time, end_time)
 
 
 if __name__ == "__main__":
