@@ -20,6 +20,7 @@ dependencies = [
     "parsedatetime",
     "babel",
     "python-dateutil",
+    "gcalcli",
 ]
 
 [project.optional-dependencies]
