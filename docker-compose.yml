@@ -15,6 +15,21 @@ services:
     volumes:
       - ./backend/creds:/app/creds
 
+  cli:
+    image: google-calendar-backend
+    container_name: cli
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.cli
+      secrets:
+        - credentials
+    networks:
+      - default
+    volumes:
+      - ./backend/creds:/app/creds # Mount the credentials directory
+    depends_on:
+      - backend
+
   frontend:
     image: google-calendar-frontend
     container_name: frontend
