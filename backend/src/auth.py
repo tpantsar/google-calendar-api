@@ -50,22 +50,22 @@ def authenticate(
 ) -> Credentials:
     flow = InstalledAppFlow.from_client_config(
         client_config={
-            "installed": {
-                "client_id": client_id,
-                "client_secret": client_secret,
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                "redirect_uris": ["http://localhost"],
+            'installed': {
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
+                'token_uri': 'https://oauth2.googleapis.com/token',
+                'auth_provider_x509_cert_url': 'https://www.googleapis.com/oauth2/v1/certs',
+                'redirect_uris': ['http://localhost'],
             }
         },
         scopes=SCOPES,
     )
     if not local:
         printer.msg(
-            "Note: Behavior of the `--noauth-local-server` option has changed! "
-            "Starting local server, but providing instructions for connecting "
-            "to it remotely...\n"
+            'Note: Behavior of the `--noauth-local-server` option has changed! '
+            'Starting local server, but providing instructions for connecting '
+            'to it remotely...\n'
         )
     credentials = None
     attempt_num = 0
@@ -73,18 +73,18 @@ def authenticate(
     while credentials is None:
         port = _free_local_port()
         if not local:
-            printer.msg("Option 1 (outbound):\n", "yellow")
+            printer.msg('Option 1 (outbound):\n', 'yellow')
             printer.msg(
-                "  To establish a connection from this system to a remote "
-                "host, execute a command like: `ssh username@host -L "
-                f"{port}:localhost:{port} BROWSER=open $BROWSER "
+                '  To establish a connection from this system to a remote '
+                'host, execute a command like: `ssh username@host -L '
+                f'{port}:localhost:{port} BROWSER=open $BROWSER '
                 "'https://the-url-below'`\n",
             )
-            printer.msg("Option 2 (outbound):\n", "yellow")
+            printer.msg('Option 2 (outbound):\n', 'yellow')
             printer.msg(
-                "  To establish a connection from a remote host to this "
-                "system, execute a command from remote host like: "
-                f"`ssh username@host -fN -R {port}:localhost:{port} ; "
+                '  To establish a connection from a remote host to this '
+                'system, execute a command from remote host like: '
+                f'`ssh username@host -fN -R {port}:localhost:{port} ; '
                 "BROWSER=open $BROWSER https://the-url-below'`\n\n",
             )
         try:
@@ -92,16 +92,16 @@ def authenticate(
         except OSError as e:
             if e.errno == 98 and attempt_num < 4:
                 # Will get retried with a different port.
-                printer.msg(f"Port {port} in use, trying another port...")
+                printer.msg(f'Port {port} in use, trying another port...')
                 attempt_num += 1
             else:
                 raise
         except RecursionError:
             raise OSError(
-                "Failed to fetch credentials. If this is a nonstandard gcalcli "
-                "install, please try again with a system-installed gcalcli as "
-                "a workaround.\n"
-                "Details: https://github.com/insanum/gcalcli/issues/735."
+                'Failed to fetch credentials. If this is a nonstandard gcalcli '
+                'install, please try again with a system-installed gcalcli as '
+                'a workaround.\n'
+                'Details: https://github.com/insanum/gcalcli/issues/735.'
             )
     return credentials
 
@@ -109,7 +109,7 @@ def authenticate(
 def _free_local_port():
     # See https://stackoverflow.com/a/45690594.
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
-        s.bind(("", 0))
+        s.bind(('', 0))
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return s.getsockname()[1]
 
