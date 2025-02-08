@@ -21,6 +21,7 @@ dependencies = [
     "parsedatetime",
     "babel",
     "python-dateutil",
+    "gcalcli",
 ]
 
 [project.urls]
