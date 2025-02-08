@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gcalapi"
+version = "0.1.0"
+description = "Google Calendar client"
+dependencies = [
+    "Flask",
+    "flask-restful",
+    "flask-cors",
+    "google-api-python-client",
+    "google-auth-oauthlib",
+    "google-auth",
+    "InquirerPy",
+    "typeguard",
+    "gunicorn",
+    "waitress",
+    "parsedatetime",
+    "babel",
+    "python-dateutil",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "invoke",
+    "autoflake",
+    "isort",
+    "flake8",
+]
+
+[tool.setuptools]
+packages = ["gcalapi"]
+
+[project.scripts]
+gcalapi = "terminal:main"
