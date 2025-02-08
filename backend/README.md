@@ -56,7 +56,9 @@ docker build -t google-calendar-api .
 docker run --rm -it -p 5000:5000 google-calendar-api
 ```
 
-### CLI application
+---
+
+### CLI application (Legacy)
 
 ```bash
 docker compose -f docker-compose.cli.yml up --build
