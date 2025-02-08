@@ -17,37 +17,6 @@ from src.printer import Printer
 from src.printer import Printer
 
 
-def get_credentials() -> Credentials:
-    """
-    Get the user credentials for the Google Calendar API (OAuth 2.0).
-    The file token.json stores the user's access and refresh tokens, and is
-    created automatically when the authorization flow completes for the first
-    time.
-    """
-    creds = None
-    if os.path.exists("creds/token.json"):
-        creds = Credentials.from_authorized_user_file("creds/token.json", SCOPES)
-        logger.debug("Credentials loaded from token.json")
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            logger.error("Credentials expired, refreshing")
-            logger.debug("Credentials: %s", creds)
-            try:
-                creds.refresh(Request())
-            except RefreshError as e:
-                logger.error("Token has been expired or revoked. %s", e)
-                logger.info("Guiding user to authenticate again.")
-                creds = auth_flow()
-        else:
-            creds = auth_flow()
-        with open("creds/token.json", "w") as token:
-            token.write(creds.to_json())
-            logger.debug("Credentials written to token.json")
-
-    logger.debug("Credentials fetched successfully")
-    return creds
-
-
 def authenticate(
     client_id: str, client_secret: str, printer: Printer, local: bool
 ) -> Credentials:

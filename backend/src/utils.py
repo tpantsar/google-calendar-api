@@ -67,8 +67,6 @@ def build_service() -> build:
     """
     try:
         logger.debug("Building the Google Calendar API service.")
-
-        # creds = get_credentials()
         creds = authenticate(
             client_id=CLIENT_ID,
             client_secret=CLIENT_SECRET,
