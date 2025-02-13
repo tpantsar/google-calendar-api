@@ -8,13 +8,13 @@ class ENVIRONMENT:
 
     def __init__(self):
         project_dir = os.path.join(os.path.dirname(__file__), os.pardir)
-        dotenv_path = os.path.join(project_dir, ".env")
+        dotenv_path = os.path.join(project_dir, '.env')
         load_dotenv(dotenv_path)
-        self.client_id = os.getenv("CLIENT_ID")
-        self.client_secret = os.getenv("CLIENT_SECRET")
+        self.client_id = os.getenv('CLIENT_ID')
+        self.client_secret = os.getenv('CLIENT_SECRET')
 
     def get_instance(self):
-        if not hasattr(self, "_instance"):
+        if not hasattr(self, '_instance'):
             self._instance = ENVIRONMENT()
         return self._instance
 
