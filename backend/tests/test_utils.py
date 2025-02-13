@@ -7,7 +7,6 @@ from typeguard import TypeCheckError
 
 from src.utils import (
     format_event_time_from_iso,
-    fuzzy_datetime_parse,
     get_duration_str,
     get_timedelta_from_str,
     print_event_details,
@@ -134,69 +133,6 @@ def test_format_event_time_from_iso_different_time():
     event_time = '2024-10-04T09:30:00'
     expected = 'Fri 04.10.2024 09:30'
     result = format_event_time_from_iso(event_time)
-    assert result == expected, f'Expected {expected}, but got {result}'
-
-
-def test_get_timedelta_from_str_minutes():
-    delta = '90'
-    expected = timedelta(minutes=90)
-    result = get_timedelta_from_str(delta)
-    logger.info(result)
-    assert result == expected, f'Expected {expected}, but got {result}'
-
-
-def test_get_timedelta_from_str_hours_minutes():
-    delta = '1:30'
-    expected = timedelta(hours=1, minutes=30)
-    result = get_timedelta_from_str(delta)
-    logger.info(result)
-    assert result == expected, f'Expected {expected}, but got {result}'
-
-
-def test_get_timedelta_from_str_days_hours_minutes():
-    delta = '1d 2h 30m'
-    expected = timedelta(days=1, hours=2, minutes=30)
-    result = get_timedelta_from_str(delta)
-    logger.info(result)
-    assert result == expected, f'Expected {expected}, but got {result}'
-
-
-def test_get_timedelta_from_str_hours():
-    delta = '2h'
-    expected = timedelta(hours=2)
-    result = get_timedelta_from_str(delta)
-    logger.info(result)
-    assert result == expected, f'Expected {expected}, but got {result}'
-
-
-def test_get_timedelta_from_str_days():
-    delta = '3d'
-    expected = timedelta(days=3)
-    result = get_timedelta_from_str(delta)
-    logger.info(result)
-    assert result == expected, f'Expected {expected}, but got {result}'
-
-
-def test_get_timedelta_from_str_invalid_format():
-    delta = 'invalid'
-    with pytest.raises(ValueError, match='Duration is invalid'):
-        get_timedelta_from_str(delta)
-
-
-def test_get_timedelta_from_str_fuzzy_parse():
-    delta = 'next Friday at 6pm'
-    result = get_timedelta_from_str(delta)
-    logger.info(result)
-    expected = fuzzy_datetime_parse(delta, sourceTime=datetime.min)[0] - datetime.min
-    assert result == expected, f'Expected {expected}, but got {result}'
-    assert result.days >= 0, 'Expected a positive timedelta'
-
-
-def test_get_timedelta_from_str_edge_case():
-    delta = '0.5h'
-    expected = timedelta(minutes=30)
-    result = get_timedelta_from_str(delta)
-    logger.info(result)
     assert result == expected, f'Expected {expected}, but got {result}'
 
 

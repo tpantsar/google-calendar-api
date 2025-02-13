@@ -2,11 +2,11 @@ import calendar
 import csv
 import json
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 
-import babel
 import pytz
 from babel.dates import format_datetime
+from gcalcli.utils import get_timedelta_from_str
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from parsedatetime.parsedatetime import Calendar
@@ -179,38 +179,3 @@ def format_str_datetime_to_iso(dt_str: str, timezone: str):
     dt = datetime.strptime(dt_str, TIME_FORMAT_PROMPT)
     dt = local_timezone.localize(dt)
     return dt.isoformat()
-
-
-def get_timedelta_from_str(delta):
-    """
-    Parse a time string into a timedelta object.
-    Formats:
-      - number -> duration in minutes
-      - "1:10" -> hour and minutes
-      - "1d 1h 1m" -> days, hours, minutes
-    Based on https://stackoverflow.com/a/51916936/12880
-    """
-    parsed_delta = None
-    try:
-        parsed_delta = timedelta(minutes=float(delta))
-    except ValueError:
-        pass
-    if parsed_delta is None:
-        parts = DURATION_REGEX.match(delta)
-        if parts is not None:
-            try:
-                time_params = {
-                    name: float(param)
-                    for name, param in parts.groupdict().items()
-                    if param
-                }
-                parsed_delta = timedelta(**time_params)
-            except ValueError:
-                pass
-    if parsed_delta is None:
-        dt, result = fuzzy_datetime_parse(delta, sourceTime=datetime.min)
-        if result:
-            parsed_delta = dt - datetime.min
-    if parsed_delta is None:
-        raise ValueError('Duration is invalid: %s' % (delta))
-    return parsed_delta

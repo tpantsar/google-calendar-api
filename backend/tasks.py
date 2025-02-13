@@ -7,6 +7,11 @@ def check(ctx):
     ctx.run('ruff check')
 
 
+def fix(ctx):
+    """Fix linting issues with ruff."""
+    ctx.run('ruff check --fix')
+
+
 @task
 def format(ctx):
     """Remove unused imports, sort imports, format code."""
