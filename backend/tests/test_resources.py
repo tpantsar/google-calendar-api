@@ -7,7 +7,6 @@ import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 
-import app
 from src.resources.event import EventList
 
 logger = logging.getLogger(__name__)

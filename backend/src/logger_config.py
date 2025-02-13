@@ -4,10 +4,17 @@ import sys
 
 # Logging levels
 # DEBUG: Detailed information, typically of interest only when diagnosing problems.
+
 # INFO: Confirmation that things are working as expected.
-# WARNING: An indication that something unexpected happened, or indicative of some problem in the near future.
-# ERROR: Due to a more serious problem, the software has not been able to perform some function.
-# CRITICAL: A serious error, indicating that the program itself may be unable to continue running.
+
+# WARNING: An indication that something unexpected happened,
+# or indicative of some problem in the near future.
+
+# ERROR: Due to a more serious problem,
+# the software has not been able to perform some function.
+
+# CRITICAL: A serious error,
+# indicating that the program itself may be unable to continue running.
 
 LOG_TO_CONSOLE = True
 LOG_TO_FILE = True

@@ -106,7 +106,8 @@ def round_to_nearest_interval(
         if hour >= 24:
             hour = 0  # Reset to 0 if hour exceeds 23
             day += 1  # Increase the day by 1 if the hour exceeds 23
-            # Check if day needs to be increased to the next month (e.g. 31st day of the month)
+            # Check if day needs to be increased to the next month,
+            # e.g. 31st day of the month
             _, last_day = calendar.monthrange(year, month)
             if day > last_day:
                 day = 1

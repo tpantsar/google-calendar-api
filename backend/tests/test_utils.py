@@ -176,20 +176,20 @@ def test_get_time_from_str_dayfirst_locale1():
     assert result == expected, f'Expected {expected}, but got {result}'
 
 
-def test_get_time_from_str_dayfirst_locale2():
+def test_get_time_from_str_dayfirst_locale_leading_zeroes():
     TIMEZONE = 'Europe/Helsinki'
-    when = '04.10.2024 18:00'
+    when = '04.09.2024 18:00'
 
     # Convert UTC datetime to local datetime
     local_timezone = pytz.timezone(TIMEZONE)
 
-    expected = local_timezone.localize(datetime(2024, 10, 4, 18, 0))
+    expected = local_timezone.localize(datetime(2024, 9, 4, 18, 0))
     result = get_time_from_str(when).astimezone(local_timezone)
 
     assert result == expected, f'Expected {expected}, but got {result}'
 
 
-def test_get_time_from_str_dayfirst_locale2():
+def test_get_time_from_str_dayfirst_locale_non_leading_zeroes():
     TIMEZONE = 'Europe/Helsinki'
     when = '4.5.2024 9:00'
 

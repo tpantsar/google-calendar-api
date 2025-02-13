@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from InquirerPy.validator import ValidationError, Validator
+from InquirerPy.validator import Validator
 
 from .constants import TIME_FORMAT_PROMPT
 from .exceptions import ValidationError
