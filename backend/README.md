@@ -4,9 +4,22 @@ https://console.cloud.google.com/apis/credentials
 
 ## Install miniconda
 
+```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -o miniconda.exe
 Start-Process -FilePath ".\miniconda.exe" -ArgumentList "/S" -Wait
 del miniconda.exe
+```
+
+## gcalcli
+
+```bash
+# Install from Git Repository:
+pip install git+https://github.com/tpantsar/gcalcli.git
+
+# Install from .whl (Wheel) File:
+python -m build
+pip install dist/package.whl
+```
 
 ## Run tests:
 
@@ -17,7 +30,7 @@ pytest
 
 ## Commands:
 
-```
+```bash
 conda env create --file environment.yml
 conda env update --file environment.yml
 conda env update --file environment.yml --prune
@@ -35,7 +48,7 @@ http://127.0.0.1:5000/
 
 ## Custom commands:
 
-```
+```bash
 # Check linting
 invoke check
 
