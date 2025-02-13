@@ -5,6 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "gcalapi"
 version = "0.1.0"
+readme = "README.md"
 description = "Google Calendar client"
 dependencies = [
     "Flask",
@@ -21,6 +22,10 @@ dependencies = [
     "babel",
     "python-dateutil",
 ]
+
+[project.urls]
+Repository = "https://github.com/tpantsar/google-calendar-api"
+Issues = "https://github.com/tpantsar/google-calendar-api/issues"
 
 [project.optional-dependencies]
 dev = [
