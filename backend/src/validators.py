@@ -1,11 +1,12 @@
 from datetime import datetime
 from typing import Optional
 
+from gcalcli.utils import get_time_from_str
 from InquirerPy.validator import Validator
 
 from .constants import TIME_FORMAT_PROMPT
 from .exceptions import ValidationError
-from .utils import get_time_from_str, get_timedelta_from_str
+from .utils import get_timedelta_from_str
 
 DATE_INPUT_DESCRIPTION = '\
 a date (e.g. 2019-12-31, tomorrow 10am, 2nd Jan, Jan 4th, etc) or valid time \

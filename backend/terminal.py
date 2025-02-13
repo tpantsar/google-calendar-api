@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 import pytz
+from gcalcli.utils import get_time_from_str
 from InquirerPy import inquirer
 from InquirerPy.validator import EmptyInputValidator
 
@@ -10,7 +11,6 @@ from src.printer import Printer
 from src.services.calendar import get_calendar_list
 from src.services.event import create_event, get_recent_unique_events
 from src.utils import (
-    get_time_from_str,
     get_timedelta_from_str,
     print_event_details,
     round_to_nearest_interval,

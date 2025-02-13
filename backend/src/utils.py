@@ -2,13 +2,11 @@ import calendar
 import csv
 import json
 import re
-import time
 from datetime import datetime, timedelta
 
 import babel
 import pytz
-from dateutil.parser import parse as dateutil_parse
-from dateutil.tz import tzlocal
+from babel.dates import format_datetime
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from parsedatetime.parsedatetime import Calendar
@@ -169,9 +167,10 @@ def get_duration_str(duration):
 
 
 def format_event_time_from_iso(event_time):
-    """Formats the event time from ISO format to 'pe 4.10.2024 18:00'."""
+    """Formats the event time from ISO format to 'Day DD.MM.YYYY HH:MM'."""
     date = datetime.fromisoformat(event_time)
-    return date.strftime('%a %d.%m.%Y %H:%M')
+    formatted_date = format_datetime(date, 'EEE dd.MM.yyyy HH:mm', locale='en_US')
+    return formatted_date
 
 
 def format_str_datetime_to_iso(dt_str: str, timezone: str):
@@ -200,31 +199,6 @@ def _is_dayfirst_locale():
         return False
     m = re.search(r'M|d|$', locale.date_formats['short'].pattern)
     return m and m.group(0) == 'd'
-
-
-def get_time_from_str(when):
-    """Convert a string to a time: first uses the dateutil parser, falls back
-    on fuzzy matching with parsedatetime
-    """
-    zero_oclock_today = datetime.now(tzlocal()).replace(
-        hour=0, minute=0, second=0, microsecond=0
-    )
-
-    # Only apply dayfirst=True if date actually starts with "XX-XX-".
-    # Other forms like YYYY-MM-DD shouldn't rely on locale by default (#792).
-    # dayfirst = _is_dayfirst_locale() if re.match(r"^\d{1,2}-\d{1,2}-", when) else None
-    dayfirst = (
-        True if re.match(r'^\d{1,2}[-.]\d{1,2}[-.]', when) else _is_dayfirst_locale()
-    )
-    try:
-        event_time = dateutil_parse(when, default=zero_oclock_today, dayfirst=dayfirst)
-    except ValueError:
-        struct, result = fuzzy_date_parse(when)
-        if not result:
-            raise ValueError('Date and time is invalid: %s' % (when))
-        event_time = datetime.fromtimestamp(time.mktime(struct), tzlocal())
-
-    return event_time
 
 
 def get_timedelta_from_str(delta):

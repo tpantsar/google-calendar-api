@@ -2,6 +2,7 @@ import json
 
 from flask import Response, jsonify, make_response, request
 from flask_restful import Resource
+from gcalcli.utils import get_time_from_str
 
 from src.constants import JSON, MASON
 from src.error import APIError, ParameterError, create_error_response
@@ -13,7 +14,6 @@ from src.services.event import (
     get_events,
     update_event,
 )
-from src.utils import get_time_from_str
 
 
 def _build_cors_preflight_response() -> Response:
