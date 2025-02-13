@@ -20,8 +20,8 @@ class CalendarList(Resource):
         except APIError as e:
             return e.to_response()
         except Exception as e:
-            logger.error("Unhandled Error in get_calendars: %s", e)
-            return create_error_response(500, "Internal Server Error", str(e))
+            logger.error('Unhandled Error in get_calendars: %s', e)
+            return create_error_response(500, 'Internal Server Error', str(e))
 
 
 class CalendarListId(Resource):
@@ -32,12 +32,12 @@ class CalendarListId(Resource):
         try:
             calendars = get_calendar_list()
             calendar_ids = [
-                {"summary": calendar["summary"], "id": calendar["id"]}
+                {'summary': calendar['summary'], 'id': calendar['id']}
                 for calendar in calendars
             ]
             return Response(json.dumps(calendar_ids), status=200, mimetype=MASON)
         except APIError as e:
             return e.to_response()
         except Exception as e:
-            logger.error("Unhandled Error in get_calendars: %s", e)
-            return create_error_response(500, "Internal Server Error", str(e))
+            logger.error('Unhandled Error in get_calendars: %s', e)
+            return create_error_response(500, 'Internal Server Error', str(e))

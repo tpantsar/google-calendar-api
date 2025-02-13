@@ -25,34 +25,34 @@ fuzzy_datetime_parse = Calendar().parseDT
 # Regular expression to parse duration strings like "1d 2h 3m" or "1.5h"
 # Based on https://stackoverflow.com/a/51916936/12880
 DURATION_REGEX = re.compile(
-    r"^((?P<days>[\.\d]+?)(?:d|day|days))?[ :]*"
-    r"((?P<hours>[\.\d]+?)(?:h|hour|hours))?[ :]*"
-    r"((?P<minutes>[\.\d]+?)(?:m|min|mins|minute|minutes))?[ :]*"
-    r"((?P<seconds>[\.\d]+?)(?:s|sec|secs|second|seconds))?$"
+    r'^((?P<days>[\.\d]+?)(?:d|day|days))?[ :]*'
+    r'((?P<hours>[\.\d]+?)(?:h|hour|hours))?[ :]*'
+    r'((?P<minutes>[\.\d]+?)(?:m|min|mins|minute|minutes))?[ :]*'
+    r'((?P<seconds>[\.\d]+?)(?:s|sec|secs|second|seconds))?$'
 )
 
 
 def write_to_output_file(file_name, data):
     """Writes the data to /output directory, file extension determines the format."""
-    path = "src/output/" + file_name
+    path = 'src/output/' + file_name
 
-    if file_name.endswith(".json"):
-        with open(path, "w", encoding="utf-8") as file:
+    if file_name.endswith('.json'):
+        with open(path, 'w', encoding='utf-8') as file:
             file.write(json.dumps(data, indent=2, ensure_ascii=False))
-        logger.info("Data written to %s", file_name)
-    elif file_name.endswith(".csv"):
-        with open(path, "w", encoding="utf-8") as file:
+        logger.info('Data written to %s', file_name)
+    elif file_name.endswith('.csv'):
+        with open(path, 'w', encoding='utf-8') as file:
             writer = csv.writer(file)
             for row in data:
                 writer.writerow(row)
-        logger.info("Data written to %s", file_name)
-    elif file_name.endswith(".txt"):
-        with open(path, "w", encoding="utf-8") as file:
+        logger.info('Data written to %s', file_name)
+    elif file_name.endswith('.txt'):
+        with open(path, 'w', encoding='utf-8') as file:
             for item in data:
-                file.write(f"{item}\n", encoding="utf-8")
-        logger.info("Data written to %s", file_name)
+                file.write(f'{item}\n', encoding='utf-8')
+        logger.info('Data written to %s', file_name)
     else:
-        logger.error("Unsupported file format")
+        logger.error('Unsupported file format')
 
 
 def build_service() -> build:
@@ -62,23 +62,23 @@ def build_service() -> build:
         ServiceBuildError: If credentials are missing or the service cannot be built.
     """
     try:
-        logger.debug("Building the Google Calendar API service.")
+        logger.debug('Building the Google Calendar API service.')
         creds = get_credentials()
         if not creds:
-            logger.error("Credentials not found for building the service.")
+            logger.error('Credentials not found for building the service.')
             raise ServiceBuildError(
-                "Missing credentials for building the Calendar API service."
+                'Missing credentials for building the Calendar API service.'
             )
 
-        logger.info("Building the Google Calendar API service.")
-        service = build("calendar", "v3", credentials=creds)
+        logger.info('Building the Google Calendar API service.')
+        service = build('calendar', 'v3', credentials=creds)
         return service
     except HttpError as e:
-        logger.error("HTTP Error while building the service: %s", e)
-        raise ServiceBuildError(f"Failed to build service due to an HTTP error: {e}")
+        logger.error('HTTP Error while building the service: %s', e)
+        raise ServiceBuildError(f'Failed to build service due to an HTTP error: {e}')
     except Exception as e:
-        logger.error("Unexpected error during service build: %s", e)
-        raise ServiceBuildError(f"Unexpected error during service build: {e}")
+        logger.error('Unexpected error during service build: %s', e)
+        raise ServiceBuildError(f'Unexpected error during service build: {e}')
 
 
 def round_to_nearest_interval(
@@ -132,45 +132,45 @@ def round_to_nearest_interval(
 @typechecked
 def print_event_details(event: dict, duration: any, start: datetime, end: datetime):
     """Prints the created event details to the console."""
-    if not all(key in event for key in ("summary", "description")):
-        raise ValueError("Event details are missing required fields.")
+    if not all(key in event for key in ('summary', 'description')):
+        raise ValueError('Event details are missing required fields.')
 
     try:
-        print("\nEvent created successfully:")
-        print("{:<12}{:<}".format("Summary:", event["summary"]))
-        print("{:<12}{:<}".format("Desc:", event["description"]))
-        print("{:<12}{:<}".format("Duration:", get_duration_str(duration)))
-        print("{:<12}{:<}".format("Start:", start.strftime("%Y-%m-%d %H:%M:%S")))
-        print("{:<12}{:<}".format("End:", end.strftime("%Y-%m-%d %H:%M:%S")))
-        print(event.get("htmlLink"))
+        print('\nEvent created successfully:')
+        print('{:<12}{:<}'.format('Summary:', event['summary']))
+        print('{:<12}{:<}'.format('Desc:', event['description']))
+        print('{:<12}{:<}'.format('Duration:', get_duration_str(duration)))
+        print('{:<12}{:<}'.format('Start:', start.strftime('%Y-%m-%d %H:%M:%S')))
+        print('{:<12}{:<}'.format('End:', end.strftime('%Y-%m-%d %H:%M:%S')))
+        print(event.get('htmlLink'))
     except Exception as e:
-        print("Failed to print event details.", str(e))
+        print('Failed to print event details.', str(e))
 
 
 def get_duration_str(duration):
     """Gets the duration in human-readable format."""
     if duration is None:
-        return "0 min"
+        return '0 min'
 
     duration = get_timedelta_from_str(duration)
     if duration.total_seconds() <= 0:
-        return "0 min"
+        return '0 min'
 
     total_hours = duration.days * 24 + duration.seconds // 3600
     minutes = (duration.seconds % 3600) // 60
 
     if total_hours == 0:
-        return f"{minutes} min"
+        return f'{minutes} min'
     elif minutes == 0:
-        return f"{total_hours} h"
+        return f'{total_hours} h'
     else:
-        return f"{total_hours} h {minutes} min"
+        return f'{total_hours} h {minutes} min'
 
 
 def format_event_time_from_iso(event_time):
     """Formats the event time from ISO format to 'pe 4.10.2024 18:00'."""
     date = datetime.fromisoformat(event_time)
-    return date.strftime("%a %d.%m.%Y %H:%M")
+    return date.strftime('%a %d.%m.%Y %H:%M')
 
 
 def format_str_datetime_to_iso(dt_str: str, timezone: str):
@@ -193,12 +193,12 @@ def _is_dayfirst_locale():
     https://babel.pocoo.org/en/latest/dates.html#pattern-syntax.
     """
     try:
-        locale = babel.Locale(babel.default_locale("LC_TIME"))
+        locale = babel.Locale(babel.default_locale('LC_TIME'))
     except babel.UnknownLocaleError:
         # Couldn't detect locale, assume non-dayfirst.
         return False
-    m = re.search(r"M|d|$", locale.date_formats["short"].pattern)
-    return m and m.group(0) == "d"
+    m = re.search(r'M|d|$', locale.date_formats['short'].pattern)
+    return m and m.group(0) == 'd'
 
 
 def get_time_from_str(when):
@@ -213,14 +213,14 @@ def get_time_from_str(when):
     # Other forms like YYYY-MM-DD shouldn't rely on locale by default (#792).
     # dayfirst = _is_dayfirst_locale() if re.match(r"^\d{1,2}-\d{1,2}-", when) else None
     dayfirst = (
-        True if re.match(r"^\d{1,2}[-.]\d{1,2}[-.]", when) else _is_dayfirst_locale()
+        True if re.match(r'^\d{1,2}[-.]\d{1,2}[-.]', when) else _is_dayfirst_locale()
     )
     try:
         event_time = dateutil_parse(when, default=zero_oclock_today, dayfirst=dayfirst)
     except ValueError:
         struct, result = fuzzy_date_parse(when)
         if not result:
-            raise ValueError("Date and time is invalid: %s" % (when))
+            raise ValueError('Date and time is invalid: %s' % (when))
         event_time = datetime.fromtimestamp(time.mktime(struct), tzlocal())
 
     return event_time
@@ -257,5 +257,5 @@ def get_timedelta_from_str(delta):
         if result:
             parsed_delta = dt - datetime.min
     if parsed_delta is None:
-        raise ValueError("Duration is invalid: %s" % (delta))
+        raise ValueError('Duration is invalid: %s' % (delta))
     return parsed_delta

@@ -20,9 +20,9 @@ class MasonBuilder(dict):
         : param str details: Longer human-readable description
         """
 
-        self["@error"] = {
-            "@message": title,
-            "@messages": [details],
+        self['@error'] = {
+            '@message': title,
+            '@messages': [details],
         }
 
     def add_namespace(self, ns, uri):
@@ -35,10 +35,10 @@ class MasonBuilder(dict):
         : param str uri: the identifier URI of the namespace
         """
 
-        if "@namespaces" not in self:
-            self["@namespaces"] = {}
+        if '@namespaces' not in self:
+            self['@namespaces'] = {}
 
-        self["@namespaces"][ns] = {"name": uri}
+        self['@namespaces'][ns] = {'name': uri}
 
     def add_control(self, ctrl_name, href, **kwargs):
         """
@@ -54,11 +54,11 @@ class MasonBuilder(dict):
         : param str href: target URI for the control
         """
 
-        if "@controls" not in self:
-            self["@controls"] = {}
+        if '@controls' not in self:
+            self['@controls'] = {}
 
-        self["@controls"][ctrl_name] = kwargs
-        self["@controls"][ctrl_name]["href"] = href
+        self['@controls'][ctrl_name] = kwargs
+        self['@controls'][ctrl_name]['href'] = href
 
     def add_control_post(self, ctrl_name, title, href, schema):
         """
@@ -73,7 +73,7 @@ class MasonBuilder(dict):
         """
 
         self.add_control(
-            ctrl_name, href, method="POST", encoding="json", title=title, schema=schema
+            ctrl_name, href, method='POST', encoding='json', title=title, schema=schema
         )
 
     def add_control_put(self, title, href, schema):
@@ -87,7 +87,7 @@ class MasonBuilder(dict):
         : param dict schema: a dictionary representing a valid JSON schema
         """
         self.add_control(
-            "edit", href, method="PUT", encoding="json", title=title, schema=schema
+            'edit', href, method='PUT', encoding='json', title=title, schema=schema
         )
 
     def add_control_delete(self, title, href):
@@ -101,8 +101,8 @@ class MasonBuilder(dict):
         : param str title: human-readable title for the control
         """
         self.add_control(
-            "delete",
+            'delete',
             href,
-            method="DELETE",
+            method='DELETE',
             title=title,
         )

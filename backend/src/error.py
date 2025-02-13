@@ -22,8 +22,8 @@ class ParameterError(Exception):
     def to_response(self):
         resource_url = request.path
         body = MasonBuilder(resource_url=resource_url)
-        body.add_error("Bad Request", self.message)
-        body.add_control("profile", href=ERROR_PROFILE)
+        body.add_error('Bad Request', self.message)
+        body.add_control('profile', href=ERROR_PROFILE)
         return Response(json.dumps(body), status=400, mimetype=MASON)
 
 
@@ -31,18 +31,18 @@ class APIError(Exception):
     """Custom exception for API errors."""
 
     def __init__(self, status_code, title, message=None):
-        logger.error("%s, %s", title, message)
+        logger.error('%s, %s', title, message)
         self.status_code = status_code
         self.title = title
         self.message = message
         super().__init__(self.message)
 
     def to_response(self):
-        logger.error("%s, %s", self.title, self.message)
+        logger.error('%s, %s', self.title, self.message)
         resource_url = request.path
         body = MasonBuilder(resource_url=resource_url)
         body.add_error(self.title, self.message)
-        body.add_control("profile", href=ERROR_PROFILE)
+        body.add_control('profile', href=ERROR_PROFILE)
         return Response(json.dumps(body), status=self.status_code, mimetype=MASON)
 
 
@@ -61,5 +61,5 @@ def create_error_response(status_code, title, message=None) -> Response:
     resource_url = request.path
     body = MasonBuilder(resource_url=resource_url)
     body.add_error(title, message)
-    body.add_control("profile", href=ERROR_PROFILE)
+    body.add_control('profile', href=ERROR_PROFILE)
     return Response(json.dumps(body), status_code, mimetype=MASON)

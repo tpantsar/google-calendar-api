@@ -24,28 +24,28 @@ def main():
     # Fetch calendar list
     calendars = get_calendar_list()
     calendar_choices = [
-        {"name": calendar["summary"], "value": calendar["id"]} for calendar in calendars
+        {'name': calendar['summary'], 'value': calendar['id']} for calendar in calendars
     ]
 
-    menu_choices = ["Fast", "Custom"]
+    menu_choices = ['Fast', 'Custom']
     menu = inquirer.select(
-        message="Method:",
+        message='Method:',
         choices=menu_choices,
-        default="Fast",  # Optional: Set a default choice
+        default='Fast',  # Optional: Set a default choice
         validate=EmptyInputValidator(),
     )
 
     # Display calendar menu with filtering enabled
     selected_calendar_id = inquirer.fuzzy(
-        message="Select calendar:",
+        message='Select calendar:',
         choices=calendar_choices,
         default=None,  # Optional: Set a default choice
         validate=EmptyInputValidator(),
     ).execute()
 
-    print(f"Using calendar: {selected_calendar_id}")
+    print(f'Using calendar: {selected_calendar_id}')
 
-    if menu.execute() == "Fast":
+    if menu.execute() == 'Fast':
         fast(selected_calendar_id)
     else:
         custom(selected_calendar_id)
@@ -53,7 +53,7 @@ def main():
 
 def get_duration_legacy() -> int:
     return inquirer.number(
-        message="Duration in minutes",
+        message='Duration in minutes',
         min_allowed=0,
         max_allowed=1440,
         float_allowed=False,
@@ -64,7 +64,7 @@ def get_duration_legacy() -> int:
 
 
 def get_duration():
-    return get_input(PRINTER, "Duration (human readable): ", PARSABLE_DURATION)
+    return get_input(PRINTER, 'Duration (human readable): ', PARSABLE_DURATION)
 
 
 def fast(selected_calendar_id: str):
@@ -78,14 +78,14 @@ def fast(selected_calendar_id: str):
     # Event summary with auto-complete from popular events
     # https://inquirerpy.readthedocs.io/en/latest/pages/prompts/input.html#auto-completion
     summary = inquirer.text(
-        message="Summary",
+        message='Summary',
         completer=popular_events_summaries,
         validate=EmptyInputValidator(),
     ).execute()
 
     # Event description
     description = inquirer.text(
-        message="Description",
+        message='Description',
         validate=EmptyInputValidator(),
     ).execute()
 
@@ -96,16 +96,16 @@ def fast(selected_calendar_id: str):
 
     end = round_to_nearest_interval(current_local_time, 15)
     start = end - get_timedelta_from_str(duration)
-    logger.debug("Start: %s, End: %s", str(start), str(end))
+    logger.debug('Start: %s, End: %s', str(start), str(end))
 
     start_formatted = start.isoformat()
     end_formatted = end.isoformat()
 
     event_body = {
-        "start": {"dateTime": start_formatted, "timeZone": TIMEZONE},
-        "end": {"dateTime": end_formatted, "timeZone": TIMEZONE},
-        "summary": summary,
-        "description": description,
+        'start': {'dateTime': start_formatted, 'timeZone': TIMEZONE},
+        'end': {'dateTime': end_formatted, 'timeZone': TIMEZONE},
+        'summary': summary,
+        'description': description,
     }
 
     event = create_event(selected_calendar_id, event_body)
@@ -121,18 +121,18 @@ def custom(selected_calendar_id: str):
     # Event summary with auto-complete from popular events
     # https://inquirerpy.readthedocs.io/en/latest/pages/prompts/input.html#auto-completion
     summary = inquirer.text(
-        message="Summary",
+        message='Summary',
         completer=popular_events_summaries,
         validate=EmptyInputValidator(),
     ).execute()
 
     # Event description
     description = inquirer.text(
-        message="Description",
+        message='Description',
         validate=EmptyInputValidator(),
     ).execute()
 
-    start_input = get_input(PRINTER, "When: ", PARSABLE_DATE).strip()
+    start_input = get_input(PRINTER, 'When: ', PARSABLE_DATE).strip()
     duration = get_duration()
 
     # Convert UTC datetime to local datetime
@@ -147,15 +147,15 @@ def custom(selected_calendar_id: str):
     print(end_formatted)
 
     event_body = {
-        "start": {"dateTime": start_formatted, "timeZone": TIMEZONE},
-        "end": {"dateTime": end_formatted, "timeZone": TIMEZONE},
-        "summary": summary,
-        "description": description,
+        'start': {'dateTime': start_formatted, 'timeZone': TIMEZONE},
+        'end': {'dateTime': end_formatted, 'timeZone': TIMEZONE},
+        'summary': summary,
+        'description': description,
     }
 
     event = create_event(selected_calendar_id, event_body)
     print_event_details(event, duration, start_time, end_time)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
