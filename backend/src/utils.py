@@ -16,9 +16,14 @@ from typeguard import typechecked
 
 from src.config import CLIENT_ID, CLIENT_SECRET
 from src.auth import authenticate
+from src.config import CLIENT_ID, CLIENT_SECRET
+from src.auth import authenticate
 from src.constants import TIME_FORMAT_PROMPT
 from src.error import ServiceBuildError
 from src.logger_config import logger
+from src.printer import Printer
+
+PRINTER = Printer()
 from src.printer import Printer
 
 PRINTER = Printer()
