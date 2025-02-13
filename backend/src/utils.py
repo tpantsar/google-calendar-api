@@ -181,26 +181,6 @@ def format_str_datetime_to_iso(dt_str: str, timezone: str):
     return dt.isoformat()
 
 
-def _is_dayfirst_locale():
-    """Detect whether system locale date format has day first.
-
-    Examples:
-     - M/d/yy -> False
-     - dd/MM/yy -> True
-     - (UnknownLocaleError) -> False
-
-    Pattern syntax is documented at
-    https://babel.pocoo.org/en/latest/dates.html#pattern-syntax.
-    """
-    try:
-        locale = babel.Locale(babel.default_locale('LC_TIME'))
-    except babel.UnknownLocaleError:
-        # Couldn't detect locale, assume non-dayfirst.
-        return False
-    m = re.search(r'M|d|$', locale.date_formats['short'].pattern)
-    return m and m.group(0) == 'd'
-
-
 def get_timedelta_from_str(delta):
     """
     Parse a time string into a timedelta object.
