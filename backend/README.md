@@ -36,10 +36,10 @@ http://127.0.0.1:5000/
 ## Custom commands:
 
 ```
-invoke autoflake
-invoke isort
+# Check linting
+invoke check
 
-# Run both autoflake and isort (format task)
+# Remove unused imports, sort imports, format code.
 invoke format
 ```
 

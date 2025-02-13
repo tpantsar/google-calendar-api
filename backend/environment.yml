@@ -11,9 +11,7 @@ dependencies:
   - google-auth
   - google-auth-oauthlib
   - invoke
-  - autoflake
-  - isort
-  - flake8
+  - ruff
   - pytest
   - InquirerPy
   - typeguard

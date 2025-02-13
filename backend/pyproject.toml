@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -26,9 +26,7 @@ dependencies = [
 dev = [
     "pytest",
     "invoke",
-    "autoflake",
-    "isort",
-    "flake8",
+    "ruff",
 ]
 
 [tool.setuptools]
@@ -36,3 +34,18 @@ packages = ["gcalapi"]
 
 [project.scripts]
 gcalapi = "terminal:main"
+
+[tool.ruff]
+line-length = 90
+
+[tool.ruff.lint]
+# Enable Errors, Warnings, Flakes
+select = ["E", "W", "F"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint.extend-per-file-ignores]
+"*.pyi" = ["E501"]

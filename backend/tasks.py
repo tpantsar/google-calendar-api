@@ -2,17 +2,13 @@ from invoke import task
 
 
 @task
-def autoflake(ctx):
-    """Remove all unused imports."""
-    ctx.run("autoflake --remove-all-unused-imports --in-place --recursive .")
+def check(ctx):
+    """Check linting with ruff."""
+    ctx.run('ruff check')
 
 
 @task
-def isort(ctx):
-    """Sort imports."""
-    ctx.run("isort .")
-
-
-@task(pre=[autoflake, isort])
 def format(ctx):
-    """Format code by removing unused imports and sorting imports."""
+    """Remove unused imports, sort imports, format code."""
+    ctx.run('ruff check --select I --fix')
+    ctx.run('ruff format')
