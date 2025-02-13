@@ -9,6 +9,10 @@ import babel
 import pytz
 from dateutil.parser import parse as dateutil_parse
 from dateutil.tz import tzlocal
+
+# External project
+from gcalcli.gcal import GoogleCalendarInterface, set_resolved_calendars
+from gcalcli.cli import set_resolved_calendars
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from parsedatetime.parsedatetime import Calendar
@@ -17,7 +21,6 @@ from typeguard import typechecked
 from src.config import CLIENT_ID, CLIENT_SECRET
 from src.auth import authenticate
 from src.config import CLIENT_ID, CLIENT_SECRET
-from src.auth import authenticate
 from src.constants import TIME_FORMAT_PROMPT
 from src.error import ServiceBuildError
 from src.logger_config import logger
