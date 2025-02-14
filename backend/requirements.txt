@@ -1,12 +1,10 @@
+gcalcli @ git+https://github.com/tpantsar/gcalcli.git
 Flask
 flask-restful
 flask-cors
 google-api-python-client
-google-auth
 google-auth-oauthlib
-invoke
-ruff
-pytest
+google-auth
 InquirerPy
 typeguard
 gunicorn
@@ -14,3 +12,6 @@ waitress
 parsedatetime
 babel
 python-dateutil
+pytest
+invoke
+ruff
