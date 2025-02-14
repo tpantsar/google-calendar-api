@@ -8,6 +8,7 @@ version = "0.1.0"
 readme = "README.md"
 description = "Google Calendar client"
 dependencies = [
+    "gcalcli @ git+https://github.com/tpantsar/gcalcli.git#egg=gcalcli",
     "Flask",
     "flask-restful",
     "flask-cors",
@@ -33,9 +34,6 @@ dev = [
     "invoke",
     "ruff",
 ]
-
-[tool.setuptools]
-packages = ["gcalapi"]
 
 [project.scripts]
 gcalapi = "terminal:main"
