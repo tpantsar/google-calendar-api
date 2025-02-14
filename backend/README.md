@@ -90,6 +90,13 @@ docker build -t google-calendar-backend .
 docker run --rm -it -p 5000:5000 google-calendar-backend
 ```
 
+### CLI application
+
+```bash
+docker build -t google-calendar-backend .
+docker run --rm -it google-calendar-backend bash -c "python terminal.py"
+```
+
 ---
 
 ### CLI application (Legacy)
