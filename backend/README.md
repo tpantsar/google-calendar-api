@@ -54,6 +54,8 @@ pip install .
 ## Install dependencies from requirements.txt
 
 ```bash
+pip install pip-tools
+pip-compile pyproject.toml --resolver=backtracking --output-file=requirements.txt
 pip install -r requirements.txt
 ```
 
