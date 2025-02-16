@@ -13,7 +13,7 @@ docker compose up -d --build
 ### Run CLI application:
 
 ```bash
-docker run --rm -it google-calendar-cli bash -c "python terminal.py"
+docker run --rm -it google-calendar-backend bash -c "python terminal.py"
 ```
 
 ## References:

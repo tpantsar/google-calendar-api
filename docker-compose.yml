@@ -15,12 +15,6 @@ services:
     volumes:
       - ./backend/creds:/app/creds
 
-  cli:
-    image: google-calendar-backend
-    container_name: cli
-    depends_on:
-      - backend
-
   frontend:
     image: google-calendar-frontend
     container_name: frontend
