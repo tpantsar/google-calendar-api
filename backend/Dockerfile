@@ -14,7 +14,6 @@ RUN pip install --upgrade pip setuptools wheel build
 
 # Copy source files
 COPY pyproject.toml ./
-COPY src ./src
 
 # Build the package
 RUN python -m build
