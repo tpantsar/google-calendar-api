@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from googleapiclient.errors import HttpError
 
+from gcalcli.validators import parsable_date_validator
 from src.error import APIError, ParameterError, ServiceBuildError
 from src.logger_config import logger
 from src.utils import build_service, format_event_time_from_iso, write_to_output_file
@@ -42,20 +43,33 @@ def get_event(calendar_id, event_id):
         )
 
 
-def get_events(calendar_id, start_date: datetime, end_date: datetime):
+def get_events(
+    calendar_id, start_date: datetime, end_date: datetime, search_query: str = None
+):
     """
     Fetches Google Calendar events for the specified time range.
     Reference: https://developers.google.com/calendar/api/v3/reference/events/list
 
-    start_date: The start date of the time range.
-    end_date: The end date of the time range.
-    Must be an RFC3339 timestamp with mandatory time zone offset, for example:
-    2011-06-03T10:00:00-07:00, 2011-06-03T10:00:00Z.
+    start_date: The start date of the time range (RFC3339 timestamp).
+    end_date: The end date of the time range (RFC3339 timestamp).
+    RFC3339 timestamp must have mandatory time zone offset, for example:
+    2011-06-03, 2011-06-03T10:00:00-07:00, 2011-06-03T10:00:00Z.
+
+    search_query: Optional search query to filter events by title or description.
     """
     if calendar_id is None:
         raise ParameterError('Calendar ID is missing')
     if start_date is None or end_date is None:
         raise ParameterError('Start date or end date is missing')
+    if start_date > end_date:
+        raise ParameterError('Start date is after the end date')
+
+    # Validate and parse the start_date and end_date
+    try:
+        start_date = parsable_date_validator(start_date)
+        end_date = parsable_date_validator(end_date)
+    except ValueError as e:
+        raise ParameterError(f'Invalid date format: {str(e)}')
 
     try:
         service = build_service()
@@ -71,6 +85,7 @@ def get_events(calendar_id, start_date: datetime, end_date: datetime):
                 calendarId=calendar_id,  # Default is 'primary'
                 timeMin=start_date,  # RFC3339 timestamp, 2011-06-03T10:00:00Z
                 timeMax=end_date,  # RFC3339 timestamp, 2011-06-03T10:00:00Z
+                q=search_query,  # Optional search query
                 singleEvents=True,
                 orderBy='startTime',
             )

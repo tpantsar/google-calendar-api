@@ -4,11 +4,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from gcalcli.utils import get_time_from_str
+from gcalcli.validators import PARSABLE_DATE, get_input
+from gcalcli.exceptions import ValidationError
 
-from src.exceptions import ValidationError
 from src.printer import Printer
 from src.utils import get_timedelta_from_str
-from src.validators import PARSABLE_DATE, DateTimeValidator, get_input
+from src.validators import DateTimeValidator
 
 PRINTER = Printer()
 
