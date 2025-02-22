@@ -37,6 +37,7 @@ class EventList(Resource):
         # Retrieve query parameters from the URL
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
+        search_query = request.args.get('search_query')
 
         if calendar_id is None:
             return create_error_response(400, 'Bad Request', 'Calendar ID is missing')
@@ -51,11 +52,28 @@ class EventList(Resource):
                 400, 'Bad Request', 'End date is required for event retrieval'
             )
 
-        start_date = get_time_from_str(start_date).replace(tzinfo=None).isoformat() + 'Z'
-        end_date = get_time_from_str(end_date).replace(tzinfo=None).isoformat() + 'Z'
+        # Validate search_query if it is provided
+        if search_query and not isinstance(search_query, str):
+            return create_error_response(
+                400, 'Bad Request', 'Search query must be a string'
+            )
+
+        # Validate and parse the start_date and end_date
+        try:
+            start_date = (
+                get_time_from_str(start_date).replace(tzinfo=None).isoformat() + 'Z'
+            )
+            end_date = get_time_from_str(end_date).replace(tzinfo=None).isoformat() + 'Z'
+        except ValueError as e:
+            return create_error_response(400, 'Invalid query parameters', str(e))
 
         try:
-            events = get_events(calendar_id, start_date=start_date, end_date=end_date)
+            events = get_events(
+                calendar_id=calendar_id,
+                start_date=start_date,
+                end_date=end_date,
+                search_query=search_query,
+            )
             return Response(json.dumps(events), status=200, mimetype=MASON)
         except APIError as e:
             return e.to_response()

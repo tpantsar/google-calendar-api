@@ -10,6 +10,18 @@ from src.mason import MasonBuilder
 class ServiceBuildError(Exception):
     """Custom exception for service build errors."""
 
+    def __init__(self, message):
+        self.message = message
+        logger.error(message)
+        super().__init__(self.message)
+
+    def to_response(self):
+        resource_url = request.path
+        body = MasonBuilder(resource_url=resource_url)
+        body.add_error('Service Build Error', self.message)
+        body.add_control('profile', href=ERROR_PROFILE)
+        return Response(json.dumps(body), status=500, mimetype=MASON)
+
 
 class ParameterError(Exception):
     """Custom exception for parameter errors."""

@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 import pytz
 from gcalcli.utils import get_time_from_str
+from gcalcli.validators import PARSABLE_DATE, PARSABLE_DURATION, get_input
 from InquirerPy import inquirer
 from InquirerPy.validator import EmptyInputValidator
 
@@ -15,7 +16,6 @@ from src.utils import (
     print_event_details,
     round_to_nearest_interval,
 )
-from src.validators import PARSABLE_DATE, PARSABLE_DURATION, get_input
 
 PRINTER = Printer()
 
