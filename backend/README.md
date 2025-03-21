@@ -86,17 +86,19 @@ docker run --rm -it google-calendar-frontend bash
 
 ## Docker deployment:
 
+```bash
+docker build -t google-calendar-backend .
+```
+
 ### Flask API
 
 ```bash
-docker build -t google-calendar-backend .
 docker run --rm -it -p 5000:5000 google-calendar-backend
 ```
 
 ### CLI application
 
 ```bash
-docker build -t google-calendar-backend .
 docker run --rm -it google-calendar-backend bash -c "python terminal.py"
 ```
 
