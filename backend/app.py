@@ -20,8 +20,8 @@ app.register_blueprint(api_blueprint)
 if not os.path.exists('creds/credentials.json'):
     logger.error('credentials.json file not found.')
     logger.error('Please download the credentials.json file from Google Cloud Console.')
-    logger.error('Place the file in the backend/src directory.')
-    logger.error('Refer to the README.md file for more information.')
+    logger.error('Place credentials.json to creds/ directory.')
+    logger.error('See README.md for more information.')
     sys.exit(1)
 
 if __name__ == '__main__':

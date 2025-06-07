@@ -1,6 +1,14 @@
-## Download OAuth 2.0 credentials from Google Cloud Platform and place credentials.json in /creds directory
+# Google Calendar API Backend
+
+## Getting Started
+
+Download OAuth 2.0 credentials from Google Cloud Platform and place `credentials.json` in `creds/` directory
 
 https://console.cloud.google.com/apis/credentials
+
+```sh
+cp ~/Downloads/client_secret_*.json ./creds/credentials.json
+```
 
 ## gcalcli
 
@@ -73,8 +81,17 @@ pip install .
 ## Run Flask API
 
 ```bash
+# Run the authorization flow in the browser after starting the app
 python app.py
+```
+
+## API Endpoints
+
+```sh
+# List all calendars
 http://127.0.0.1:5000/api/calendars/
+
+# List events from primary calendar
 http://127.0.0.1:5000/api/events/primary/?start_date=2025-01-01&end_date=2025-03-31&search_query=Test
 ```
 
