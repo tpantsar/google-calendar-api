@@ -3,7 +3,7 @@
 This directory contains unit tests and functional tests for google-calendar-api. To run them all, make sure
 you've installed [tox](https://tox.wiki/) and a supported python version.
 
-tox installation with pipx:
+Install tox via pipx (recommended) or pip:
 
 ```shell
 pip install pipx
@@ -11,17 +11,17 @@ pipx install tox
 tox --help
 ```
 
-Then in the repository root dir run:
+Run all tests:
 
 ```shell
 git submodule update --init
 tox
 ```
 
-Or run individual configurations like
+Run individual configurations:
 
 ```shell
-tox -e py38,cli
+tox -e py312,cli
 ```
 
 The supported tox testing envs are listed and configured in [../tox.ini](../tox.ini).

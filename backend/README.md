@@ -95,6 +95,10 @@ http://127.0.0.1:5000/api/calendars/
 http://127.0.0.1:5000/api/events/primary/?start_date=2025-01-01&end_date=2025-03-31&search_query=Test
 ```
 
+## Running tests
+
+see [tests/README.md](tests/README.md)
+
 ## Invoke commands (tasks.py)
 
 ```bash
