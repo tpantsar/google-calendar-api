@@ -15,7 +15,26 @@ pip install dist/package.whl
 
 ## Create virtual environment
 
-[pip](https://pip.pypa.io/en/stable/installation/)
+- [uv](https://docs.astral.sh/uv/)
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Install project dependencies:
+
+```sh
+uv sync
+```
+
+Activate the virtual environment:
+
+```sh
+source .venv/bin/activate  # On macOS/Linux
+source .venv/Scripts/activate  # On Windows
+```
+
+- [pip](https://pip.pypa.io/en/stable/installation/)
 
 ```bash
 python -m venv .venv
@@ -23,7 +42,7 @@ source .venv/bin/activate  # On macOS/Linux
 source .venv/Scripts/activate  # On Windows
 ```
 
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+- [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -o miniconda.exe
@@ -31,7 +50,7 @@ Start-Process -FilePath ".\miniconda.exe" -ArgumentList "/S" -Wait
 del miniconda.exe
 ```
 
-### Create conda environment
+Create conda environment
 
 ```bash
 conda env create --file environment.yml
@@ -41,7 +60,7 @@ conda activate google-calendar-api
 conda install <package>
 ```
 
-## Install pyproject.toml dependencies
+Install pyproject.toml dependencies
 
 ```bash
 # Development
@@ -49,14 +68,6 @@ pip install -e .
 
 # Production, this installs only the dependencies listed under [project.dependencies]
 pip install .
-```
-
-## Install dependencies from requirements.txt
-
-```bash
-pip install pip-tools
-pip-compile pyproject.toml --resolver=backtracking --output-file=requirements.txt
-pip install -r requirements.txt
 ```
 
 ## Run Flask API
