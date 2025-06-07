@@ -5,7 +5,7 @@
 
 ## Endpoints:
 
-- GET /api/events/<calendar_id>
+- GET /api/events/<calendar_id>/?start_date=<start_date>&end_date=<end_date>&search_query=<search_query>
 - POST /api/events/<calendar_id>
 - PUT /api/events/<calendar_id>/<event_id>
 - DELETE /api/events/<calendar_id>/<event_id>
@@ -22,6 +22,9 @@
   "end": {
     "dateTime": "2024-11-21T17:00:00+02:00",
     "timeZone": "Europe/Helsinki"
-  }
+  },
+  "summary": "Test event",
+  "description": "Description test",
+  "location": "Finland"
 }
 ```

@@ -64,6 +64,7 @@ class EventList(Resource):
                 get_time_from_str(start_date).replace(tzinfo=None).isoformat() + 'Z'
             )
             end_date = get_time_from_str(end_date).replace(tzinfo=None).isoformat() + 'Z'
+            logger.info('Start date: %s, End date: %s', start_date, end_date)
         except ValueError as e:
             return create_error_response(400, 'Invalid query parameters', str(e))
 

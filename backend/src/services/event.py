@@ -1,9 +1,10 @@
 from collections import Counter
 from datetime import datetime, timedelta
 
+from gcalcli.utils import get_time_from_str
+from gcalcli.validators import parsable_date_validator
 from googleapiclient.errors import HttpError
 
-from gcalcli.validators import parsable_date_validator
 from src.error import APIError, ParameterError, ServiceBuildError
 from src.logger_config import logger
 from src.utils import build_service, format_event_time_from_iso, write_to_output_file
@@ -57,11 +58,21 @@ def get_events(
 
     search_query: Optional search query to filter events by title or description.
     """
+    logger.info(
+        'Fetching events from %s between %s and %s',
+        calendar_id,
+        start_date,
+        end_date,
+    )
+
     if calendar_id is None:
         raise ParameterError('Calendar ID is missing')
     if start_date is None or end_date is None:
         raise ParameterError('Start date or end date is missing')
-    if start_date > end_date:
+    if (
+        get_time_from_str(start_date).timestamp()
+        > get_time_from_str(end_date).timestamp()
+    ):
         raise ParameterError('Start date is after the end date')
 
     # Validate and parse the start_date and end_date
@@ -96,11 +107,12 @@ def get_events(
             service.calendars().get(calendarId=calendar_id).execute().get('summary')
         )
         logger.info(
-            'Found %d events from %s between %s and %s',
+            'Found %d events from %s between %s and %s with search query "%s"',
             len(events),
             calendar_summary,
-            format_event_time_from_iso(start_date),
-            format_event_time_from_iso(end_date),
+            start_date,
+            end_date,
+            search_query,
         )
     except HttpError as error:
         raise APIError(

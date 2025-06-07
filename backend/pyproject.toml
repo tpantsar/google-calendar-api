@@ -7,6 +7,7 @@ name = "gcalapi"
 version = "0.1.0"
 readme = "README.md"
 description = "Google Calendar client"
+requires-python = "==3.12.3"
 dependencies = [
     "gcalcli @ git+https://github.com/tpantsar/gcalcli.git",
     "Flask",
@@ -37,6 +38,10 @@ dev = [
 
 [project.scripts]
 gcalapi = "terminal:main"
+
+[tool.coverage.report]
+skip_covered = true
+show_missing = true
 
 [tool.ruff]
 line-length = 90

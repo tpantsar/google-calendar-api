@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import './App.css'
 /* Components */
 import Calendars from './components/Calendars'
+import DateTimePickerValue from './components/DateTimePickerValue'
+import EventForm from './components/EventForm'
 import Events from './components/Events'
 import Filter from './components/Filter'
-import EventForm from './components/EventForm'
 /* Services */
 import calendarService from './services/calendars'
 import eventService from './services/events'
@@ -17,6 +18,8 @@ function App() {
   const [selectedCalendarId, setSelectedCalendarId] = useState<string>('')
   const [events, setEvents] = useState<Event[]>([])
   const [eventsFilter, setEventsFilter] = useState<string>('')
+  const [startDateTime, setStartDateTime] = useState<string>('2025-03-14T00:00')
+  const [endDateTime, setEndDateTime] = useState<string>('2025-03-21T23:59')
 
   // Fetch google calendar events and set them to state
   useEffect(() => {
@@ -50,6 +53,8 @@ function App() {
           setSelectedCalendarId={setSelectedCalendarId}
           getCalendarEvents={getCalendarEvents}
         />
+        <DateTimePickerValue label="Start" initialValue={startDateTime} />
+        <DateTimePickerValue label="End" initialValue={endDateTime} />
         <Filter filter={eventsFilter} setFilter={setEventsFilter} />
         <Events
           calendarId={selectedCalendarId}

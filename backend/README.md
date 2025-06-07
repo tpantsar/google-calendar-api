@@ -1,6 +1,14 @@
-## Download OAuth 2.0 credentials from Google Cloud Platform and place credentials.json in /creds directory
+# Google Calendar API Backend
+
+## Getting Started
+
+Download OAuth 2.0 credentials from Google Cloud Platform and place `credentials.json` in `creds/` directory
 
 https://console.cloud.google.com/apis/credentials
+
+```sh
+cp ~/Downloads/client_secret_*.json ./creds/credentials.json
+```
 
 ## gcalcli
 
@@ -15,7 +23,26 @@ pip install dist/package.whl
 
 ## Create virtual environment
 
-[pip](https://pip.pypa.io/en/stable/installation/)
+- [uv](https://docs.astral.sh/uv/)
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Install project dependencies:
+
+```sh
+uv sync
+```
+
+Activate the virtual environment:
+
+```sh
+source .venv/bin/activate  # On macOS/Linux
+source .venv/Scripts/activate  # On Windows
+```
+
+- [pip](https://pip.pypa.io/en/stable/installation/)
 
 ```bash
 python -m venv .venv
@@ -23,7 +50,7 @@ source .venv/bin/activate  # On macOS/Linux
 source .venv/Scripts/activate  # On Windows
 ```
 
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+- [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
 
 ```bash
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -o miniconda.exe
@@ -31,7 +58,7 @@ Start-Process -FilePath ".\miniconda.exe" -ArgumentList "/S" -Wait
 del miniconda.exe
 ```
 
-### Create conda environment
+Create conda environment
 
 ```bash
 conda env create --file environment.yml
@@ -41,7 +68,7 @@ conda activate google-calendar-api
 conda install <package>
 ```
 
-## Install pyproject.toml dependencies
+Install pyproject.toml dependencies
 
 ```bash
 # Development
@@ -51,20 +78,26 @@ pip install -e .
 pip install .
 ```
 
-## Install dependencies from requirements.txt
-
-```bash
-pip install pip-tools
-pip-compile pyproject.toml --resolver=backtracking --output-file=requirements.txt
-pip install -r requirements.txt
-```
-
 ## Run Flask API
 
 ```bash
+# Run the authorization flow in the browser after starting the app
 python app.py
-http://127.0.0.1:5000/
 ```
+
+## API Endpoints
+
+```sh
+# List all calendars
+http://127.0.0.1:5000/api/calendars/
+
+# List events from primary calendar
+http://127.0.0.1:5000/api/events/primary/?start_date=2025-01-01&end_date=2025-03-31&search_query=Test
+```
+
+## Running tests
+
+see [tests/README.md](tests/README.md)
 
 ## Invoke commands (tasks.py)
 
@@ -85,17 +118,19 @@ docker run --rm -it google-calendar-frontend bash
 
 ## Docker deployment:
 
+```bash
+docker build -t google-calendar-backend .
+```
+
 ### Flask API
 
 ```bash
-docker build -t google-calendar-backend .
 docker run --rm -it -p 5000:5000 google-calendar-backend
 ```
 
 ### CLI application
 
 ```bash
-docker build -t google-calendar-backend .
 docker run --rm -it google-calendar-backend bash -c "python terminal.py"
 ```
 
