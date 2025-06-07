@@ -33,5 +33,5 @@ hit failures, you can start a debugger with the --pdb flag to troubleshoot (prob
 specifying an individual test env and test to debug). Example:
 
 ```shell
-tox -e py312 -- tests/test_gcalcli.py::test_format_event_time_from_iso_valid_date --pdb
+tox -e py312 -- tests/test_utils.py::test_format_event_time_from_iso_valid_date --pdb
 ```
