@@ -39,6 +39,10 @@ dev = [
 [project.scripts]
 gcalapi = "terminal:main"
 
+[tool.coverage.report]
+skip_covered = true
+show_missing = true
+
 [tool.ruff]
 line-length = 90
 
